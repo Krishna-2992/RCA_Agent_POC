@@ -11,9 +11,7 @@ class RelevantChunk(BaseModel):
         description=
         "Unique chunk identifier"
     )
-
-    relevance_reason: str
-
+    
     relevance_reason: str = Field(
         description="Why this document helps RCA"
     )

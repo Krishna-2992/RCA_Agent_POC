@@ -74,10 +74,6 @@ def kb_retriever_node(state):
                     "document_type"
                 ),
 
-                "page": item.payload.get(
-                    "page"
-                ),
-
                 "content": item.payload.get(
                     "text"
                 )
