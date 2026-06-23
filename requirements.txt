@@ -1,0 +1,10 @@
+qdrant-client
+pandas
+python-dotenv
+openai
+tqdm
+pypdf
+langchain-text-splitters
+langgraph
+langchain
+langchain-openai

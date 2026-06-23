@@ -1,0 +1,2801 @@
+ticket_id,customer_name,customer_email,product,category,issue_description,resolution_notes,priority,status,channel,region,customer_age,customer_gender,subscription_type,customer_tenure_months,previous_tickets,customer_satisfaction_score,first_response_time_hours,resolution_time_hours,ticket_created_date,ticket_resolved_date,escalated,sla_breached,operating_system,browser,payment_method,language,preferred_contact_time,issue_complexity_score,customer_segment,document
+1,Patricia Smith,patricia.smith760@outlook.com,Web Portal,Account Suspension,The payment was deducted from my bank account but the transaction shows failed.,Data synchronization restored after backend service restart.,Urgent,Open,Email,North America,31,Male,Free,36,6,5,30.5,108.36,2023-05-17,2023-05-20,No,Yes,MacOS,Edge,PayPal,French,Afternoon,4,Small Business,"### Incident Report
+
+Product:
+Web Portal
+
+Issue Category:
+Account Suspension
+
+Customer Problem:
+The payment was deducted from my bank account but the transaction shows failed.
+
+Technical Environment:
+- Operating System: MacOS
+- Browser: Edge
+- Payment Method: PayPal
+
+Incident Severity:
+- Priority: Urgent
+- Escalated: No
+- SLA Breached: Yes
+- Complexity Score: 4
+
+Historical Resolution:
+Data synchronization restored after backend service restart.
+
+Resolution Metrics:
+- Resolution Time Hours: 108.36
+- Customer Satisfaction: 5"
+2,Patricia Williams,patricia.williams390@gmail.com,Mobile App,Performance Issue,I found a bug in the latest update affecting report generation.,Provided step-by-step troubleshooting instructions and issue resolved.,Urgent,Closed,Email,South America,23,Other,Premium,54,20,5,63.81,87.43,2024-01-06,2024-01-19,Yes,Yes,Windows,Firefox,PayPal,English,Afternoon,2,Small Business,"### Incident Report
+
+Product:
+Mobile App
+
+Issue Category:
+Performance Issue
+
+Customer Problem:
+I found a bug in the latest update affecting report generation.
+
+Technical Environment:
+- Operating System: Windows
+- Browser: Firefox
+- Payment Method: PayPal
+
+Incident Severity:
+- Priority: Urgent
+- Escalated: Yes
+- SLA Breached: Yes
+- Complexity Score: 2
+
+Historical Resolution:
+Provided step-by-step troubleshooting instructions and issue resolved.
+
+Resolution Metrics:
+- Resolution Time Hours: 87.43
+- Customer Satisfaction: 5"
+3,William Anderson,william.anderson651@outlook.com,Web Portal,Performance Issue,The application crashes whenever I try to upload a file.,Provided step-by-step troubleshooting instructions and issue resolved.,Medium,Closed,Chat,Europe,47,Female,Premium,60,20,5,16.2,78.5,2022-11-30,2022-12-05,Yes,Yes,Windows,Safari,Bank Transfer,French,Morning,4,Corporate,"### Incident Report
+
+Product:
+Web Portal
+
+Issue Category:
+Performance Issue
+
+Customer Problem:
+The application crashes whenever I try to upload a file.
+
+Technical Environment:
+- Operating System: Windows
+- Browser: Safari
+- Payment Method: Bank Transfer
+
+Incident Severity:
+- Priority: Medium
+- Escalated: Yes
+- SLA Breached: Yes
+- Complexity Score: 4
+
+Historical Resolution:
+Provided step-by-step troubleshooting instructions and issue resolved.
+
+Resolution Metrics:
+- Resolution Time Hours: 78.5
+- Customer Satisfaction: 5"
+4,David Miller,david.miller672@icloud.com,Payment Gateway,Subscription Cancellation,My subscription was cancelled without my request and I need clarification.,Provided step-by-step troubleshooting instructions and issue resolved.,Medium,Closed,Social Media,Asia,65,Other,Enterprise,58,18,4,26.38,239.36,2024-03-21,2024-04-04,Yes,No,Windows,Chrome,Credit Card,Spanish,Afternoon,7,Corporate,"### Incident Report
+
+Product:
+Payment Gateway
+
+Issue Category:
+Subscription Cancellation
+
+Customer Problem:
+My subscription was cancelled without my request and I need clarification.
+
+Technical Environment:
+- Operating System: Windows
+- Browser: Chrome
+- Payment Method: Credit Card
+
+Incident Severity:
+- Priority: Medium
+- Escalated: Yes
+- SLA Breached: No
+- Complexity Score: 7
+
+Historical Resolution:
+Provided step-by-step troubleshooting instructions and issue resolved.
+
+Resolution Metrics:
+- Resolution Time Hours: 239.36
+- Customer Satisfaction: 4"
+5,Robert Gonzalez,robert.gonzalez391@hotmail.com,Web Portal,Feature Request,The system is not syncing data across devices properly.,We have reset the account credentials and advised the customer to retry login.,High,Pending Customer,Email,Asia,45,Male,Enterprise,1,8,5,54.98,122.34,2024-08-16,2024-08-24,Yes,No,Linux,,Debit Card,Spanish,Evening,3,Corporate,"### Incident Report
+
+Product:
+Web Portal
+
+Issue Category:
+Feature Request
+
+Customer Problem:
+The system is not syncing data across devices properly.
+
+Technical Environment:
+- Operating System: Linux
+- Browser: nan
+- Payment Method: Debit Card
+
+Incident Severity:
+- Priority: High
+- Escalated: Yes
+- SLA Breached: No
+- Complexity Score: 3
+
+Historical Resolution:
+We have reset the account credentials and advised the customer to retry login.
+
+Resolution Metrics:
+- Resolution Time Hours: 122.34
+- Customer Satisfaction: 5"
+6,Thomas Smith,thomas.smith614@outlook.com,Subscription Service,Payment Problem,There seems to be a discrepancy in my billing statement for this month.,Provided step-by-step troubleshooting instructions and issue resolved.,Low,In Progress,Social Media,North America,23,Other,Enterprise,53,2,5,55.26,31.69,2024-09-27,2024-09-27,No,Yes,Android,,Crypto,German,Afternoon,9,Corporate,"### Incident Report
+
+Product:
+Subscription Service
+
+Issue Category:
+Payment Problem
+
+Customer Problem:
+There seems to be a discrepancy in my billing statement for this month.
+
+Technical Environment:
+- Operating System: Android
+- Browser: nan
+- Payment Method: Crypto
+
+Incident Severity:
+- Priority: Low
+- Escalated: No
+- SLA Breached: Yes
+- Complexity Score: 9
+
+Historical Resolution:
+Provided step-by-step troubleshooting instructions and issue resolved.
+
+Resolution Metrics:
+- Resolution Time Hours: 31.69
+- Customer Satisfaction: 5"
+7,Michael Martinez,michael.martinez409@company.com,Subscription Service,Security Concern,I would like to request a refund for the recent charge.,The duplicate charge was reversed and refund processed within 3-5 business days.,Medium,Open,Phone,North America,55,Other,Basic,38,7,1,5.58,151.83,2024-02-04,2024-02-11,Yes,Yes,Windows,Safari,Credit Card,Chinese,Afternoon,5,Corporate,"### Incident Report
+
+Product:
+Subscription Service
+
+Issue Category:
+Security Concern
+
+Customer Problem:
+I would like to request a refund for the recent charge.
+
+Technical Environment:
+- Operating System: Windows
+- Browser: Safari
+- Payment Method: Credit Card
+
+Incident Severity:
+- Priority: Medium
+- Escalated: Yes
+- SLA Breached: Yes
+- Complexity Score: 5
+
+Historical Resolution:
+The duplicate charge was reversed and refund processed within 3-5 business days.
+
+Resolution Metrics:
+- Resolution Time Hours: 151.83
+- Customer Satisfaction: 1"
+8,Jessica Miller,jessica.miller553@yahoo.com,Web Portal,Subscription Cancellation,Two-factor authentication codes are not being delivered to my phone.,Subscription status corrected and confirmation email sent to customer.,Low,Resolved,Phone,South America,44,Female,Free,44,20,1,4.83,175.04,2024-08-26,2024-08-29,Yes,Yes,MacOS,Firefox,Crypto,German,Afternoon,7,Individual,"### Incident Report
+
+Product:
+Web Portal
+
+Issue Category:
+Subscription Cancellation
+
+Customer Problem:
+Two-factor authentication codes are not being delivered to my phone.
+
+Technical Environment:
+- Operating System: MacOS
+- Browser: Firefox
+- Payment Method: Crypto
+
+Incident Severity:
+- Priority: Low
+- Escalated: Yes
+- SLA Breached: Yes
+- Complexity Score: 7
+
+Historical Resolution:
+Subscription status corrected and confirmation email sent to customer.
+
+Resolution Metrics:
+- Resolution Time Hours: 175.04
+- Customer Satisfaction: 1"
+9,William Anderson,william.anderson256@gmail.com,API Service,Security Concern,The payment was deducted from my bank account but the transaction shows failed.,We have reset the account credentials and advised the customer to retry login.,Low,Open,Chat,Europe,44,Female,Enterprise,14,12,1,12.27,1.52,2024-06-26,2024-07-08,No,No,iOS,Safari,Bank Transfer,Japanese,Night,3,Individual,"### Incident Report
+
+Product:
+API Service
+
+Issue Category:
+Security Concern
+
+Customer Problem:
+The payment was deducted from my bank account but the transaction shows failed.
+
+Technical Environment:
+- Operating System: iOS
+- Browser: Safari
+- Payment Method: Bank Transfer
+
+Incident Severity:
+- Priority: Low
+- Escalated: No
+- SLA Breached: No
+- Complexity Score: 3
+
+Historical Resolution:
+We have reset the account credentials and advised the customer to retry login.
+
+Resolution Metrics:
+- Resolution Time Hours: 1.52
+- Customer Satisfaction: 1"
+10,Elizabeth Miller,elizabeth.miller992@gmail.com,Billing System,Performance Issue,I am unable to access my account after entering the correct credentials.,We have reset the account credentials and advised the customer to retry login.,Urgent,Closed,Social Media,Europe,21,Other,Free,55,5,1,43.05,162.38,2022-05-05,2022-05-16,Yes,No,Windows,,Debit Card,Chinese,Morning,10,Individual,"### Incident Report
+
+Product:
+Billing System
+
+Issue Category:
+Performance Issue
+
+Customer Problem:
+I am unable to access my account after entering the correct credentials.
+
+Technical Environment:
+- Operating System: Windows
+- Browser: nan
+- Payment Method: Debit Card
+
+Incident Severity:
+- Priority: Urgent
+- Escalated: Yes
+- SLA Breached: No
+- Complexity Score: 10
+
+Historical Resolution:
+We have reset the account credentials and advised the customer to retry login.
+
+Resolution Metrics:
+- Resolution Time Hours: 162.38
+- Customer Satisfaction: 1"
+11,Susan Jackson,susan.jackson579@hotmail.com,Subscription Service,Feature Request,The application crashes whenever I try to upload a file.,Security settings updated and customer notified of precautionary measures.,High,Resolved,Chat,Africa,59,Female,Enterprise,21,2,1,33.27,239.63,2023-10-10,2023-10-24,Yes,Yes,Linux,Firefox,Crypto,French,Afternoon,6,Individual,"### Incident Report
+
+Product:
+Subscription Service
+
+Issue Category:
+Feature Request
+
+Customer Problem:
+The application crashes whenever I try to upload a file.
+
+Technical Environment:
+- Operating System: Linux
+- Browser: Firefox
+- Payment Method: Crypto
+
+Incident Severity:
+- Priority: High
+- Escalated: Yes
+- SLA Breached: Yes
+- Complexity Score: 6
+
+Historical Resolution:
+Security settings updated and customer notified of precautionary measures.
+
+Resolution Metrics:
+- Resolution Time Hours: 239.63
+- Customer Satisfaction: 1"
+12,Linda Lopez,linda.lopez292@yahoo.com,API Service,Security Concern,I am experiencing very slow performance while using the dashboard.,Explained billing breakdown and clarified applicable charges.,Low,Closed,Phone,Africa,24,Male,Premium,8,3,5,11.61,68.34,2024-06-16,2024-06-29,Yes,No,MacOS,Safari,Crypto,German,Evening,1,Individual,"### Incident Report
+
+Product:
+API Service
+
+Issue Category:
+Security Concern
+
+Customer Problem:
+I am experiencing very slow performance while using the dashboard.
+
+Technical Environment:
+- Operating System: MacOS
+- Browser: Safari
+- Payment Method: Crypto
+
+Incident Severity:
+- Priority: Low
+- Escalated: Yes
+- SLA Breached: No
+- Complexity Score: 1
+
+Historical Resolution:
+Explained billing breakdown and clarified applicable charges.
+
+Resolution Metrics:
+- Resolution Time Hours: 68.34
+- Customer Satisfaction: 5"
+13,Susan Rodriguez,susan.rodriguez46@gmail.com,Cloud Storage,Account Suspension,I am experiencing very slow performance while using the dashboard.,The issue was escalated to engineering and resolved in the latest patch.,Urgent,Closed,Email,North America,22,Other,Basic,35,1,3,42.15,36.39,2023-11-15,2023-11-27,Yes,Yes,Android,Safari,Credit Card,French,Afternoon,4,Corporate,"### Incident Report
+
+Product:
+Cloud Storage
+
+Issue Category:
+Account Suspension
+
+Customer Problem:
+I am experiencing very slow performance while using the dashboard.
+
+Technical Environment:
+- Operating System: Android
+- Browser: Safari
+- Payment Method: Credit Card
+
+Incident Severity:
+- Priority: Urgent
+- Escalated: Yes
+- SLA Breached: Yes
+- Complexity Score: 4
+
+Historical Resolution:
+The issue was escalated to engineering and resolved in the latest patch.
+
+Resolution Metrics:
+- Resolution Time Hours: 36.39
+- Customer Satisfaction: 3"
+14,Patricia Lopez,patricia.lopez799@hotmail.com,Payment Gateway,Account Suspension,The application crashes whenever I try to upload a file.,The issue was escalated to engineering and resolved in the latest patch.,Urgent,Open,Chat,Africa,39,Female,Basic,18,5,1,27.85,10.26,2024-04-12,2024-04-21,No,Yes,MacOS,Edge,PayPal,French,Afternoon,4,Individual,"### Incident Report
+
+Product:
+Payment Gateway
+
+Issue Category:
+Account Suspension
+
+Customer Problem:
+The application crashes whenever I try to upload a file.
+
+Technical Environment:
+- Operating System: MacOS
+- Browser: Edge
+- Payment Method: PayPal
+
+Incident Severity:
+- Priority: Urgent
+- Escalated: No
+- SLA Breached: Yes
+- Complexity Score: 4
+
+Historical Resolution:
+The issue was escalated to engineering and resolved in the latest patch.
+
+Resolution Metrics:
+- Resolution Time Hours: 10.26
+- Customer Satisfaction: 1"
+15,Michael Gonzalez,michael.gonzalez337@outlook.com,E-commerce Store,Feature Request,There seems to be a discrepancy in my billing statement for this month.,Data synchronization restored after backend service restart.,High,Open,Email,Asia,29,Other,Premium,3,3,5,31.57,175.12,2022-05-23,2022-06-04,No,No,Linux,,Credit Card,German,Afternoon,5,Individual,"### Incident Report
+
+Product:
+E-commerce Store
+
+Issue Category:
+Feature Request
+
+Customer Problem:
+There seems to be a discrepancy in my billing statement for this month.
+
+Technical Environment:
+- Operating System: Linux
+- Browser: nan
+- Payment Method: Credit Card
+
+Incident Severity:
+- Priority: High
+- Escalated: No
+- SLA Breached: No
+- Complexity Score: 5
+
+Historical Resolution:
+Data synchronization restored after backend service restart.
+
+Resolution Metrics:
+- Resolution Time Hours: 175.12
+- Customer Satisfaction: 5"
+16,Susan Smith,susan.smith533@hotmail.com,Billing System,Refund Request,The payment was deducted from my bank account but the transaction shows failed.,Security settings updated and customer notified of precautionary measures.,High,Open,Phone,Australia,37,Other,Enterprise,21,12,3,40.14,46.85,2023-02-08,2023-02-13,No,Yes,Linux,,PayPal,German,Morning,5,Small Business,"### Incident Report
+
+Product:
+Billing System
+
+Issue Category:
+Refund Request
+
+Customer Problem:
+The payment was deducted from my bank account but the transaction shows failed.
+
+Technical Environment:
+- Operating System: Linux
+- Browser: nan
+- Payment Method: PayPal
+
+Incident Severity:
+- Priority: High
+- Escalated: No
+- SLA Breached: Yes
+- Complexity Score: 5
+
+Historical Resolution:
+Security settings updated and customer notified of precautionary measures.
+
+Resolution Metrics:
+- Resolution Time Hours: 46.85
+- Customer Satisfaction: 3"
+17,Michael Wilson,michael.wilson805@hotmail.com,API Service,Subscription Cancellation,I would like to request a refund for the recent charge.,Subscription status corrected and confirmation email sent to customer.,Urgent,In Progress,Email,Asia,50,Other,Premium,6,7,3,16.56,48.59,2023-10-22,2023-10-29,Yes,Yes,MacOS,Edge,Crypto,English,Night,7,Corporate,"### Incident Report
+
+Product:
+API Service
+
+Issue Category:
+Subscription Cancellation
+
+Customer Problem:
+I would like to request a refund for the recent charge.
+
+Technical Environment:
+- Operating System: MacOS
+- Browser: Edge
+- Payment Method: Crypto
+
+Incident Severity:
+- Priority: Urgent
+- Escalated: Yes
+- SLA Breached: Yes
+- Complexity Score: 7
+
+Historical Resolution:
+Subscription status corrected and confirmation email sent to customer.
+
+Resolution Metrics:
+- Resolution Time Hours: 48.59
+- Customer Satisfaction: 3"
+18,Charles Miller,charles.miller736@company.com,Mobile App,Refund Request,The application crashes whenever I try to upload a file.,The issue was escalated to engineering and resolved in the latest patch.,Low,Resolved,Chat,Europe,69,Other,Enterprise,4,17,2,66.1,30.0,2024-02-26,2024-03-04,Yes,No,Linux,,Crypto,French,Night,10,Corporate,"### Incident Report
+
+Product:
+Mobile App
+
+Issue Category:
+Refund Request
+
+Customer Problem:
+The application crashes whenever I try to upload a file.
+
+Technical Environment:
+- Operating System: Linux
+- Browser: nan
+- Payment Method: Crypto
+
+Incident Severity:
+- Priority: Low
+- Escalated: Yes
+- SLA Breached: No
+- Complexity Score: 10
+
+Historical Resolution:
+The issue was escalated to engineering and resolved in the latest patch.
+
+Resolution Metrics:
+- Resolution Time Hours: 30.0
+- Customer Satisfaction: 2"
+19,Thomas Wilson,thomas.wilson851@hotmail.com,Analytics Dashboard,Account Suspension,I would like to request a refund for the recent charge.,Payment gateway timeout issue fixed and monitoring implemented.,Medium,Pending Customer,Social Media,South America,58,Male,Premium,29,2,3,17.27,81.27,2024-07-02,2024-07-16,Yes,Yes,MacOS,Firefox,Bank Transfer,Japanese,Afternoon,4,Individual,"### Incident Report
+
+Product:
+Analytics Dashboard
+
+Issue Category:
+Account Suspension
+
+Customer Problem:
+I would like to request a refund for the recent charge.
+
+Technical Environment:
+- Operating System: MacOS
+- Browser: Firefox
+- Payment Method: Bank Transfer
+
+Incident Severity:
+- Priority: Medium
+- Escalated: Yes
+- SLA Breached: Yes
+- Complexity Score: 4
+
+Historical Resolution:
+Payment gateway timeout issue fixed and monitoring implemented.
+
+Resolution Metrics:
+- Resolution Time Hours: 81.27
+- Customer Satisfaction: 3"
+20,Susan Wilson,susan.wilson339@hotmail.com,E-commerce Store,Login Issue,The application crashes whenever I try to upload a file.,Bug logged internally and workaround shared with the customer.,Low,Closed,Web Form,South America,18,Female,Premium,49,12,4,38.98,176.58,2024-08-12,2024-08-18,Yes,No,MacOS,Safari,Bank Transfer,German,Morning,7,Small Business,"### Incident Report
+
+Product:
+E-commerce Store
+
+Issue Category:
+Login Issue
+
+Customer Problem:
+The application crashes whenever I try to upload a file.
+
+Technical Environment:
+- Operating System: MacOS
+- Browser: Safari
+- Payment Method: Bank Transfer
+
+Incident Severity:
+- Priority: Low
+- Escalated: Yes
+- SLA Breached: No
+- Complexity Score: 7
+
+Historical Resolution:
+Bug logged internally and workaround shared with the customer.
+
+Resolution Metrics:
+- Resolution Time Hours: 176.58
+- Customer Satisfaction: 4"
+21,Richard Garcia,richard.garcia861@icloud.com,Billing System,Security Concern,I am unable to access my account after entering the correct credentials.,Bug logged internally and workaround shared with the customer.,Low,Open,Web Form,Europe,73,Female,Basic,4,8,4,23.91,109.67,2022-09-19,2022-09-28,No,No,Android,Edge,PayPal,English,Night,1,Corporate,"### Incident Report
+
+Product:
+Billing System
+
+Issue Category:
+Security Concern
+
+Customer Problem:
+I am unable to access my account after entering the correct credentials.
+
+Technical Environment:
+- Operating System: Android
+- Browser: Edge
+- Payment Method: PayPal
+
+Incident Severity:
+- Priority: Low
+- Escalated: No
+- SLA Breached: No
+- Complexity Score: 1
+
+Historical Resolution:
+Bug logged internally and workaround shared with the customer.
+
+Resolution Metrics:
+- Resolution Time Hours: 109.67
+- Customer Satisfaction: 4"
+22,Sarah Johnson,sarah.johnson975@outlook.com,Subscription Service,Payment Problem,I am unable to access my account after entering the correct credentials.,We have reset the account credentials and advised the customer to retry login.,Medium,Open,Social Media,Europe,33,Male,Enterprise,43,3,5,68.26,112.14,2023-04-05,2023-04-15,No,No,MacOS,,Crypto,Japanese,Morning,3,Small Business,"### Incident Report
+
+Product:
+Subscription Service
+
+Issue Category:
+Payment Problem
+
+Customer Problem:
+I am unable to access my account after entering the correct credentials.
+
+Technical Environment:
+- Operating System: MacOS
+- Browser: nan
+- Payment Method: Crypto
+
+Incident Severity:
+- Priority: Medium
+- Escalated: No
+- SLA Breached: No
+- Complexity Score: 3
+
+Historical Resolution:
+We have reset the account credentials and advised the customer to retry login.
+
+Resolution Metrics:
+- Resolution Time Hours: 112.14
+- Customer Satisfaction: 5"
+23,Patricia Jackson,patricia.jackson27@outlook.com,Subscription Service,Bug Report,The payment was deducted from my bank account but the transaction shows failed.,Explained billing breakdown and clarified applicable charges.,Low,Pending Customer,Social Media,North America,68,Other,Free,23,17,4,47.8,17.48,2024-02-08,2024-02-14,No,Yes,iOS,Edge,Credit Card,German,Evening,8,Corporate,"### Incident Report
+
+Product:
+Subscription Service
+
+Issue Category:
+Bug Report
+
+Customer Problem:
+The payment was deducted from my bank account but the transaction shows failed.
+
+Technical Environment:
+- Operating System: iOS
+- Browser: Edge
+- Payment Method: Credit Card
+
+Incident Severity:
+- Priority: Low
+- Escalated: No
+- SLA Breached: Yes
+- Complexity Score: 8
+
+Historical Resolution:
+Explained billing breakdown and clarified applicable charges.
+
+Resolution Metrics:
+- Resolution Time Hours: 17.48
+- Customer Satisfaction: 4"
+24,John Wilson,john.wilson181@company.com,Cloud Storage,Feature Request,I found a bug in the latest update affecting report generation.,Data synchronization restored after backend service restart.,Urgent,Resolved,Social Media,Asia,38,Male,Free,18,14,2,54.16,137.19,2024-12-04,2024-12-14,No,No,Windows,Edge,PayPal,Spanish,Night,4,Small Business,"### Incident Report
+
+Product:
+Cloud Storage
+
+Issue Category:
+Feature Request
+
+Customer Problem:
+I found a bug in the latest update affecting report generation.
+
+Technical Environment:
+- Operating System: Windows
+- Browser: Edge
+- Payment Method: PayPal
+
+Incident Severity:
+- Priority: Urgent
+- Escalated: No
+- SLA Breached: No
+- Complexity Score: 4
+
+Historical Resolution:
+Data synchronization restored after backend service restart.
+
+Resolution Metrics:
+- Resolution Time Hours: 137.19
+- Customer Satisfaction: 2"
+25,William Hernandez,william.hernandez287@hotmail.com,Web Portal,Login Issue,The system is not syncing data across devices properly.,Subscription status corrected and confirmation email sent to customer.,Medium,Resolved,Web Form,Australia,66,Male,Enterprise,42,15,4,57.19,23.24,2023-07-20,2023-07-28,Yes,No,MacOS,Safari,Crypto,French,Night,9,Corporate,"### Incident Report
+
+Product:
+Web Portal
+
+Issue Category:
+Login Issue
+
+Customer Problem:
+The system is not syncing data across devices properly.
+
+Technical Environment:
+- Operating System: MacOS
+- Browser: Safari
+- Payment Method: Crypto
+
+Incident Severity:
+- Priority: Medium
+- Escalated: Yes
+- SLA Breached: No
+- Complexity Score: 9
+
+Historical Resolution:
+Subscription status corrected and confirmation email sent to customer.
+
+Resolution Metrics:
+- Resolution Time Hours: 23.24
+- Customer Satisfaction: 4"
+26,Barbara Wilson,barbara.wilson764@hotmail.com,Analytics Dashboard,Subscription Cancellation,I am experiencing very slow performance while using the dashboard.,Provided step-by-step troubleshooting instructions and issue resolved.,Medium,Open,Chat,Asia,25,Other,Basic,13,6,4,20.27,141.91,2023-11-09,2023-11-14,No,Yes,MacOS,Safari,Debit Card,French,Afternoon,5,Individual,"### Incident Report
+
+Product:
+Analytics Dashboard
+
+Issue Category:
+Subscription Cancellation
+
+Customer Problem:
+I am experiencing very slow performance while using the dashboard.
+
+Technical Environment:
+- Operating System: MacOS
+- Browser: Safari
+- Payment Method: Debit Card
+
+Incident Severity:
+- Priority: Medium
+- Escalated: No
+- SLA Breached: Yes
+- Complexity Score: 5
+
+Historical Resolution:
+Provided step-by-step troubleshooting instructions and issue resolved.
+
+Resolution Metrics:
+- Resolution Time Hours: 141.91
+- Customer Satisfaction: 4"
+27,Sarah Jones,sarah.jones281@gmail.com,Web Portal,Feature Request,My subscription was cancelled without my request and I need clarification.,Payment gateway timeout issue fixed and monitoring implemented.,Low,Closed,Phone,South America,48,Female,Premium,12,1,3,67.79,115.18,2022-04-22,2022-04-30,Yes,No,iOS,Chrome,Crypto,Japanese,Morning,3,Individual,"### Incident Report
+
+Product:
+Web Portal
+
+Issue Category:
+Feature Request
+
+Customer Problem:
+My subscription was cancelled without my request and I need clarification.
+
+Technical Environment:
+- Operating System: iOS
+- Browser: Chrome
+- Payment Method: Crypto
+
+Incident Severity:
+- Priority: Low
+- Escalated: Yes
+- SLA Breached: No
+- Complexity Score: 3
+
+Historical Resolution:
+Payment gateway timeout issue fixed and monitoring implemented.
+
+Resolution Metrics:
+- Resolution Time Hours: 115.18
+- Customer Satisfaction: 3"
+28,Charles Martinez,charles.martinez88@yahoo.com,Billing System,Refund Request,I found a bug in the latest update affecting report generation.,Explained billing breakdown and clarified applicable charges.,Medium,Closed,Web Form,South America,46,Female,Enterprise,20,18,5,4.81,230.47,2022-08-31,2022-09-08,Yes,Yes,MacOS,Safari,Credit Card,Spanish,Afternoon,3,Corporate,"### Incident Report
+
+Product:
+Billing System
+
+Issue Category:
+Refund Request
+
+Customer Problem:
+I found a bug in the latest update affecting report generation.
+
+Technical Environment:
+- Operating System: MacOS
+- Browser: Safari
+- Payment Method: Credit Card
+
+Incident Severity:
+- Priority: Medium
+- Escalated: Yes
+- SLA Breached: Yes
+- Complexity Score: 3
+
+Historical Resolution:
+Explained billing breakdown and clarified applicable charges.
+
+Resolution Metrics:
+- Resolution Time Hours: 230.47
+- Customer Satisfaction: 5"
+29,Robert Garcia,robert.garcia3@icloud.com,Mobile App,Data Sync Issue,I would like to request a refund for the recent charge.,Provided step-by-step troubleshooting instructions and issue resolved.,Medium,Pending Customer,Phone,Africa,73,Female,Free,44,7,3,56.83,150.39,2024-07-11,2024-07-22,Yes,No,Windows,,Debit Card,Japanese,Afternoon,5,Individual,"### Incident Report
+
+Product:
+Mobile App
+
+Issue Category:
+Data Sync Issue
+
+Customer Problem:
+I would like to request a refund for the recent charge.
+
+Technical Environment:
+- Operating System: Windows
+- Browser: nan
+- Payment Method: Debit Card
+
+Incident Severity:
+- Priority: Medium
+- Escalated: Yes
+- SLA Breached: No
+- Complexity Score: 5
+
+Historical Resolution:
+Provided step-by-step troubleshooting instructions and issue resolved.
+
+Resolution Metrics:
+- Resolution Time Hours: 150.39
+- Customer Satisfaction: 3"
+30,Robert Johnson,robert.johnson170@outlook.com,E-commerce Store,Payment Problem,I would like to request a refund for the recent charge.,Provided step-by-step troubleshooting instructions and issue resolved.,High,Closed,Social Media,South America,46,Male,Free,57,13,3,43.67,7.18,2023-08-15,2023-08-22,Yes,Yes,Android,,Credit Card,Spanish,Night,9,Corporate,"### Incident Report
+
+Product:
+E-commerce Store
+
+Issue Category:
+Payment Problem
+
+Customer Problem:
+I would like to request a refund for the recent charge.
+
+Technical Environment:
+- Operating System: Android
+- Browser: nan
+- Payment Method: Credit Card
+
+Incident Severity:
+- Priority: High
+- Escalated: Yes
+- SLA Breached: Yes
+- Complexity Score: 9
+
+Historical Resolution:
+Provided step-by-step troubleshooting instructions and issue resolved.
+
+Resolution Metrics:
+- Resolution Time Hours: 7.18
+- Customer Satisfaction: 3"
+31,Joseph Rodriguez,joseph.rodriguez186@hotmail.com,CRM Platform,Subscription Cancellation,The payment was deducted from my bank account but the transaction shows failed.,Payment gateway timeout issue fixed and monitoring implemented.,Urgent,Pending Customer,Phone,Africa,24,Male,Premium,27,15,3,47.87,96.71,2024-06-11,2024-06-21,Yes,No,Windows,Safari,PayPal,French,Morning,7,Corporate,"### Incident Report
+
+Product:
+CRM Platform
+
+Issue Category:
+Subscription Cancellation
+
+Customer Problem:
+The payment was deducted from my bank account but the transaction shows failed.
+
+Technical Environment:
+- Operating System: Windows
+- Browser: Safari
+- Payment Method: PayPal
+
+Incident Severity:
+- Priority: Urgent
+- Escalated: Yes
+- SLA Breached: No
+- Complexity Score: 7
+
+Historical Resolution:
+Payment gateway timeout issue fixed and monitoring implemented.
+
+Resolution Metrics:
+- Resolution Time Hours: 96.71
+- Customer Satisfaction: 3"
+32,James Moore,james.moore474@icloud.com,Cloud Storage,Security Concern,There seems to be a discrepancy in my billing statement for this month.,Explained billing breakdown and clarified applicable charges.,Urgent,Open,Chat,Asia,53,Male,Premium,29,15,1,2.56,151.58,2022-04-22,2022-04-25,Yes,Yes,Android,,Credit Card,Chinese,Night,2,Individual,"### Incident Report
+
+Product:
+Cloud Storage
+
+Issue Category:
+Security Concern
+
+Customer Problem:
+There seems to be a discrepancy in my billing statement for this month.
+
+Technical Environment:
+- Operating System: Android
+- Browser: nan
+- Payment Method: Credit Card
+
+Incident Severity:
+- Priority: Urgent
+- Escalated: Yes
+- SLA Breached: Yes
+- Complexity Score: 2
+
+Historical Resolution:
+Explained billing breakdown and clarified applicable charges.
+
+Resolution Metrics:
+- Resolution Time Hours: 151.58
+- Customer Satisfaction: 1"
+33,Patricia Anderson,patricia.anderson970@gmail.com,E-commerce Store,Feature Request,The system is not syncing data across devices properly.,Provided step-by-step troubleshooting instructions and issue resolved.,Urgent,Resolved,Chat,South America,53,Male,Enterprise,13,19,5,53.86,33.63,2022-11-12,2022-11-19,Yes,No,iOS,Safari,Crypto,French,Morning,5,Corporate,"### Incident Report
+
+Product:
+E-commerce Store
+
+Issue Category:
+Feature Request
+
+Customer Problem:
+The system is not syncing data across devices properly.
+
+Technical Environment:
+- Operating System: iOS
+- Browser: Safari
+- Payment Method: Crypto
+
+Incident Severity:
+- Priority: Urgent
+- Escalated: Yes
+- SLA Breached: No
+- Complexity Score: 5
+
+Historical Resolution:
+Provided step-by-step troubleshooting instructions and issue resolved.
+
+Resolution Metrics:
+- Resolution Time Hours: 33.63
+- Customer Satisfaction: 5"
+34,Elizabeth Jackson,elizabeth.jackson594@company.com,Cloud Storage,Account Suspension,I would like to request a refund for the recent charge.,Data synchronization restored after backend service restart.,High,Pending Customer,Social Media,Australia,42,Female,Premium,56,6,2,41.38,56.82,2024-09-29,2024-10-12,No,Yes,Android,Edge,Bank Transfer,German,Afternoon,8,Individual,"### Incident Report
+
+Product:
+Cloud Storage
+
+Issue Category:
+Account Suspension
+
+Customer Problem:
+I would like to request a refund for the recent charge.
+
+Technical Environment:
+- Operating System: Android
+- Browser: Edge
+- Payment Method: Bank Transfer
+
+Incident Severity:
+- Priority: High
+- Escalated: No
+- SLA Breached: Yes
+- Complexity Score: 8
+
+Historical Resolution:
+Data synchronization restored after backend service restart.
+
+Resolution Metrics:
+- Resolution Time Hours: 56.82
+- Customer Satisfaction: 2"
+35,John Taylor,john.taylor989@hotmail.com,API Service,Payment Problem,I would like to request a refund for the recent charge.,The duplicate charge was reversed and refund processed within 3-5 business days.,Urgent,Open,Chat,South America,73,Other,Basic,5,15,3,24.71,166.56,2023-11-11,2023-11-24,Yes,No,Linux,Edge,PayPal,Japanese,Night,9,Individual,"### Incident Report
+
+Product:
+API Service
+
+Issue Category:
+Payment Problem
+
+Customer Problem:
+I would like to request a refund for the recent charge.
+
+Technical Environment:
+- Operating System: Linux
+- Browser: Edge
+- Payment Method: PayPal
+
+Incident Severity:
+- Priority: Urgent
+- Escalated: Yes
+- SLA Breached: No
+- Complexity Score: 9
+
+Historical Resolution:
+The duplicate charge was reversed and refund processed within 3-5 business days.
+
+Resolution Metrics:
+- Resolution Time Hours: 166.56
+- Customer Satisfaction: 3"
+36,Karen Williams,karen.williams241@company.com,Web Portal,Payment Problem,Two-factor authentication codes are not being delivered to my phone.,The duplicate charge was reversed and refund processed within 3-5 business days.,Urgent,In Progress,Phone,North America,20,Female,Free,19,11,3,31.29,59.36,2023-08-12,2023-08-15,No,Yes,MacOS,Firefox,Credit Card,Chinese,Night,10,Corporate,"### Incident Report
+
+Product:
+Web Portal
+
+Issue Category:
+Payment Problem
+
+Customer Problem:
+Two-factor authentication codes are not being delivered to my phone.
+
+Technical Environment:
+- Operating System: MacOS
+- Browser: Firefox
+- Payment Method: Credit Card
+
+Incident Severity:
+- Priority: Urgent
+- Escalated: No
+- SLA Breached: Yes
+- Complexity Score: 10
+
+Historical Resolution:
+The duplicate charge was reversed and refund processed within 3-5 business days.
+
+Resolution Metrics:
+- Resolution Time Hours: 59.36
+- Customer Satisfaction: 3"
+37,Linda Thomas,linda.thomas935@hotmail.com,Analytics Dashboard,Subscription Cancellation,I am experiencing very slow performance while using the dashboard.,Payment gateway timeout issue fixed and monitoring implemented.,Low,Resolved,Phone,Africa,52,Male,Free,29,11,5,21.89,230.92,2022-10-21,2022-10-24,No,No,Android,Firefox,Bank Transfer,German,Morning,4,Small Business,"### Incident Report
+
+Product:
+Analytics Dashboard
+
+Issue Category:
+Subscription Cancellation
+
+Customer Problem:
+I am experiencing very slow performance while using the dashboard.
+
+Technical Environment:
+- Operating System: Android
+- Browser: Firefox
+- Payment Method: Bank Transfer
+
+Incident Severity:
+- Priority: Low
+- Escalated: No
+- SLA Breached: No
+- Complexity Score: 4
+
+Historical Resolution:
+Payment gateway timeout issue fixed and monitoring implemented.
+
+Resolution Metrics:
+- Resolution Time Hours: 230.92
+- Customer Satisfaction: 5"
+38,Charles Lopez,charles.lopez589@outlook.com,Billing System,Refund Request,I am experiencing very slow performance while using the dashboard.,We have reset the account credentials and advised the customer to retry login.,Low,Closed,Web Form,Asia,67,Male,Premium,15,20,2,44.89,162.99,2023-08-28,2023-08-28,Yes,Yes,Windows,Safari,Bank Transfer,English,Evening,3,Individual,"### Incident Report
+
+Product:
+Billing System
+
+Issue Category:
+Refund Request
+
+Customer Problem:
+I am experiencing very slow performance while using the dashboard.
+
+Technical Environment:
+- Operating System: Windows
+- Browser: Safari
+- Payment Method: Bank Transfer
+
+Incident Severity:
+- Priority: Low
+- Escalated: Yes
+- SLA Breached: Yes
+- Complexity Score: 3
+
+Historical Resolution:
+We have reset the account credentials and advised the customer to retry login.
+
+Resolution Metrics:
+- Resolution Time Hours: 162.99
+- Customer Satisfaction: 2"
+39,Elizabeth Hernandez,elizabeth.hernandez766@icloud.com,API Service,Account Suspension,The system is not syncing data across devices properly.,Security settings updated and customer notified of precautionary measures.,High,In Progress,Phone,South America,69,Female,Premium,52,3,4,69.35,34.64,2022-12-26,2022-12-29,Yes,No,Linux,Safari,Credit Card,German,Morning,5,Corporate,"### Incident Report
+
+Product:
+API Service
+
+Issue Category:
+Account Suspension
+
+Customer Problem:
+The system is not syncing data across devices properly.
+
+Technical Environment:
+- Operating System: Linux
+- Browser: Safari
+- Payment Method: Credit Card
+
+Incident Severity:
+- Priority: High
+- Escalated: Yes
+- SLA Breached: No
+- Complexity Score: 5
+
+Historical Resolution:
+Security settings updated and customer notified of precautionary measures.
+
+Resolution Metrics:
+- Resolution Time Hours: 34.64
+- Customer Satisfaction: 4"
+40,Patricia Anderson,patricia.anderson378@company.com,Subscription Service,Refund Request,There seems to be a discrepancy in my billing statement for this month.,The duplicate charge was reversed and refund processed within 3-5 business days.,Urgent,Open,Social Media,Australia,38,Other,Basic,42,2,4,65.52,73.22,2023-06-21,2023-06-30,No,Yes,MacOS,Chrome,Credit Card,French,Night,2,Individual,"### Incident Report
+
+Product:
+Subscription Service
+
+Issue Category:
+Refund Request
+
+Customer Problem:
+There seems to be a discrepancy in my billing statement for this month.
+
+Technical Environment:
+- Operating System: MacOS
+- Browser: Chrome
+- Payment Method: Credit Card
+
+Incident Severity:
+- Priority: Urgent
+- Escalated: No
+- SLA Breached: Yes
+- Complexity Score: 2
+
+Historical Resolution:
+The duplicate charge was reversed and refund processed within 3-5 business days.
+
+Resolution Metrics:
+- Resolution Time Hours: 73.22
+- Customer Satisfaction: 4"
+41,Linda Moore,linda.moore139@icloud.com,Payment Gateway,Security Concern,Two-factor authentication codes are not being delivered to my phone.,Explained billing breakdown and clarified applicable charges.,Urgent,Open,Web Form,Australia,44,Female,Free,45,11,2,32.2,228.18,2024-07-18,2024-07-23,No,Yes,Android,,PayPal,English,Night,5,Individual,"### Incident Report
+
+Product:
+Payment Gateway
+
+Issue Category:
+Security Concern
+
+Customer Problem:
+Two-factor authentication codes are not being delivered to my phone.
+
+Technical Environment:
+- Operating System: Android
+- Browser: nan
+- Payment Method: PayPal
+
+Incident Severity:
+- Priority: Urgent
+- Escalated: No
+- SLA Breached: Yes
+- Complexity Score: 5
+
+Historical Resolution:
+Explained billing breakdown and clarified applicable charges.
+
+Resolution Metrics:
+- Resolution Time Hours: 228.18
+- Customer Satisfaction: 2"
+42,Patricia Anderson,patricia.anderson94@company.com,CRM Platform,Data Sync Issue,I am unable to access my account after entering the correct credentials.,We have reset the account credentials and advised the customer to retry login.,Medium,In Progress,Social Media,Europe,22,Other,Basic,38,6,2,23.99,36.27,2023-03-11,2023-03-21,Yes,No,MacOS,Firefox,Crypto,French,Afternoon,2,Corporate,"### Incident Report
+
+Product:
+CRM Platform
+
+Issue Category:
+Data Sync Issue
+
+Customer Problem:
+I am unable to access my account after entering the correct credentials.
+
+Technical Environment:
+- Operating System: MacOS
+- Browser: Firefox
+- Payment Method: Crypto
+
+Incident Severity:
+- Priority: Medium
+- Escalated: Yes
+- SLA Breached: No
+- Complexity Score: 2
+
+Historical Resolution:
+We have reset the account credentials and advised the customer to retry login.
+
+Resolution Metrics:
+- Resolution Time Hours: 36.27
+- Customer Satisfaction: 2"
+43,James Jones,james.jones16@outlook.com,Analytics Dashboard,Performance Issue,I am unable to access my account after entering the correct credentials.,The issue was escalated to engineering and resolved in the latest patch.,Low,In Progress,Web Form,Australia,25,Other,Free,31,14,3,37.2,27.06,2023-05-03,2023-05-12,Yes,Yes,Linux,Safari,Bank Transfer,Japanese,Morning,1,Small Business,"### Incident Report
+
+Product:
+Analytics Dashboard
+
+Issue Category:
+Performance Issue
+
+Customer Problem:
+I am unable to access my account after entering the correct credentials.
+
+Technical Environment:
+- Operating System: Linux
+- Browser: Safari
+- Payment Method: Bank Transfer
+
+Incident Severity:
+- Priority: Low
+- Escalated: Yes
+- SLA Breached: Yes
+- Complexity Score: 1
+
+Historical Resolution:
+The issue was escalated to engineering and resolved in the latest patch.
+
+Resolution Metrics:
+- Resolution Time Hours: 27.06
+- Customer Satisfaction: 3"
+44,Richard Wilson,richard.wilson703@gmail.com,CRM Platform,Subscription Cancellation,The payment was deducted from my bank account but the transaction shows failed.,The duplicate charge was reversed and refund processed within 3-5 business days.,Medium,Open,Chat,Asia,57,Other,Premium,25,19,5,21.59,121.83,2024-10-01,2024-10-12,No,Yes,Windows,,Debit Card,German,Night,4,Small Business,"### Incident Report
+
+Product:
+CRM Platform
+
+Issue Category:
+Subscription Cancellation
+
+Customer Problem:
+The payment was deducted from my bank account but the transaction shows failed.
+
+Technical Environment:
+- Operating System: Windows
+- Browser: nan
+- Payment Method: Debit Card
+
+Incident Severity:
+- Priority: Medium
+- Escalated: No
+- SLA Breached: Yes
+- Complexity Score: 4
+
+Historical Resolution:
+The duplicate charge was reversed and refund processed within 3-5 business days.
+
+Resolution Metrics:
+- Resolution Time Hours: 121.83
+- Customer Satisfaction: 5"
+45,David Anderson,david.anderson409@icloud.com,CRM Platform,Refund Request,There seems to be a discrepancy in my billing statement for this month.,Provided step-by-step troubleshooting instructions and issue resolved.,Medium,Resolved,Email,North America,71,Male,Free,28,3,3,58.54,133.97,2022-07-14,2022-07-19,No,Yes,iOS,Safari,Bank Transfer,Japanese,Morning,5,Corporate,"### Incident Report
+
+Product:
+CRM Platform
+
+Issue Category:
+Refund Request
+
+Customer Problem:
+There seems to be a discrepancy in my billing statement for this month.
+
+Technical Environment:
+- Operating System: iOS
+- Browser: Safari
+- Payment Method: Bank Transfer
+
+Incident Severity:
+- Priority: Medium
+- Escalated: No
+- SLA Breached: Yes
+- Complexity Score: 5
+
+Historical Resolution:
+Provided step-by-step troubleshooting instructions and issue resolved.
+
+Resolution Metrics:
+- Resolution Time Hours: 133.97
+- Customer Satisfaction: 3"
+46,Elizabeth Lopez,elizabeth.lopez107@hotmail.com,Web Portal,Account Suspension,I would like to request a refund for the recent charge.,Subscription status corrected and confirmation email sent to customer.,High,Closed,Phone,North America,66,Female,Basic,52,13,5,70.18,196.6,2024-11-05,2024-11-08,Yes,No,Windows,Firefox,PayPal,Japanese,Evening,6,Small Business,"### Incident Report
+
+Product:
+Web Portal
+
+Issue Category:
+Account Suspension
+
+Customer Problem:
+I would like to request a refund for the recent charge.
+
+Technical Environment:
+- Operating System: Windows
+- Browser: Firefox
+- Payment Method: PayPal
+
+Incident Severity:
+- Priority: High
+- Escalated: Yes
+- SLA Breached: No
+- Complexity Score: 6
+
+Historical Resolution:
+Subscription status corrected and confirmation email sent to customer.
+
+Resolution Metrics:
+- Resolution Time Hours: 196.6
+- Customer Satisfaction: 5"
+47,James Garcia,james.garcia891@yahoo.com,API Service,Account Suspension,I am unable to access my account after entering the correct credentials.,The duplicate charge was reversed and refund processed within 3-5 business days.,Medium,Resolved,Web Form,South America,39,Male,Premium,20,10,5,43.13,212.12,2024-03-31,2024-04-01,Yes,Yes,Linux,Chrome,Credit Card,French,Night,7,Small Business,"### Incident Report
+
+Product:
+API Service
+
+Issue Category:
+Account Suspension
+
+Customer Problem:
+I am unable to access my account after entering the correct credentials.
+
+Technical Environment:
+- Operating System: Linux
+- Browser: Chrome
+- Payment Method: Credit Card
+
+Incident Severity:
+- Priority: Medium
+- Escalated: Yes
+- SLA Breached: Yes
+- Complexity Score: 7
+
+Historical Resolution:
+The duplicate charge was reversed and refund processed within 3-5 business days.
+
+Resolution Metrics:
+- Resolution Time Hours: 212.12
+- Customer Satisfaction: 5"
+48,Karen Anderson,karen.anderson425@outlook.com,E-commerce Store,Security Concern,The payment was deducted from my bank account but the transaction shows failed.,Security settings updated and customer notified of precautionary measures.,Low,Pending Customer,Social Media,South America,51,Other,Premium,3,7,4,70.89,14.09,2023-03-18,2023-03-30,Yes,No,MacOS,Firefox,PayPal,French,Evening,2,Individual,"### Incident Report
+
+Product:
+E-commerce Store
+
+Issue Category:
+Security Concern
+
+Customer Problem:
+The payment was deducted from my bank account but the transaction shows failed.
+
+Technical Environment:
+- Operating System: MacOS
+- Browser: Firefox
+- Payment Method: PayPal
+
+Incident Severity:
+- Priority: Low
+- Escalated: Yes
+- SLA Breached: No
+- Complexity Score: 2
+
+Historical Resolution:
+Security settings updated and customer notified of precautionary measures.
+
+Resolution Metrics:
+- Resolution Time Hours: 14.09
+- Customer Satisfaction: 4"
+49,Jessica Wilson,jessica.wilson180@yahoo.com,CRM Platform,Bug Report,The system is not syncing data across devices properly.,Data synchronization restored after backend service restart.,Low,Resolved,Email,South America,19,Female,Free,56,10,5,31.19,97.66,2024-02-18,2024-02-26,No,No,Windows,Edge,Credit Card,French,Afternoon,10,Small Business,"### Incident Report
+
+Product:
+CRM Platform
+
+Issue Category:
+Bug Report
+
+Customer Problem:
+The system is not syncing data across devices properly.
+
+Technical Environment:
+- Operating System: Windows
+- Browser: Edge
+- Payment Method: Credit Card
+
+Incident Severity:
+- Priority: Low
+- Escalated: No
+- SLA Breached: No
+- Complexity Score: 10
+
+Historical Resolution:
+Data synchronization restored after backend service restart.
+
+Resolution Metrics:
+- Resolution Time Hours: 97.66
+- Customer Satisfaction: 5"
+50,Barbara Williams,barbara.williams448@gmail.com,Web Portal,Data Sync Issue,Two-factor authentication codes are not being delivered to my phone.,Data synchronization restored after backend service restart.,Urgent,Pending Customer,Phone,Europe,39,Male,Free,33,20,1,38.44,47.34,2023-05-14,2023-05-20,No,No,MacOS,Firefox,Credit Card,Spanish,Evening,4,Individual,"### Incident Report
+
+Product:
+Web Portal
+
+Issue Category:
+Data Sync Issue
+
+Customer Problem:
+Two-factor authentication codes are not being delivered to my phone.
+
+Technical Environment:
+- Operating System: MacOS
+- Browser: Firefox
+- Payment Method: Credit Card
+
+Incident Severity:
+- Priority: Urgent
+- Escalated: No
+- SLA Breached: No
+- Complexity Score: 4
+
+Historical Resolution:
+Data synchronization restored after backend service restart.
+
+Resolution Metrics:
+- Resolution Time Hours: 47.34
+- Customer Satisfaction: 1"
+51,Karen Jones,karen.jones779@company.com,Billing System,Subscription Cancellation,I would like to request a refund for the recent charge.,Explained billing breakdown and clarified applicable charges.,Urgent,Closed,Social Media,Asia,73,Other,Premium,10,14,1,34.03,151.9,2022-06-04,2022-06-06,No,Yes,Android,,Credit Card,French,Night,8,Individual,"### Incident Report
+
+Product:
+Billing System
+
+Issue Category:
+Subscription Cancellation
+
+Customer Problem:
+I would like to request a refund for the recent charge.
+
+Technical Environment:
+- Operating System: Android
+- Browser: nan
+- Payment Method: Credit Card
+
+Incident Severity:
+- Priority: Urgent
+- Escalated: No
+- SLA Breached: Yes
+- Complexity Score: 8
+
+Historical Resolution:
+Explained billing breakdown and clarified applicable charges.
+
+Resolution Metrics:
+- Resolution Time Hours: 151.9
+- Customer Satisfaction: 1"
+52,Mary Lopez,mary.lopez852@outlook.com,API Service,Payment Problem,I found a bug in the latest update affecting report generation.,Explained billing breakdown and clarified applicable charges.,Urgent,Resolved,Social Media,Australia,68,Other,Free,29,18,2,23.49,114.68,2022-06-07,2022-06-17,Yes,Yes,iOS,Chrome,PayPal,Japanese,Morning,9,Corporate,"### Incident Report
+
+Product:
+API Service
+
+Issue Category:
+Payment Problem
+
+Customer Problem:
+I found a bug in the latest update affecting report generation.
+
+Technical Environment:
+- Operating System: iOS
+- Browser: Chrome
+- Payment Method: PayPal
+
+Incident Severity:
+- Priority: Urgent
+- Escalated: Yes
+- SLA Breached: Yes
+- Complexity Score: 9
+
+Historical Resolution:
+Explained billing breakdown and clarified applicable charges.
+
+Resolution Metrics:
+- Resolution Time Hours: 114.68
+- Customer Satisfaction: 2"
+53,Jennifer Johnson,jennifer.johnson254@company.com,Payment Gateway,Security Concern,The system is not syncing data across devices properly.,Explained billing breakdown and clarified applicable charges.,High,Pending Customer,Phone,South America,44,Female,Free,51,20,3,5.21,23.59,2024-06-15,2024-06-22,No,No,Android,,Debit Card,French,Morning,10,Corporate,"### Incident Report
+
+Product:
+Payment Gateway
+
+Issue Category:
+Security Concern
+
+Customer Problem:
+The system is not syncing data across devices properly.
+
+Technical Environment:
+- Operating System: Android
+- Browser: nan
+- Payment Method: Debit Card
+
+Incident Severity:
+- Priority: High
+- Escalated: No
+- SLA Breached: No
+- Complexity Score: 10
+
+Historical Resolution:
+Explained billing breakdown and clarified applicable charges.
+
+Resolution Metrics:
+- Resolution Time Hours: 23.59
+- Customer Satisfaction: 3"
+54,John Lopez,john.lopez318@company.com,API Service,Data Sync Issue,The payment was deducted from my bank account but the transaction shows failed.,Provided step-by-step troubleshooting instructions and issue resolved.,Urgent,Pending Customer,Chat,Africa,62,Other,Free,42,13,5,26.37,87.66,2024-03-13,2024-03-15,Yes,Yes,Android,Edge,Debit Card,Spanish,Afternoon,3,Individual,"### Incident Report
+
+Product:
+API Service
+
+Issue Category:
+Data Sync Issue
+
+Customer Problem:
+The payment was deducted from my bank account but the transaction shows failed.
+
+Technical Environment:
+- Operating System: Android
+- Browser: Edge
+- Payment Method: Debit Card
+
+Incident Severity:
+- Priority: Urgent
+- Escalated: Yes
+- SLA Breached: Yes
+- Complexity Score: 3
+
+Historical Resolution:
+Provided step-by-step troubleshooting instructions and issue resolved.
+
+Resolution Metrics:
+- Resolution Time Hours: 87.66
+- Customer Satisfaction: 5"
+55,Elizabeth Brown,elizabeth.brown520@hotmail.com,Billing System,Performance Issue,I found a bug in the latest update affecting report generation.,The issue was escalated to engineering and resolved in the latest patch.,Urgent,In Progress,Chat,Europe,71,Other,Basic,47,14,1,29.88,162.65,2024-12-14,2024-12-14,Yes,No,Linux,Safari,Bank Transfer,Spanish,Afternoon,5,Small Business,"### Incident Report
+
+Product:
+Billing System
+
+Issue Category:
+Performance Issue
+
+Customer Problem:
+I found a bug in the latest update affecting report generation.
+
+Technical Environment:
+- Operating System: Linux
+- Browser: Safari
+- Payment Method: Bank Transfer
+
+Incident Severity:
+- Priority: Urgent
+- Escalated: Yes
+- SLA Breached: No
+- Complexity Score: 5
+
+Historical Resolution:
+The issue was escalated to engineering and resolved in the latest patch.
+
+Resolution Metrics:
+- Resolution Time Hours: 162.65
+- Customer Satisfaction: 1"
+56,Michael Lopez,michael.lopez695@hotmail.com,API Service,Feature Request,Two-factor authentication codes are not being delivered to my phone.,Data synchronization restored after backend service restart.,Urgent,In Progress,Chat,Australia,26,Female,Free,42,15,3,40.15,25.52,2024-06-21,2024-06-28,Yes,No,Windows,Firefox,PayPal,German,Afternoon,7,Individual,"### Incident Report
+
+Product:
+API Service
+
+Issue Category:
+Feature Request
+
+Customer Problem:
+Two-factor authentication codes are not being delivered to my phone.
+
+Technical Environment:
+- Operating System: Windows
+- Browser: Firefox
+- Payment Method: PayPal
+
+Incident Severity:
+- Priority: Urgent
+- Escalated: Yes
+- SLA Breached: No
+- Complexity Score: 7
+
+Historical Resolution:
+Data synchronization restored after backend service restart.
+
+Resolution Metrics:
+- Resolution Time Hours: 25.52
+- Customer Satisfaction: 3"
+57,Linda Anderson,linda.anderson906@outlook.com,CRM Platform,Login Issue,Two-factor authentication codes are not being delivered to my phone.,Data synchronization restored after backend service restart.,Medium,Resolved,Email,Asia,32,Male,Premium,60,3,3,57.08,33.89,2022-02-24,2022-03-02,No,No,MacOS,Edge,Bank Transfer,Chinese,Morning,2,Individual,"### Incident Report
+
+Product:
+CRM Platform
+
+Issue Category:
+Login Issue
+
+Customer Problem:
+Two-factor authentication codes are not being delivered to my phone.
+
+Technical Environment:
+- Operating System: MacOS
+- Browser: Edge
+- Payment Method: Bank Transfer
+
+Incident Severity:
+- Priority: Medium
+- Escalated: No
+- SLA Breached: No
+- Complexity Score: 2
+
+Historical Resolution:
+Data synchronization restored after backend service restart.
+
+Resolution Metrics:
+- Resolution Time Hours: 33.89
+- Customer Satisfaction: 3"
+58,William Miller,william.miller856@yahoo.com,Analytics Dashboard,Payment Problem,I am experiencing very slow performance while using the dashboard.,Subscription status corrected and confirmation email sent to customer.,Low,Open,Chat,South America,58,Other,Enterprise,5,3,4,43.17,4.93,2024-12-16,2024-12-22,Yes,Yes,Android,Edge,Credit Card,Chinese,Evening,4,Corporate,"### Incident Report
+
+Product:
+Analytics Dashboard
+
+Issue Category:
+Payment Problem
+
+Customer Problem:
+I am experiencing very slow performance while using the dashboard.
+
+Technical Environment:
+- Operating System: Android
+- Browser: Edge
+- Payment Method: Credit Card
+
+Incident Severity:
+- Priority: Low
+- Escalated: Yes
+- SLA Breached: Yes
+- Complexity Score: 4
+
+Historical Resolution:
+Subscription status corrected and confirmation email sent to customer.
+
+Resolution Metrics:
+- Resolution Time Hours: 4.93
+- Customer Satisfaction: 4"
+59,Susan Garcia,susan.garcia681@company.com,API Service,Performance Issue,The payment was deducted from my bank account but the transaction shows failed.,Data synchronization restored after backend service restart.,Low,Resolved,Web Form,North America,58,Female,Premium,17,0,3,56.88,83.41,2022-06-25,2022-07-03,Yes,No,MacOS,Chrome,PayPal,Chinese,Evening,3,Corporate,"### Incident Report
+
+Product:
+API Service
+
+Issue Category:
+Performance Issue
+
+Customer Problem:
+The payment was deducted from my bank account but the transaction shows failed.
+
+Technical Environment:
+- Operating System: MacOS
+- Browser: Chrome
+- Payment Method: PayPal
+
+Incident Severity:
+- Priority: Low
+- Escalated: Yes
+- SLA Breached: No
+- Complexity Score: 3
+
+Historical Resolution:
+Data synchronization restored after backend service restart.
+
+Resolution Metrics:
+- Resolution Time Hours: 83.41
+- Customer Satisfaction: 3"
+60,Joseph Thomas,joseph.thomas647@yahoo.com,Subscription Service,Subscription Cancellation,I am unable to access my account after entering the correct credentials.,Provided step-by-step troubleshooting instructions and issue resolved.,Low,In Progress,Email,Asia,37,Other,Enterprise,53,17,4,18.61,181.04,2022-10-04,2022-10-05,Yes,No,Android,Chrome,PayPal,French,Morning,6,Small Business,"### Incident Report
+
+Product:
+Subscription Service
+
+Issue Category:
+Subscription Cancellation
+
+Customer Problem:
+I am unable to access my account after entering the correct credentials.
+
+Technical Environment:
+- Operating System: Android
+- Browser: Chrome
+- Payment Method: PayPal
+
+Incident Severity:
+- Priority: Low
+- Escalated: Yes
+- SLA Breached: No
+- Complexity Score: 6
+
+Historical Resolution:
+Provided step-by-step troubleshooting instructions and issue resolved.
+
+Resolution Metrics:
+- Resolution Time Hours: 181.04
+- Customer Satisfaction: 4"
+61,Richard Anderson,richard.anderson917@icloud.com,API Service,Subscription Cancellation,I would like to request a refund for the recent charge.,Security settings updated and customer notified of precautionary measures.,High,Open,Web Form,North America,45,Other,Basic,35,9,3,7.84,79.37,2023-11-26,2023-11-28,No,No,iOS,,Bank Transfer,Spanish,Night,6,Small Business,"### Incident Report
+
+Product:
+API Service
+
+Issue Category:
+Subscription Cancellation
+
+Customer Problem:
+I would like to request a refund for the recent charge.
+
+Technical Environment:
+- Operating System: iOS
+- Browser: nan
+- Payment Method: Bank Transfer
+
+Incident Severity:
+- Priority: High
+- Escalated: No
+- SLA Breached: No
+- Complexity Score: 6
+
+Historical Resolution:
+Security settings updated and customer notified of precautionary measures.
+
+Resolution Metrics:
+- Resolution Time Hours: 79.37
+- Customer Satisfaction: 3"
+62,Mary Lopez,mary.lopez630@icloud.com,CRM Platform,Login Issue,The payment was deducted from my bank account but the transaction shows failed.,Bug logged internally and workaround shared with the customer.,Medium,Open,Chat,Australia,61,Female,Free,9,2,2,56.16,88.55,2023-07-17,2023-07-27,No,Yes,Linux,Firefox,Bank Transfer,French,Evening,8,Individual,"### Incident Report
+
+Product:
+CRM Platform
+
+Issue Category:
+Login Issue
+
+Customer Problem:
+The payment was deducted from my bank account but the transaction shows failed.
+
+Technical Environment:
+- Operating System: Linux
+- Browser: Firefox
+- Payment Method: Bank Transfer
+
+Incident Severity:
+- Priority: Medium
+- Escalated: No
+- SLA Breached: Yes
+- Complexity Score: 8
+
+Historical Resolution:
+Bug logged internally and workaround shared with the customer.
+
+Resolution Metrics:
+- Resolution Time Hours: 88.55
+- Customer Satisfaction: 2"
+63,Charles Jones,charles.jones543@outlook.com,Mobile App,Feature Request,The application crashes whenever I try to upload a file.,The duplicate charge was reversed and refund processed within 3-5 business days.,Medium,Resolved,Social Media,South America,53,Male,Premium,50,8,4,15.84,147.24,2024-03-26,2024-03-31,No,Yes,Windows,Firefox,Credit Card,German,Afternoon,8,Individual,"### Incident Report
+
+Product:
+Mobile App
+
+Issue Category:
+Feature Request
+
+Customer Problem:
+The application crashes whenever I try to upload a file.
+
+Technical Environment:
+- Operating System: Windows
+- Browser: Firefox
+- Payment Method: Credit Card
+
+Incident Severity:
+- Priority: Medium
+- Escalated: No
+- SLA Breached: Yes
+- Complexity Score: 8
+
+Historical Resolution:
+The duplicate charge was reversed and refund processed within 3-5 business days.
+
+Resolution Metrics:
+- Resolution Time Hours: 147.24
+- Customer Satisfaction: 4"
+64,David Lopez,david.lopez727@gmail.com,CRM Platform,Feature Request,My subscription was cancelled without my request and I need clarification.,The issue was escalated to engineering and resolved in the latest patch.,Medium,Open,Chat,Europe,33,Female,Free,24,17,5,26.88,193.08,2023-08-18,2023-09-01,Yes,Yes,Windows,Safari,Bank Transfer,Japanese,Night,9,Small Business,"### Incident Report
+
+Product:
+CRM Platform
+
+Issue Category:
+Feature Request
+
+Customer Problem:
+My subscription was cancelled without my request and I need clarification.
+
+Technical Environment:
+- Operating System: Windows
+- Browser: Safari
+- Payment Method: Bank Transfer
+
+Incident Severity:
+- Priority: Medium
+- Escalated: Yes
+- SLA Breached: Yes
+- Complexity Score: 9
+
+Historical Resolution:
+The issue was escalated to engineering and resolved in the latest patch.
+
+Resolution Metrics:
+- Resolution Time Hours: 193.08
+- Customer Satisfaction: 5"
+65,Susan Jackson,susan.jackson76@yahoo.com,API Service,Payment Problem,I would like to request a refund for the recent charge.,Payment gateway timeout issue fixed and monitoring implemented.,High,In Progress,Social Media,Africa,55,Male,Basic,28,16,1,59.94,124.83,2023-10-12,2023-10-22,No,Yes,MacOS,Safari,Debit Card,French,Evening,2,Small Business,"### Incident Report
+
+Product:
+API Service
+
+Issue Category:
+Payment Problem
+
+Customer Problem:
+I would like to request a refund for the recent charge.
+
+Technical Environment:
+- Operating System: MacOS
+- Browser: Safari
+- Payment Method: Debit Card
+
+Incident Severity:
+- Priority: High
+- Escalated: No
+- SLA Breached: Yes
+- Complexity Score: 2
+
+Historical Resolution:
+Payment gateway timeout issue fixed and monitoring implemented.
+
+Resolution Metrics:
+- Resolution Time Hours: 124.83
+- Customer Satisfaction: 1"
+66,Michael Moore,michael.moore282@yahoo.com,Payment Gateway,Security Concern,The payment was deducted from my bank account but the transaction shows failed.,Data synchronization restored after backend service restart.,Medium,In Progress,Social Media,Africa,75,Other,Premium,54,18,1,59.5,7.78,2023-09-13,2023-09-22,Yes,No,MacOS,,Bank Transfer,Chinese,Morning,8,Corporate,"### Incident Report
+
+Product:
+Payment Gateway
+
+Issue Category:
+Security Concern
+
+Customer Problem:
+The payment was deducted from my bank account but the transaction shows failed.
+
+Technical Environment:
+- Operating System: MacOS
+- Browser: nan
+- Payment Method: Bank Transfer
+
+Incident Severity:
+- Priority: Medium
+- Escalated: Yes
+- SLA Breached: No
+- Complexity Score: 8
+
+Historical Resolution:
+Data synchronization restored after backend service restart.
+
+Resolution Metrics:
+- Resolution Time Hours: 7.78
+- Customer Satisfaction: 1"
+67,Sarah Martinez,sarah.martinez658@outlook.com,Web Portal,Refund Request,I am experiencing very slow performance while using the dashboard.,Payment gateway timeout issue fixed and monitoring implemented.,Low,In Progress,Web Form,South America,48,Female,Basic,22,19,2,22.85,172.69,2024-09-16,2024-09-19,No,No,MacOS,Safari,Crypto,Chinese,Morning,6,Individual,"### Incident Report
+
+Product:
+Web Portal
+
+Issue Category:
+Refund Request
+
+Customer Problem:
+I am experiencing very slow performance while using the dashboard.
+
+Technical Environment:
+- Operating System: MacOS
+- Browser: Safari
+- Payment Method: Crypto
+
+Incident Severity:
+- Priority: Low
+- Escalated: No
+- SLA Breached: No
+- Complexity Score: 6
+
+Historical Resolution:
+Payment gateway timeout issue fixed and monitoring implemented.
+
+Resolution Metrics:
+- Resolution Time Hours: 172.69
+- Customer Satisfaction: 2"
+68,Joseph Brown,joseph.brown274@icloud.com,E-commerce Store,Payment Problem,I am unable to access my account after entering the correct credentials.,Provided step-by-step troubleshooting instructions and issue resolved.,Urgent,In Progress,Chat,Asia,54,Other,Premium,13,5,4,71.71,112.57,2023-05-23,2023-05-25,No,No,Windows,Chrome,Bank Transfer,Chinese,Night,4,Individual,"### Incident Report
+
+Product:
+E-commerce Store
+
+Issue Category:
+Payment Problem
+
+Customer Problem:
+I am unable to access my account after entering the correct credentials.
+
+Technical Environment:
+- Operating System: Windows
+- Browser: Chrome
+- Payment Method: Bank Transfer
+
+Incident Severity:
+- Priority: Urgent
+- Escalated: No
+- SLA Breached: No
+- Complexity Score: 4
+
+Historical Resolution:
+Provided step-by-step troubleshooting instructions and issue resolved.
+
+Resolution Metrics:
+- Resolution Time Hours: 112.57
+- Customer Satisfaction: 4"
+69,Charles Lopez,charles.lopez50@gmail.com,API Service,Data Sync Issue,I would like to request a refund for the recent charge.,Provided step-by-step troubleshooting instructions and issue resolved.,Low,Open,Web Form,Europe,74,Female,Premium,49,12,3,3.73,13.23,2023-07-31,2023-08-07,Yes,No,Linux,Safari,Credit Card,German,Night,9,Small Business,"### Incident Report
+
+Product:
+API Service
+
+Issue Category:
+Data Sync Issue
+
+Customer Problem:
+I would like to request a refund for the recent charge.
+
+Technical Environment:
+- Operating System: Linux
+- Browser: Safari
+- Payment Method: Credit Card
+
+Incident Severity:
+- Priority: Low
+- Escalated: Yes
+- SLA Breached: No
+- Complexity Score: 9
+
+Historical Resolution:
+Provided step-by-step troubleshooting instructions and issue resolved.
+
+Resolution Metrics:
+- Resolution Time Hours: 13.23
+- Customer Satisfaction: 3"
+70,Karen Martin,karen.martin122@yahoo.com,CRM Platform,Performance Issue,There seems to be a discrepancy in my billing statement for this month.,Data synchronization restored after backend service restart.,Medium,In Progress,Social Media,Australia,43,Other,Free,3,1,2,51.52,193.15,2022-07-18,2022-07-24,No,Yes,Linux,,Debit Card,French,Evening,3,Small Business,"### Incident Report
+
+Product:
+CRM Platform
+
+Issue Category:
+Performance Issue
+
+Customer Problem:
+There seems to be a discrepancy in my billing statement for this month.
+
+Technical Environment:
+- Operating System: Linux
+- Browser: nan
+- Payment Method: Debit Card
+
+Incident Severity:
+- Priority: Medium
+- Escalated: No
+- SLA Breached: Yes
+- Complexity Score: 3
+
+Historical Resolution:
+Data synchronization restored after backend service restart.
+
+Resolution Metrics:
+- Resolution Time Hours: 193.15
+- Customer Satisfaction: 2"
+71,Karen Martinez,karen.martinez608@outlook.com,Billing System,Security Concern,The system is not syncing data across devices properly.,Payment gateway timeout issue fixed and monitoring implemented.,High,Resolved,Email,Asia,39,Other,Free,27,18,3,57.47,174.35,2024-11-04,2024-11-17,Yes,No,Android,,Crypto,Spanish,Morning,10,Small Business,"### Incident Report
+
+Product:
+Billing System
+
+Issue Category:
+Security Concern
+
+Customer Problem:
+The system is not syncing data across devices properly.
+
+Technical Environment:
+- Operating System: Android
+- Browser: nan
+- Payment Method: Crypto
+
+Incident Severity:
+- Priority: High
+- Escalated: Yes
+- SLA Breached: No
+- Complexity Score: 10
+
+Historical Resolution:
+Payment gateway timeout issue fixed and monitoring implemented.
+
+Resolution Metrics:
+- Resolution Time Hours: 174.35
+- Customer Satisfaction: 3"
+72,Jennifer Taylor,jennifer.taylor645@company.com,Web Portal,Bug Report,I am unable to access my account after entering the correct credentials.,Explained billing breakdown and clarified applicable charges.,Medium,Open,Web Form,Asia,44,Male,Enterprise,45,6,4,36.38,147.14,2024-02-18,2024-02-20,No,Yes,MacOS,,Debit Card,Chinese,Evening,8,Corporate,"### Incident Report
+
+Product:
+Web Portal
+
+Issue Category:
+Bug Report
+
+Customer Problem:
+I am unable to access my account after entering the correct credentials.
+
+Technical Environment:
+- Operating System: MacOS
+- Browser: nan
+- Payment Method: Debit Card
+
+Incident Severity:
+- Priority: Medium
+- Escalated: No
+- SLA Breached: Yes
+- Complexity Score: 8
+
+Historical Resolution:
+Explained billing breakdown and clarified applicable charges.
+
+Resolution Metrics:
+- Resolution Time Hours: 147.14
+- Customer Satisfaction: 4"
+73,Richard Hernandez,richard.hernandez980@yahoo.com,CRM Platform,Security Concern,There seems to be a discrepancy in my billing statement for this month.,Data synchronization restored after backend service restart.,High,Closed,Web Form,Europe,33,Female,Premium,15,9,3,50.9,165.97,2024-07-30,2024-08-13,No,No,iOS,Safari,Crypto,Japanese,Evening,5,Individual,"### Incident Report
+
+Product:
+CRM Platform
+
+Issue Category:
+Security Concern
+
+Customer Problem:
+There seems to be a discrepancy in my billing statement for this month.
+
+Technical Environment:
+- Operating System: iOS
+- Browser: Safari
+- Payment Method: Crypto
+
+Incident Severity:
+- Priority: High
+- Escalated: No
+- SLA Breached: No
+- Complexity Score: 5
+
+Historical Resolution:
+Data synchronization restored after backend service restart.
+
+Resolution Metrics:
+- Resolution Time Hours: 165.97
+- Customer Satisfaction: 3"
+74,Charles Moore,charles.moore389@icloud.com,Analytics Dashboard,Account Suspension,I am experiencing very slow performance while using the dashboard.,We have reset the account credentials and advised the customer to retry login.,Low,Pending Customer,Web Form,Africa,34,Other,Enterprise,14,6,5,19.89,135.32,2023-12-08,2023-12-20,No,Yes,Windows,,Crypto,Spanish,Afternoon,1,Corporate,"### Incident Report
+
+Product:
+Analytics Dashboard
+
+Issue Category:
+Account Suspension
+
+Customer Problem:
+I am experiencing very slow performance while using the dashboard.
+
+Technical Environment:
+- Operating System: Windows
+- Browser: nan
+- Payment Method: Crypto
+
+Incident Severity:
+- Priority: Low
+- Escalated: No
+- SLA Breached: Yes
+- Complexity Score: 1
+
+Historical Resolution:
+We have reset the account credentials and advised the customer to retry login.
+
+Resolution Metrics:
+- Resolution Time Hours: 135.32
+- Customer Satisfaction: 5"
+75,Thomas Davis,thomas.davis654@yahoo.com,Web Portal,Refund Request,There seems to be a discrepancy in my billing statement for this month.,Payment gateway timeout issue fixed and monitoring implemented.,Medium,Open,Social Media,Europe,44,Other,Enterprise,31,20,2,54.55,69.65,2022-04-18,2022-04-19,No,Yes,Windows,,Debit Card,Chinese,Morning,3,Small Business,"### Incident Report
+
+Product:
+Web Portal
+
+Issue Category:
+Refund Request
+
+Customer Problem:
+There seems to be a discrepancy in my billing statement for this month.
+
+Technical Environment:
+- Operating System: Windows
+- Browser: nan
+- Payment Method: Debit Card
+
+Incident Severity:
+- Priority: Medium
+- Escalated: No
+- SLA Breached: Yes
+- Complexity Score: 3
+
+Historical Resolution:
+Payment gateway timeout issue fixed and monitoring implemented.
+
+Resolution Metrics:
+- Resolution Time Hours: 69.65
+- Customer Satisfaction: 2"
+76,Jennifer Johnson,jennifer.johnson857@icloud.com,Analytics Dashboard,Feature Request,I am unable to access my account after entering the correct credentials.,We have reset the account credentials and advised the customer to retry login.,Low,Pending Customer,Phone,South America,59,Other,Enterprise,57,4,5,33.96,47.08,2024-10-11,2024-10-13,Yes,No,MacOS,Edge,PayPal,Japanese,Afternoon,1,Corporate,"### Incident Report
+
+Product:
+Analytics Dashboard
+
+Issue Category:
+Feature Request
+
+Customer Problem:
+I am unable to access my account after entering the correct credentials.
+
+Technical Environment:
+- Operating System: MacOS
+- Browser: Edge
+- Payment Method: PayPal
+
+Incident Severity:
+- Priority: Low
+- Escalated: Yes
+- SLA Breached: No
+- Complexity Score: 1
+
+Historical Resolution:
+We have reset the account credentials and advised the customer to retry login.
+
+Resolution Metrics:
+- Resolution Time Hours: 47.08
+- Customer Satisfaction: 5"
+77,David Martinez,david.martinez582@company.com,API Service,Data Sync Issue,Two-factor authentication codes are not being delivered to my phone.,Bug logged internally and workaround shared with the customer.,High,Open,Web Form,Africa,24,Male,Basic,31,10,2,0.99,92.67,2023-01-31,2023-02-02,No,No,Android,Safari,Crypto,Japanese,Morning,5,Corporate,"### Incident Report
+
+Product:
+API Service
+
+Issue Category:
+Data Sync Issue
+
+Customer Problem:
+Two-factor authentication codes are not being delivered to my phone.
+
+Technical Environment:
+- Operating System: Android
+- Browser: Safari
+- Payment Method: Crypto
+
+Incident Severity:
+- Priority: High
+- Escalated: No
+- SLA Breached: No
+- Complexity Score: 5
+
+Historical Resolution:
+Bug logged internally and workaround shared with the customer.
+
+Resolution Metrics:
+- Resolution Time Hours: 92.67
+- Customer Satisfaction: 2"
+78,Barbara Davis,barbara.davis64@company.com,API Service,Feature Request,My subscription was cancelled without my request and I need clarification.,Bug logged internally and workaround shared with the customer.,High,Open,Phone,Asia,57,Male,Basic,9,15,2,33.03,237.33,2022-08-31,2022-09-07,No,No,Linux,Edge,Crypto,Japanese,Afternoon,4,Corporate,"### Incident Report
+
+Product:
+API Service
+
+Issue Category:
+Feature Request
+
+Customer Problem:
+My subscription was cancelled without my request and I need clarification.
+
+Technical Environment:
+- Operating System: Linux
+- Browser: Edge
+- Payment Method: Crypto
+
+Incident Severity:
+- Priority: High
+- Escalated: No
+- SLA Breached: No
+- Complexity Score: 4
+
+Historical Resolution:
+Bug logged internally and workaround shared with the customer.
+
+Resolution Metrics:
+- Resolution Time Hours: 237.33
+- Customer Satisfaction: 2"
+79,Karen Williams,karen.williams539@icloud.com,Web Portal,Performance Issue,The payment was deducted from my bank account but the transaction shows failed.,Explained billing breakdown and clarified applicable charges.,Low,Closed,Social Media,Europe,54,Other,Basic,11,10,5,32.09,163.59,2024-12-17,2024-12-28,No,Yes,Linux,Edge,Credit Card,German,Afternoon,9,Small Business,"### Incident Report
+
+Product:
+Web Portal
+
+Issue Category:
+Performance Issue
+
+Customer Problem:
+The payment was deducted from my bank account but the transaction shows failed.
+
+Technical Environment:
+- Operating System: Linux
+- Browser: Edge
+- Payment Method: Credit Card
+
+Incident Severity:
+- Priority: Low
+- Escalated: No
+- SLA Breached: Yes
+- Complexity Score: 9
+
+Historical Resolution:
+Explained billing breakdown and clarified applicable charges.
+
+Resolution Metrics:
+- Resolution Time Hours: 163.59
+- Customer Satisfaction: 5"
+80,Joseph Jackson,joseph.jackson60@hotmail.com,Analytics Dashboard,Feature Request,I am unable to access my account after entering the correct credentials.,Bug logged internally and workaround shared with the customer.,Low,In Progress,Social Media,North America,20,Female,Premium,45,2,5,71.58,224.37,2024-08-04,2024-08-14,Yes,No,Windows,Safari,Bank Transfer,Spanish,Afternoon,7,Small Business,"### Incident Report
+
+Product:
+Analytics Dashboard
+
+Issue Category:
+Feature Request
+
+Customer Problem:
+I am unable to access my account after entering the correct credentials.
+
+Technical Environment:
+- Operating System: Windows
+- Browser: Safari
+- Payment Method: Bank Transfer
+
+Incident Severity:
+- Priority: Low
+- Escalated: Yes
+- SLA Breached: No
+- Complexity Score: 7
+
+Historical Resolution:
+Bug logged internally and workaround shared with the customer.
+
+Resolution Metrics:
+- Resolution Time Hours: 224.37
+- Customer Satisfaction: 5"
+81,Richard Anderson,richard.anderson891@icloud.com,Web Portal,Security Concern,My subscription was cancelled without my request and I need clarification.,Security settings updated and customer notified of precautionary measures.,Medium,Closed,Web Form,Australia,26,Other,Basic,54,0,1,70.46,111.66,2024-02-09,2024-02-10,No,No,MacOS,Firefox,Bank Transfer,French,Afternoon,5,Individual,"### Incident Report
+
+Product:
+Web Portal
+
+Issue Category:
+Security Concern
+
+Customer Problem:
+My subscription was cancelled without my request and I need clarification.
+
+Technical Environment:
+- Operating System: MacOS
+- Browser: Firefox
+- Payment Method: Bank Transfer
+
+Incident Severity:
+- Priority: Medium
+- Escalated: No
+- SLA Breached: No
+- Complexity Score: 5
+
+Historical Resolution:
+Security settings updated and customer notified of precautionary measures.
+
+Resolution Metrics:
+- Resolution Time Hours: 111.66
+- Customer Satisfaction: 1"
+82,Patricia Johnson,patricia.johnson829@company.com,Web Portal,Login Issue,The application crashes whenever I try to upload a file.,Subscription status corrected and confirmation email sent to customer.,Low,Closed,Email,South America,56,Other,Free,16,1,4,31.89,130.0,2024-05-08,2024-05-17,Yes,Yes,Linux,Safari,Debit Card,Japanese,Evening,10,Corporate,"### Incident Report
+
+Product:
+Web Portal
+
+Issue Category:
+Login Issue
+
+Customer Problem:
+The application crashes whenever I try to upload a file.
+
+Technical Environment:
+- Operating System: Linux
+- Browser: Safari
+- Payment Method: Debit Card
+
+Incident Severity:
+- Priority: Low
+- Escalated: Yes
+- SLA Breached: Yes
+- Complexity Score: 10
+
+Historical Resolution:
+Subscription status corrected and confirmation email sent to customer.
+
+Resolution Metrics:
+- Resolution Time Hours: 130.0
+- Customer Satisfaction: 4"
+83,David Davis,david.davis310@yahoo.com,Mobile App,Refund Request,I am experiencing very slow performance while using the dashboard.,Provided step-by-step troubleshooting instructions and issue resolved.,Medium,Resolved,Social Media,South America,21,Female,Enterprise,51,16,3,50.29,98.57,2024-12-03,2024-12-06,No,No,MacOS,,Bank Transfer,Spanish,Afternoon,5,Corporate,"### Incident Report
+
+Product:
+Mobile App
+
+Issue Category:
+Refund Request
+
+Customer Problem:
+I am experiencing very slow performance while using the dashboard.
+
+Technical Environment:
+- Operating System: MacOS
+- Browser: nan
+- Payment Method: Bank Transfer
+
+Incident Severity:
+- Priority: Medium
+- Escalated: No
+- SLA Breached: No
+- Complexity Score: 5
+
+Historical Resolution:
+Provided step-by-step troubleshooting instructions and issue resolved.
+
+Resolution Metrics:
+- Resolution Time Hours: 98.57
+- Customer Satisfaction: 3"
+84,John Anderson,john.anderson937@gmail.com,E-commerce Store,Security Concern,The system is not syncing data across devices properly.,The issue was escalated to engineering and resolved in the latest patch.,Medium,Pending Customer,Chat,Asia,59,Male,Enterprise,55,11,1,38.8,199.23,2024-04-25,2024-05-01,Yes,No,iOS,,Crypto,English,Morning,4,Corporate,"### Incident Report
+
+Product:
+E-commerce Store
+
+Issue Category:
+Security Concern
+
+Customer Problem:
+The system is not syncing data across devices properly.
+
+Technical Environment:
+- Operating System: iOS
+- Browser: nan
+- Payment Method: Crypto
+
+Incident Severity:
+- Priority: Medium
+- Escalated: Yes
+- SLA Breached: No
+- Complexity Score: 4
+
+Historical Resolution:
+The issue was escalated to engineering and resolved in the latest patch.
+
+Resolution Metrics:
+- Resolution Time Hours: 199.23
+- Customer Satisfaction: 1"
+85,Sarah Miller,sarah.miller491@yahoo.com,Web Portal,Login Issue,The application crashes whenever I try to upload a file.,Subscription status corrected and confirmation email sent to customer.,Urgent,In Progress,Social Media,Africa,31,Female,Basic,36,10,3,27.72,128.54,2023-11-13,2023-11-17,No,No,Android,Safari,Crypto,German,Night,2,Corporate,"### Incident Report
+
+Product:
+Web Portal
+
+Issue Category:
+Login Issue
+
+Customer Problem:
+The application crashes whenever I try to upload a file.
+
+Technical Environment:
+- Operating System: Android
+- Browser: Safari
+- Payment Method: Crypto
+
+Incident Severity:
+- Priority: Urgent
+- Escalated: No
+- SLA Breached: No
+- Complexity Score: 2
+
+Historical Resolution:
+Subscription status corrected and confirmation email sent to customer.
+
+Resolution Metrics:
+- Resolution Time Hours: 128.54
+- Customer Satisfaction: 3"
+86,Jessica Hernandez,jessica.hernandez937@yahoo.com,Subscription Service,Refund Request,I am unable to access my account after entering the correct credentials.,Explained billing breakdown and clarified applicable charges.,Medium,Open,Phone,Australia,55,Other,Enterprise,19,4,2,24.09,91.78,2024-01-30,2024-02-04,Yes,No,Linux,Safari,PayPal,German,Night,8,Individual,"### Incident Report
+
+Product:
+Subscription Service
+
+Issue Category:
+Refund Request
+
+Customer Problem:
+I am unable to access my account after entering the correct credentials.
+
+Technical Environment:
+- Operating System: Linux
+- Browser: Safari
+- Payment Method: PayPal
+
+Incident Severity:
+- Priority: Medium
+- Escalated: Yes
+- SLA Breached: No
+- Complexity Score: 8
+
+Historical Resolution:
+Explained billing breakdown and clarified applicable charges.
+
+Resolution Metrics:
+- Resolution Time Hours: 91.78
+- Customer Satisfaction: 2"
+87,Barbara Garcia,barbara.garcia144@company.com,Mobile App,Security Concern,I am unable to access my account after entering the correct credentials.,Data synchronization restored after backend service restart.,Low,Open,Email,South America,26,Other,Basic,5,4,1,16.14,109.99,2024-09-27,2024-09-29,Yes,No,iOS,Chrome,Credit Card,Chinese,Night,1,Individual,"### Incident Report
+
+Product:
+Mobile App
+
+Issue Category:
+Security Concern
+
+Customer Problem:
+I am unable to access my account after entering the correct credentials.
+
+Technical Environment:
+- Operating System: iOS
+- Browser: Chrome
+- Payment Method: Credit Card
+
+Incident Severity:
+- Priority: Low
+- Escalated: Yes
+- SLA Breached: No
+- Complexity Score: 1
+
+Historical Resolution:
+Data synchronization restored after backend service restart.
+
+Resolution Metrics:
+- Resolution Time Hours: 109.99
+- Customer Satisfaction: 1"
+88,Thomas Rodriguez,thomas.rodriguez549@outlook.com,Web Portal,Refund Request,My subscription was cancelled without my request and I need clarification.,The duplicate charge was reversed and refund processed within 3-5 business days.,Medium,In Progress,Chat,Australia,51,Female,Premium,18,12,1,27.17,98.04,2022-02-05,2022-02-13,Yes,Yes,Android,Chrome,Credit Card,English,Night,7,Small Business,"### Incident Report
+
+Product:
+Web Portal
+
+Issue Category:
+Refund Request
+
+Customer Problem:
+My subscription was cancelled without my request and I need clarification.
+
+Technical Environment:
+- Operating System: Android
+- Browser: Chrome
+- Payment Method: Credit Card
+
+Incident Severity:
+- Priority: Medium
+- Escalated: Yes
+- SLA Breached: Yes
+- Complexity Score: 7
+
+Historical Resolution:
+The duplicate charge was reversed and refund processed within 3-5 business days.
+
+Resolution Metrics:
+- Resolution Time Hours: 98.04
+- Customer Satisfaction: 1"
+89,Sarah Thomas,sarah.thomas58@company.com,E-commerce Store,Account Suspension,The payment was deducted from my bank account but the transaction shows failed.,Payment gateway timeout issue fixed and monitoring implemented.,High,Closed,Email,Australia,20,Male,Basic,58,18,4,19.88,221.87,2022-01-20,2022-01-31,No,Yes,MacOS,Safari,Credit Card,Spanish,Afternoon,7,Individual,"### Incident Report
+
+Product:
+E-commerce Store
+
+Issue Category:
+Account Suspension
+
+Customer Problem:
+The payment was deducted from my bank account but the transaction shows failed.
+
+Technical Environment:
+- Operating System: MacOS
+- Browser: Safari
+- Payment Method: Credit Card
+
+Incident Severity:
+- Priority: High
+- Escalated: No
+- SLA Breached: Yes
+- Complexity Score: 7
+
+Historical Resolution:
+Payment gateway timeout issue fixed and monitoring implemented.
+
+Resolution Metrics:
+- Resolution Time Hours: 221.87
+- Customer Satisfaction: 4"
+90,Elizabeth Garcia,elizabeth.garcia578@yahoo.com,Payment Gateway,Security Concern,There seems to be a discrepancy in my billing statement for this month.,Bug logged internally and workaround shared with the customer.,Low,Closed,Phone,North America,24,Female,Basic,54,2,3,43.77,147.71,2024-03-07,2024-03-17,No,No,Windows,Safari,Bank Transfer,German,Afternoon,6,Corporate,"### Incident Report
+
+Product:
+Payment Gateway
+
+Issue Category:
+Security Concern
+
+Customer Problem:
+There seems to be a discrepancy in my billing statement for this month.
+
+Technical Environment:
+- Operating System: Windows
+- Browser: Safari
+- Payment Method: Bank Transfer
+
+Incident Severity:
+- Priority: Low
+- Escalated: No
+- SLA Breached: No
+- Complexity Score: 6
+
+Historical Resolution:
+Bug logged internally and workaround shared with the customer.
+
+Resolution Metrics:
+- Resolution Time Hours: 147.71
+- Customer Satisfaction: 3"
+91,Richard Wilson,richard.wilson191@company.com,Web Portal,Data Sync Issue,I am experiencing very slow performance while using the dashboard.,Subscription status corrected and confirmation email sent to customer.,Low,Pending Customer,Chat,South America,63,Other,Basic,48,12,3,26.29,22.87,2024-02-18,2024-02-19,No,No,Android,Safari,Credit Card,Spanish,Morning,3,Small Business,"### Incident Report
+
+Product:
+Web Portal
+
+Issue Category:
+Data Sync Issue
+
+Customer Problem:
+I am experiencing very slow performance while using the dashboard.
+
+Technical Environment:
+- Operating System: Android
+- Browser: Safari
+- Payment Method: Credit Card
+
+Incident Severity:
+- Priority: Low
+- Escalated: No
+- SLA Breached: No
+- Complexity Score: 3
+
+Historical Resolution:
+Subscription status corrected and confirmation email sent to customer.
+
+Resolution Metrics:
+- Resolution Time Hours: 22.87
+- Customer Satisfaction: 3"
+92,Joseph Moore,joseph.moore569@hotmail.com,API Service,Login Issue,The payment was deducted from my bank account but the transaction shows failed.,Security settings updated and customer notified of precautionary measures.,Low,Closed,Social Media,Asia,73,Female,Free,19,13,4,56.21,174.24,2024-04-15,2024-04-16,Yes,Yes,iOS,Firefox,Debit Card,French,Evening,5,Small Business,"### Incident Report
+
+Product:
+API Service
+
+Issue Category:
+Login Issue
+
+Customer Problem:
+The payment was deducted from my bank account but the transaction shows failed.
+
+Technical Environment:
+- Operating System: iOS
+- Browser: Firefox
+- Payment Method: Debit Card
+
+Incident Severity:
+- Priority: Low
+- Escalated: Yes
+- SLA Breached: Yes
+- Complexity Score: 5
+
+Historical Resolution:
+Security settings updated and customer notified of precautionary measures.
+
+Resolution Metrics:
+- Resolution Time Hours: 174.24
+- Customer Satisfaction: 4"
+93,John Williams,john.williams172@icloud.com,CRM Platform,Feature Request,I would like to request a refund for the recent charge.,The duplicate charge was reversed and refund processed within 3-5 business days.,High,In Progress,Web Form,Australia,57,Male,Enterprise,7,4,3,0.98,95.57,2023-07-20,2023-07-26,No,No,iOS,Safari,Bank Transfer,Japanese,Afternoon,5,Small Business,"### Incident Report
+
+Product:
+CRM Platform
+
+Issue Category:
+Feature Request
+
+Customer Problem:
+I would like to request a refund for the recent charge.
+
+Technical Environment:
+- Operating System: iOS
+- Browser: Safari
+- Payment Method: Bank Transfer
+
+Incident Severity:
+- Priority: High
+- Escalated: No
+- SLA Breached: No
+- Complexity Score: 5
+
+Historical Resolution:
+The duplicate charge was reversed and refund processed within 3-5 business days.
+
+Resolution Metrics:
+- Resolution Time Hours: 95.57
+- Customer Satisfaction: 3"
+94,Karen Miller,karen.miller491@outlook.com,Billing System,Performance Issue,I am experiencing very slow performance while using the dashboard.,Payment gateway timeout issue fixed and monitoring implemented.,Medium,Pending Customer,Web Form,Asia,70,Female,Premium,8,18,2,42.84,131.41,2022-12-30,2023-01-05,Yes,No,MacOS,Edge,PayPal,Japanese,Morning,7,Corporate,"### Incident Report
+
+Product:
+Billing System
+
+Issue Category:
+Performance Issue
+
+Customer Problem:
+I am experiencing very slow performance while using the dashboard.
+
+Technical Environment:
+- Operating System: MacOS
+- Browser: Edge
+- Payment Method: PayPal
+
+Incident Severity:
+- Priority: Medium
+- Escalated: Yes
+- SLA Breached: No
+- Complexity Score: 7
+
+Historical Resolution:
+Payment gateway timeout issue fixed and monitoring implemented.
+
+Resolution Metrics:
+- Resolution Time Hours: 131.41
+- Customer Satisfaction: 2"
+95,Jessica Jones,jessica.jones649@outlook.com,Web Portal,Account Suspension,Two-factor authentication codes are not being delivered to my phone.,Bug logged internally and workaround shared with the customer.,Urgent,Closed,Web Form,Australia,43,Other,Enterprise,35,1,3,50.67,195.14,2023-05-11,2023-05-15,Yes,Yes,MacOS,Safari,Debit Card,Japanese,Morning,10,Corporate,"### Incident Report
+
+Product:
+Web Portal
+
+Issue Category:
+Account Suspension
+
+Customer Problem:
+Two-factor authentication codes are not being delivered to my phone.
+
+Technical Environment:
+- Operating System: MacOS
+- Browser: Safari
+- Payment Method: Debit Card
+
+Incident Severity:
+- Priority: Urgent
+- Escalated: Yes
+- SLA Breached: Yes
+- Complexity Score: 10
+
+Historical Resolution:
+Bug logged internally and workaround shared with the customer.
+
+Resolution Metrics:
+- Resolution Time Hours: 195.14
+- Customer Satisfaction: 3"
+96,Richard Hernandez,richard.hernandez989@icloud.com,API Service,Payment Problem,I am experiencing very slow performance while using the dashboard.,Subscription status corrected and confirmation email sent to customer.,Medium,Resolved,Phone,South America,47,Other,Basic,23,0,4,7.98,100.42,2022-08-05,2022-08-05,Yes,Yes,MacOS,Safari,PayPal,French,Night,4,Corporate,"### Incident Report
+
+Product:
+API Service
+
+Issue Category:
+Payment Problem
+
+Customer Problem:
+I am experiencing very slow performance while using the dashboard.
+
+Technical Environment:
+- Operating System: MacOS
+- Browser: Safari
+- Payment Method: PayPal
+
+Incident Severity:
+- Priority: Medium
+- Escalated: Yes
+- SLA Breached: Yes
+- Complexity Score: 4
+
+Historical Resolution:
+Subscription status corrected and confirmation email sent to customer.
+
+Resolution Metrics:
+- Resolution Time Hours: 100.42
+- Customer Satisfaction: 4"
+97,Jessica Lopez,jessica.lopez488@gmail.com,Analytics Dashboard,Subscription Cancellation,There seems to be a discrepancy in my billing statement for this month.,The duplicate charge was reversed and refund processed within 3-5 business days.,Low,Open,Email,Asia,59,Male,Basic,60,7,5,12.97,39.27,2024-06-16,2024-06-27,No,No,MacOS,Edge,Debit Card,Spanish,Night,7,Individual,"### Incident Report
+
+Product:
+Analytics Dashboard
+
+Issue Category:
+Subscription Cancellation
+
+Customer Problem:
+There seems to be a discrepancy in my billing statement for this month.
+
+Technical Environment:
+- Operating System: MacOS
+- Browser: Edge
+- Payment Method: Debit Card
+
+Incident Severity:
+- Priority: Low
+- Escalated: No
+- SLA Breached: No
+- Complexity Score: 7
+
+Historical Resolution:
+The duplicate charge was reversed and refund processed within 3-5 business days.
+
+Resolution Metrics:
+- Resolution Time Hours: 39.27
+- Customer Satisfaction: 5"
+98,Karen Miller,karen.miller461@hotmail.com,Analytics Dashboard,Login Issue,The application crashes whenever I try to upload a file.,Subscription status corrected and confirmation email sent to customer.,Low,Closed,Email,Australia,29,Female,Premium,13,14,1,19.26,207.17,2024-05-29,2024-06-04,No,No,Linux,Edge,Crypto,English,Evening,6,Small Business,"### Incident Report
+
+Product:
+Analytics Dashboard
+
+Issue Category:
+Login Issue
+
+Customer Problem:
+The application crashes whenever I try to upload a file.
+
+Technical Environment:
+- Operating System: Linux
+- Browser: Edge
+- Payment Method: Crypto
+
+Incident Severity:
+- Priority: Low
+- Escalated: No
+- SLA Breached: No
+- Complexity Score: 6
+
+Historical Resolution:
+Subscription status corrected and confirmation email sent to customer.
+
+Resolution Metrics:
+- Resolution Time Hours: 207.17
+- Customer Satisfaction: 1"
+99,Karen Garcia,karen.garcia834@company.com,Payment Gateway,Data Sync Issue,I found a bug in the latest update affecting report generation.,The duplicate charge was reversed and refund processed within 3-5 business days.,High,Open,Chat,Asia,25,Male,Premium,45,4,5,28.28,143.55,2023-09-02,2023-09-16,No,No,MacOS,Edge,Crypto,Japanese,Afternoon,9,Individual,"### Incident Report
+
+Product:
+Payment Gateway
+
+Issue Category:
+Data Sync Issue
+
+Customer Problem:
+I found a bug in the latest update affecting report generation.
+
+Technical Environment:
+- Operating System: MacOS
+- Browser: Edge
+- Payment Method: Crypto
+
+Incident Severity:
+- Priority: High
+- Escalated: No
+- SLA Breached: No
+- Complexity Score: 9
+
+Historical Resolution:
+The duplicate charge was reversed and refund processed within 3-5 business days.
+
+Resolution Metrics:
+- Resolution Time Hours: 143.55
+- Customer Satisfaction: 5"
+100,Jessica Martinez,jessica.martinez144@yahoo.com,CRM Platform,Subscription Cancellation,I found a bug in the latest update affecting report generation.,We have reset the account credentials and advised the customer to retry login.,Low,Resolved,Chat,Europe,70,Female,Enterprise,27,15,4,51.28,107.08,2023-10-07,2023-10-20,Yes,Yes,Linux,Chrome,Debit Card,French,Morning,5,Individual,"### Incident Report
+
+Product:
+CRM Platform
+
+Issue Category:
+Subscription Cancellation
+
+Customer Problem:
+I found a bug in the latest update affecting report generation.
+
+Technical Environment:
+- Operating System: Linux
+- Browser: Chrome
+- Payment Method: Debit Card
+
+Incident Severity:
+- Priority: Low
+- Escalated: Yes
+- SLA Breached: Yes
+- Complexity Score: 5
+
+Historical Resolution:
+We have reset the account credentials and advised the customer to retry login.
+
+Resolution Metrics:
+- Resolution Time Hours: 107.08
+- Customer Satisfaction: 4"
