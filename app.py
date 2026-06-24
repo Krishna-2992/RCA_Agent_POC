@@ -168,37 +168,101 @@ if submit:
     )
 
 
-
-    st.session_state.history.append(
-        result
-    )
-
-
-
     # -------------------------------------
     # Clarification Required
     # -------------------------------------
 
-
-    if result.get(
-        "needs_human_input"
+    if (
+        result.get("needs_clarification")
+        or result.get("needs_human_input")
     ):
 
 
-        st.error(
-            "More information required"
+        st.warning(
+            "Additional information required before RCA generation"
         )
 
 
-        for item in result.get(
-            "final_missing_information",
+        questions = (
+            result.get("clarification_questions")
+            or
+            result.get("final_missing_information")
+            or
+            result.get("missing_information")
+            or
             []
+        )
+
+
+        if questions:
+
+
+            st.subheader(
+                "Please provide:"
+            )
+
+
+            for question in questions:
+
+
+                st.markdown(
+                    f"- {question}"
+                )
+
+
+        else:
+
+
+            st.write(
+                "The incident description does not contain enough information."
+            )
+
+
+        with st.expander(
+            "Agent State"
         ):
 
 
             st.write(
-                "-",
-                item
+                result
+            )
+
+
+        st.stop()
+
+
+
+    # -------------------------------------
+    # RCA Availability Check
+    # -------------------------------------
+
+    if "rca_result" not in result:
+
+
+        st.error(
+            "RCA could not be generated"
+        )
+
+
+        st.write(
+            """
+            The workflow completed but RCA Agent was not reached.
+
+            Possible reasons:
+            - insufficient incident information
+            - no relevant evidence found
+            - validation rejected RCA
+            """
+        )
+
+
+        with st.expander(
+            "Debug Workflow State"
+        ):
+
+
+            st.write(
+                result
             )
 
 
@@ -210,10 +274,7 @@ if submit:
     # RCA Output
     # -------------------------------------
 
-
-    rca = result[
-        "rca_result"
-    ]
+    rca = result["rca_result"]
 
 
     st.subheader(
@@ -255,11 +316,13 @@ if submit:
 
             "Validation",
 
-            result[
-                "validation_result"
-            ][
-                "final_decision"
-            ]
+            result.get(
+                "validation_result",
+                {}
+            ).get(
+                "final_decision",
+                "NOT AVAILABLE"
+            )
 
         )
 
@@ -275,9 +338,10 @@ if submit:
     )
 
 
-    for evidence in rca[
-        "evidence"
-    ]:
+    for evidence in rca.get(
+        "evidence",
+        []
+    ):
 
 
         st.markdown(
@@ -296,9 +360,10 @@ if submit:
     )
 
 
-    for step in rca[
-        "resolution_steps"
-    ]:
+    for step in rca.get(
+        "resolution_steps",
+        []
+    ):
 
 
         st.markdown(
@@ -317,9 +382,10 @@ if submit:
     )
 
 
-    for action in rca[
-        "preventive_actions"
-    ]:
+    for action in rca.get(
+        "preventive_actions",
+        []
+    ):
 
 
         st.markdown(
@@ -340,32 +406,4 @@ if submit:
 
         st.write(
             result
-        )
-
-
-
-# -----------------------------------------
-# Previous Runs
-# -----------------------------------------
-
-if st.session_state.history:
-
-
-    with st.sidebar:
-
-
-        st.divider()
-
-
-        st.subheader(
-            "Previous RCA Runs"
-        )
-
-
-        st.write(
-
-            len(
-                st.session_state.history
-            )
-
         )
