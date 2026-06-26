@@ -163,10 +163,7 @@ if submit:
 
 
 
-    st.success(
-        f"Analysis completed in {round(end-start,2)} seconds"
-    )
-
+    
 
     # -------------------------------------
     # Clarification Required
@@ -177,59 +174,79 @@ if submit:
         or result.get("needs_human_input")
     ):
 
-
-        st.warning(
-            "Additional information required before RCA generation"
-        )
-
-
         questions = (
             result.get("clarification_questions")
-            or
-            result.get("final_missing_information")
-            or
-            result.get("missing_information")
-            or
-            []
+            or result.get("final_missing_information")
+            or result.get("missing_information")
+            or []
         )
 
+        FIELD_MAP = {
+            "affected service":
+                "the affected service, application, or system",
 
-        if questions:
+            "affected application":
+                "the affected service, application, or system",
 
+            "application":
+                "the affected application or service",
 
-            st.subheader(
-                "Please provide:"
+            "service":
+                "the affected service",
+
+            "specific symptom":
+                "the exact symptom being observed (for example timeout, HTTP 500 error, login failure, or high latency)",
+
+            "error message":
+                "any error messages or error codes",
+
+            "environment":
+                "whether this is occurring in Production, UAT, or another environment",
+
+            "recent changes":
+                "whether any deployments or configuration changes were made recently"
+        }
+
+        friendly_questions = []
+
+        for q in questions:
+            friendly_questions.append(
+                FIELD_MAP.get(q.lower().strip(), q)
             )
 
+        message = (
+            "I need a little more information before I can generate a reliable "
+            "root cause analysis.\n\n"
+        )
 
-            for question in questions:
+        if friendly_questions:
 
+            message += (
+                "Could you please update the incident description with:\n\n"
+            )
 
-                st.markdown(
-                    f"- {question}"
-                )
+            for item in friendly_questions:
+                message += f"• {item}\n"
 
+            message += (
+                "\nProviding these details helps me retrieve the most relevant "
+                "historical incidents and knowledge base articles before generating the RCA."
+            )
 
         else:
 
-
-            st.write(
-                "The incident description does not contain enough information."
+            message += (
+                "The incident description is too generic. Please include details such as "
+                "the affected application or service, the observed issue, any error "
+                "messages, and recent deployments or configuration changes."
             )
 
+        st.warning(message)
 
-        with st.expander(
-            "Agent State"
-        ):
-
-
-            st.write(
-                result
-            )
-
+        with st.expander("Agent State"):
+            st.write(result)
 
         st.stop()
-
 
 
     # -------------------------------------
@@ -268,7 +285,10 @@ if submit:
 
         st.stop()
 
-
+    # Analysis succeeded only if RCA exists
+    st.success(
+        f"Analysis completed in {round(end-start,2)} seconds"
+    )
 
     # -------------------------------------
     # RCA Output
