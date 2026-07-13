@@ -74,6 +74,51 @@ def evidence_aggregator_node(state):
         )
 
 
+    # -----------------------------
+    # GitHub Evidence
+    # -----------------------------
+
+    for artifact in state.get(
+        "filtered_github_results",
+        []
+    ):
+
+
+        evidence.append(
+
+            {
+
+                "source_type": "github",
+
+                "source_id":
+                    artifact["artifact_id"],
+
+                "confidence":
+                    0.8,
+
+                "content":
+                    {
+                        "repo":
+                            artifact.get("repo"),
+
+                        "artifact_type":
+                            artifact.get("artifact_type"),
+
+                        "summary":
+                            artifact.get("summary"),
+
+                        "investigation_state":
+                            artifact.get(
+                                "investigation_state",
+                                {}
+                            )
+                    }
+
+            }
+
+        )
+
+
 
     print(
         f"Prepared {len(evidence)} evidence items"

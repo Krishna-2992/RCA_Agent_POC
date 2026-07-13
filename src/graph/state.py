@@ -34,6 +34,21 @@ class RCAState(TypedDict):
 
     filtered_kb_results: List[Dict[str, Any]]
 
+    kb_evaluation_reasoning: str
+
+
+    # GitHub
+
+    need_github: bool
+
+    github_decision_reasoning: str
+
+    github_results: List[Dict[str, Any]]
+
+    filtered_github_results: List[Dict[str, Any]]
+
+    github_analysis: str
+
 
     # Evidence
 

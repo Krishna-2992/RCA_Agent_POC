@@ -33,7 +33,7 @@ st.title(
 
 st.caption(
     """
-    Multi-Agent RCA System using LangGraph + ServiceNow RAG + SharePoint Knowledge Base
+    Multi-Agent RCA System using LangGraph + ServiceNow + SharePoint KB + GitHub code evidence
     """
 )
 
@@ -62,9 +62,11 @@ with st.sidebar:
         4. ServiceNow Evaluator  
         5. KB Retriever  
         6. KB Evaluator  
-        7. Evidence Aggregator  
-        8. RCA Agent  
-        9. Validation Agent
+        7. GitHub Decision  
+        8. GitHub Investigator  
+        9. Evidence Aggregator  
+        10. RCA Agent  
+        11. Validation Agent
 
         """
     )

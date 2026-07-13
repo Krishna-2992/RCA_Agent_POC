@@ -100,6 +100,7 @@ Rules:
 - Do not approve unsupported RCA.
 - Missing logs/metrics are acceptable if RCA evidence is strong.
 - Reject RCA if root cause is guessed.
+- Validate code-related claims against GitHub evidence when present.
 
 
 Return APPROVE only when RCA is production ready.

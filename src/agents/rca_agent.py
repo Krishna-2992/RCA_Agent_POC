@@ -104,7 +104,8 @@ Important rules:
 - Do not invent systems/components
 - Mention uncertainty if evidence is incomplete
 - Prefer specific technical causes over generic answers
-- Correlate historical incidents with KB documents
+- Correlate historical incidents, KB documents,
+  and GitHub changes when available
 
 
 Output should be suitable for a production incident report.

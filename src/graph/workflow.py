@@ -37,6 +37,16 @@ from src.agents.kb_evaluator import (
 )
 
 
+from src.agents.github_decision import (
+    github_decision_agent
+)
+
+
+from src.agents.github_investigator import (
+    github_investigator_agent
+)
+
+
 from src.nodes.evidence_aggregator import (
     evidence_aggregator_node
 )
@@ -73,6 +83,16 @@ def kb_router(state):
     if state["need_kb"]:
 
         return "kb"
+
+    return "github_decision"
+
+
+
+def github_router(state):
+
+    if state.get("need_github"):
+
+        return "github_investigator"
 
     return "evidence"
 
@@ -132,6 +152,18 @@ workflow.add_node(
 workflow.add_node(
     "kb_evaluator",
     kb_evaluator_agent
+)
+
+
+workflow.add_node(
+    "github_decision",
+    github_decision_agent
+)
+
+
+workflow.add_node(
+    "github_investigator",
+    github_investigator_agent
 )
 
 
@@ -207,8 +239,8 @@ workflow.add_conditional_edges(
         "kb":
             "kb_retriever",
 
-        "evidence":
-            "evidence"
+        "github_decision":
+            "github_decision"
     }
 
 )
@@ -223,6 +255,29 @@ workflow.add_edge(
 
 workflow.add_edge(
     "kb_evaluator",
+    "github_decision"
+)
+
+
+workflow.add_conditional_edges(
+
+    "github_decision",
+
+    github_router,
+
+    {
+        "github_investigator":
+            "github_investigator",
+
+        "evidence":
+            "evidence"
+    }
+
+)
+
+
+workflow.add_edge(
+    "github_investigator",
     "evidence"
 )
 
