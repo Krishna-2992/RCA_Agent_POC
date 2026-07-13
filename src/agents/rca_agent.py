@@ -90,7 +90,7 @@ Identify:
 
 1. Most probable root cause
 
-2. Evidence supporting the conclusion
+2. Evidence supporting the conclusion including the code snippets, KB articles, and ServiceNow tickets
 
 3. Immediate recovery steps
 
