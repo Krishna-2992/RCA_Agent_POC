@@ -8,8 +8,9 @@ from typing import Any
 from dotenv import load_dotenv
 from langchain_mcp_adapters.client import MultiServerMCPClient
 from langchain_openai import ChatOpenAI
+from langgraph.prebuilt.tool_node import ToolNode
 from langgraph.prebuilt import create_react_agent
-
+from src.utils.llm import llm
 
 load_dotenv()
 
@@ -121,6 +122,12 @@ def should_retry(error: Exception):
     error_text = str(error).lower()
 
     non_retryable = [
+        "404",
+        "not found",
+        "resource not found",
+        "pull request",
+        "branch not found",
+        "commit not found",
         "rate limit",
         "429",
         "authentication failed",
@@ -132,12 +139,10 @@ def should_retry(error: Exception):
     ]
 
     retryable = [
-        "404",
-        "not found",
-        "resource not found",
-        "pull request",
-        "branch not found",
-        "commit not found"
+        "timeout",
+        "temporarily unavailable",
+        "connection reset",
+        "connection closed"
     ]
 
     for item in non_retryable:
@@ -149,6 +154,26 @@ def should_retry(error: Exception):
             return True
 
     return True
+
+
+def handle_github_tool_error(error: Exception) -> str:
+
+    error_text = str(error)
+    lowered_error = error_text.lower()
+
+    if "not found" in lowered_error or "resource not found" in lowered_error:
+        return (
+            "GitHub tool error: the requested resource was not found. "
+            "Do not repeat the same lookup. Resolve the exact repository object "
+            "(file path, branch, PR number, commit SHA, or issue number) using "
+            "listing or search-style tools first, then continue."
+        )
+
+    return (
+        "GitHub tool error: "
+        f"{error_text}. "
+        "Adjust the investigation strategy and continue without repeating the same call."
+    )
 
 
 def build_objective(state):
@@ -213,7 +238,7 @@ async def load_github_user(github_token: str):
                 ],
                 "transport": "stdio",
                 "env": {
-                    "GITHUB_TOKEN": github_token
+                    "GITHUB_PERSONAL_ACCESS_TOKEN": github_token
                 }
             }
         }
@@ -226,10 +251,6 @@ async def load_github_user(github_token: str):
 
 async def run_github_investigation(state):
 
-    openai_api_key = os.getenv(
-        "OPENAI_API_KEY"
-    )
-
     github_token = os.getenv(
         "GITHUB_TOKEN"
     )
@@ -238,11 +259,6 @@ async def run_github_investigation(state):
         "GITHUB_USERNAME",
         "Krishna-2992"
     )
-
-    if not openai_api_key:
-        raise ValueError(
-            "OPENAI_API_KEY missing"
-        )
 
     if not github_token:
         raise ValueError(
@@ -253,15 +269,14 @@ async def run_github_investigation(state):
         github_token
     )
 
-    llm = ChatOpenAI(
-        model="gpt-5.1",
-        api_key=openai_api_key,
-        temperature=0
+    tool_node = ToolNode(
+        tools,
+        handle_tool_errors=handle_github_tool_error
     )
 
     agent = create_react_agent(
         model=llm,
-        tools=tools,
+        tools=tool_node,
         debug=False
     )
 
@@ -290,6 +305,17 @@ Your objective is to gather evidence from GitHub
 and converge on the most likely explanation.
 
 Prefer direct evidence over assumptions.
+
+Do not guess:
+- file paths
+- branch names
+- pull request numbers
+- commit SHAs
+- issue numbers
+
+If a GitHub lookup returns "not found", treat it as an invalid reference.
+Resolve the identifier first using broader discovery steps and do not repeat
+the same failing lookup.
 
 Do not assume relationships between:
 - commits
@@ -363,7 +389,7 @@ not failed investigations.
             if not should_retry(error):
                 final_answer = (
                     "GitHub investigation stopped due to "
-                    f"infrastructure issue: {error}"
+                    f"a non-retryable tool error: {error}"
                 )
                 break
 
