@@ -53,6 +53,14 @@ def servicenow_retriever_node(state):
                     "content"
                 ),
 
+                "issue_description": item.payload.get(
+                    "issue_description"
+                ),
+
+                "resolution_notes": item.payload.get(
+                    "resolution_notes"
+                ),
+
                 "product": item.payload.get(
                     "product"
                 ),
@@ -67,6 +75,18 @@ def servicenow_retriever_node(state):
 
                 "region": item.payload.get(
                     "region"
+                ),
+
+                "source_title": item.payload.get(
+                    "source_title"
+                ),
+
+                "source_location": item.payload.get(
+                    "source_location"
+                ),
+
+                "source_type_label": item.payload.get(
+                    "source_type_label"
                 )
             }
         )

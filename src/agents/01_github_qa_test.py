@@ -243,6 +243,9 @@ async def main():
     
     if not github_token:
         raise ValueError("GITHUB_TOKEN missing")
+    
+    print("token exists:", bool(github_token))
+    print("token prefix:", github_token[:15])
 
     client = MultiServerMCPClient(
         {

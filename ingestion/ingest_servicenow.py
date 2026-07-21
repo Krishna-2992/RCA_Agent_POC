@@ -129,6 +129,14 @@ def create_point(row):
         # Metadata filters
         "ticket_id": ticket_id,
 
+        "issue_description": clean_value(
+            row["issue_description"]
+        ),
+
+        "resolution_notes": clean_value(
+            row["resolution_notes"]
+        ),
+
         "product": clean_value(
             row["product"]
         ),
@@ -163,7 +171,13 @@ def create_point(row):
 
         "issue_complexity_score": clean_value(
             row["issue_complexity_score"]
-        )
+        ),
+
+        "source_title": f"ServiceNow Incident {ticket_id}",
+
+        "source_location": f"ServiceNow incident {ticket_id}",
+
+        "source_type_label": "ServiceNow Incident"
     }
 
 

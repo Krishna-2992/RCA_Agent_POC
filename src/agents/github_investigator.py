@@ -1,6 +1,7 @@
 import asyncio
 import json
 import os
+import re
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from typing import Any
@@ -217,13 +218,129 @@ Your goal:
 - connect code changes to the production symptom
 - explain the most likely code-level root cause if evidence supports it
 
-Final answer format:
-1. GitHub Investigation Summary
-2. Files or code paths inspected
-3. Key code-level findings
-4. Most likely code-related root cause
-5. Confidence and limitations
+Return valid JSON only using this schema:
+{{
+  "summary": "short investigation summary",
+  "root_cause": "most likely code-level cause or empty string",
+  "confidence": "high|medium|low",
+  "limitations": ["..."],
+  "references": [
+    {{
+      "reference_type": "file|pull_request|commit|directory|release|issue",
+      "repo": "{TARGET_REPOSITORY}",
+      "path": "path/to/file.ext",
+      "start_line": 10,
+      "end_line": 24,
+      "commit_sha": "optional commit sha",
+      "pull_request": 123,
+      "title": "human readable label",
+      "evidence": "what this reference proves"
+    }}
+  ]
+}}
+
+Rules:
+- include at least one reference whenever GitHub evidence exists
+- use exact repository paths and line numbers when you inspected code
+- if line numbers are unavailable, leave them null instead of inventing them
 """
+
+
+def extract_json_object(text: str) -> dict[str, Any] | None:
+
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        pass
+
+    match = re.search(
+        r"\{.*\}",
+        text,
+        flags=re.DOTALL
+    )
+
+    if not match:
+        return None
+
+    try:
+        return json.loads(
+            match.group(0)
+        )
+    except json.JSONDecodeError:
+        return None
+
+
+def normalize_github_report(
+    final_answer: str
+) -> dict[str, Any]:
+
+    parsed = extract_json_object(
+        final_answer
+    ) or {}
+
+    references = parsed.get(
+        "references",
+        []
+    )
+
+    if not isinstance(references, list):
+        references = []
+
+    normalized_references = []
+
+    for ref in references:
+        if not isinstance(ref, dict):
+            continue
+
+        normalized_references.append(
+            {
+                "reference_type": ref.get(
+                    "reference_type",
+                    "file"
+                ),
+                "repo": ref.get(
+                    "repo",
+                    TARGET_REPOSITORY
+                ),
+                "path": ref.get("path"),
+                "start_line": ref.get(
+                    "start_line"
+                ),
+                "end_line": ref.get(
+                    "end_line"
+                ),
+                "commit_sha": ref.get(
+                    "commit_sha"
+                ),
+                "pull_request": ref.get(
+                    "pull_request"
+                ),
+                "title": ref.get("title"),
+                "evidence": ref.get(
+                    "evidence"
+                )
+            }
+        )
+
+    return {
+        "summary": parsed.get(
+            "summary",
+            final_answer
+        ),
+        "root_cause": parsed.get(
+            "root_cause",
+            ""
+        ),
+        "confidence": parsed.get(
+            "confidence",
+            "unknown"
+        ),
+        "limitations": parsed.get(
+            "limitations",
+            []
+        ),
+        "references": normalized_references
+    }
 
 
 async def load_github_user(github_token: str):
@@ -443,6 +560,10 @@ and continue the investigation.
             "GitHub investigation completed with no final answer."
         )
 
+    normalized_report = normalize_github_report(
+        final_answer
+    )
+
     report = {
         "artifact_id":
             "github_investigation_report",
@@ -451,7 +572,15 @@ and continue the investigation.
         "repo":
             TARGET_REPOSITORY,
         "summary":
-            final_answer,
+            normalized_report["summary"],
+        "root_cause":
+            normalized_report["root_cause"],
+        "confidence_label":
+            normalized_report["confidence"],
+        "limitations":
+            normalized_report["limitations"],
+        "references":
+            normalized_report["references"],
         "investigation_state":
             asdict(investigation_state)
     }
@@ -459,7 +588,7 @@ and continue the investigation.
     return {
         "github_results": [report],
         "filtered_github_results": [report],
-        "github_analysis": final_answer
+        "github_analysis": normalized_report["summary"]
     }
 
 

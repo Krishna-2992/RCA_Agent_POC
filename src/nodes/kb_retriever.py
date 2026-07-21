@@ -62,6 +62,10 @@ def kb_retriever_node(state):
                     "document_name"
                 ),
 
+                "document_path": item.payload.get(
+                    "document_path"
+                ),
+
                 "page": item.payload.get(
                     "page"
                 ),
@@ -72,6 +76,18 @@ def kb_retriever_node(state):
 
                 "document_type": item.payload.get(
                     "document_type"
+                ),
+
+                "source_title": item.payload.get(
+                    "source_title"
+                ),
+
+                "source_location": item.payload.get(
+                    "source_location"
+                ),
+
+                "source_type_label": item.payload.get(
+                    "source_type_label"
                 ),
 
                 "content": item.payload.get(

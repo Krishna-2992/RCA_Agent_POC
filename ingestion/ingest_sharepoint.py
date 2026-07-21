@@ -365,6 +365,8 @@ def ingest_sharepoint(
 
                 "document_name": pdf.name,
 
+                "document_path": str(pdf),
+
 
                 "chunk_id": f"{pdf.stem}_page_{chunk['page']}_chunk_{index}",
 
@@ -378,7 +380,13 @@ def ingest_sharepoint(
                 "service": metadata["service"],
 
 
-                "document_type": metadata["type"]
+                "document_type": metadata["type"],
+
+                "source_title": pdf.name,
+
+                "source_location": f"{pdf.name} - page {chunk['page']}",
+
+                "source_type_label": "SharePoint Document"
 
             }
 

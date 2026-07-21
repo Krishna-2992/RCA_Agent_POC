@@ -54,6 +54,8 @@ class RCAState(TypedDict):
 
     combined_evidence: List[Dict[str, Any]]
 
+    evidence_catalog: Dict[str, Dict[str, Any]]
+
 
     # RCA
 

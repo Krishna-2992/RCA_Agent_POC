@@ -14,14 +14,13 @@ from qdrant_client.models import (
     PointStruct
 )
 
+from src.utils.llm import create_embedding
 
 load_dotenv()
 
 # -----------------------------
 # Environment Variables
 # -----------------------------
-
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 QDRANT_URL = os.getenv("QDRANT_URL")
 QDRANT_API_KEY = os.getenv("QDRANT_API_KEY")
@@ -36,10 +35,6 @@ VECTOR_SIZE = 1536
 # -----------------------------
 # Clients
 # -----------------------------
-
-openai_client = OpenAI(
-    api_key=OPENAI_API_KEY
-)
 
 qdrant_client = QdrantClient(
     url=QDRANT_URL,
@@ -56,7 +51,7 @@ def get_snowflake_connection():
 
     return snowflake.connector.connect(
         user="LAKSHYA2992",
-        password="XYZ",
+        password="Snowflake^@123",
         account="AYYGNWS-SV86376",
         warehouse="COMPUTE_WH",
         database="AI_DB",
@@ -144,17 +139,6 @@ The issue category was {clean_value(row["category"])}.
 The final recovery action was {clean_value(row["resolution_notes"])}.
 """
 
-
-def create_embedding(text):
-
-    response = openai_client.embeddings.create(
-        model=EMBEDDING_MODEL,
-        input=text
-    )
-
-    return response.data[0].embedding
-
-
 def create_point(row):
 
     embedding_text = create_embedding_text(row)
@@ -171,9 +155,17 @@ def create_point(row):
 
         "content": embedding_text,
 
-        "source": "snowflake",
+        "source": "servicenow",
 
         "ticket_id": ticket_id,
+
+        "issue_description": clean_value(
+            row["issue_description"]
+        ),
+
+        "resolution_notes": clean_value(
+            row["resolution_notes"]
+        ),
 
         "product": clean_value(row["product"]),
         "category": clean_value(row["category"]),
@@ -183,7 +175,15 @@ def create_point(row):
         "sla_breached": clean_value(row["sla_breached"]),
         "escalated": clean_value(row["escalated"]),
         "resolution_time_hours": clean_value(row["resolution_time_hours"]),
-        "issue_complexity_score": clean_value(row["issue_complexity_score"])
+        "issue_complexity_score": clean_value(row["issue_complexity_score"]),
+
+        "source_title": f"ServiceNow Incident {ticket_id}",
+
+        "source_location": f"ServiceNow incident {ticket_id}",
+
+        "source_type_label": "ServiceNow Incident",
+
+        "ingestion_source": "snowflake"
     }
 
     return PointStruct(
