@@ -82,28 +82,54 @@ Generated RCA:
 Validate:
 
 
-1. Is root cause supported by evidence?
+1. Is the root cause supported by the evidence actually available?
 
-2. Are resolution steps derived from evidence?
+2. Are resolution steps derived from that evidence?
 
-3. Are there hallucinated facts?
-
-4. Is confidence justified?
-
-5. Is additional information required?
+3. Are there hallucinated facts that contradict the evidence?
 
 
 
-Rules:
-
-- Be strict.
-- Do not approve unsupported RCA.
-- Missing logs/metrics are acceptable if RCA evidence is strong.
-- Reject RCA if root cause is guessed.
-- Validate code-related claims against GitHub evidence when present.
+Decision rule:
 
 
-Return APPROVE only when RCA is production ready.
+Distinguish between two very different problems:
+
+
+(a) UNSUPPORTED - the RCA asserts something the evidence does not
+    show, contradicts the evidence, or guesses at a cause.
+    This is a real defect. Reject it.
+
+(b) UNCORROBORATED - the RCA is well supported by the evidence
+    available, but cannot be cross-checked against sources this
+    system does not have access to, such as production logs,
+    metrics, traces, deployment manifests, or runtime environment
+    configuration.
+    This is NOT a defect. It is the expected condition of this
+    system, which only has ServiceNow, SharePoint KB, and GitHub.
+
+
+Return NEED_MORE_INFO only for case (a).
+
+
+Never return NEED_MORE_INFO merely because:
+
+- production logs, metrics, or traces are unavailable
+- deployment or release manifests are unavailable
+- runtime configuration or environment overrides cannot be read
+- the confidence score seems slightly high or low
+- the conclusion is conditional on a documented default value
+
+
+If the code-level evidence establishes a coherent, specific
+mechanism that explains the reported symptom, return APPROVE.
+
+
+Record any residual caveats in issues_found so they stay visible
+to the engineer, but do not let caveats alone block approval.
+
+Populate missing_information with what would strengthen the RCA
+further, regardless of the decision.
 
 """
 

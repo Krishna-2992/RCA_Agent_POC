@@ -7,6 +7,7 @@ from datetime import datetime
 from typing import Any
 
 from dotenv import load_dotenv
+from langchain_core.callbacks.base import BaseCallbackHandler
 from langchain_mcp_adapters.client import MultiServerMCPClient
 from langchain_openai import ChatOpenAI
 from langgraph.prebuilt.tool_node import ToolNode
@@ -18,6 +19,64 @@ load_dotenv()
 
 TARGET_REPOSITORY = "Krishna-2992/Dummy_RCA_Payment_app"
 MAX_INVESTIGATION_ATTEMPTS = 3
+
+
+# ---------------------------------
+# Investigation trace (observability only)
+# ---------------------------------
+
+TRACE_LOG_PATH = os.getenv(
+    "GITHUB_TRACE_LOG",
+    "github_investigation_trace.jsonl"
+)
+
+
+def write_trace(event_type: str, payload: Any):
+
+    record = {
+        "ts": datetime.utcnow().isoformat(),
+        "event": event_type,
+        "payload": payload
+    }
+
+    try:
+        with open(TRACE_LOG_PATH, "a") as handle:
+            handle.write(
+                json.dumps(record, default=str) + "\n"
+            )
+            handle.flush()
+    except Exception:
+        pass
+
+
+class GitHubTraceCallback(BaseCallbackHandler):
+    """Streams every GitHub MCP tool call to the trace log as it happens."""
+
+    def on_tool_start(self, serialized, input_str, **kwargs):
+        write_trace(
+            "tool_start",
+            {
+                "tool": (serialized or {}).get("name")
+                or kwargs.get("name"),
+                "input": str(input_str)[:2000]
+            }
+        )
+
+    def on_tool_end(self, output, **kwargs):
+        text = str(output)
+        write_trace(
+            "tool_end",
+            {
+                "output_chars": len(text),
+                "output": text[:4000]
+            }
+        )
+
+    def on_tool_error(self, error, **kwargs):
+        write_trace(
+            "tool_error",
+            {"error": str(error)[:2000]}
+        )
 
 
 @dataclass
@@ -472,13 +531,42 @@ not failed investigations.
 
         try:
 
+            write_trace(
+                "attempt_start",
+                {"attempt": attempt + 1}
+            )
+
             result = await agent.ainvoke(
                 {
                     "messages": messages
+                },
+                config={
+                    "callbacks": [GitHubTraceCallback()],
+                    "recursion_limit": 100
                 }
             )
 
+            for message in result["messages"]:
+
+                for call in getattr(
+                    message,
+                    "tool_calls",
+                    []
+                ) or []:
+                    write_trace(
+                        "trajectory_tool_call",
+                        {
+                            "tool": call.get("name"),
+                            "args": call.get("args")
+                        }
+                    )
+
             final_answer = result["messages"][-1].content
+
+            write_trace(
+                "final_answer",
+                {"content": final_answer}
+            )
 
             investigation_state.final_answer = final_answer
             investigation_state.completed = True
