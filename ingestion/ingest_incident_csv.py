@@ -1,10 +1,10 @@
 import os
+import sys
 import uuid
 import pandas as pd
 
 from tqdm import tqdm
 from dotenv import load_dotenv
-from openai import OpenAI
 
 from qdrant_client import QdrantClient
 from qdrant_client.models import (
@@ -13,11 +13,13 @@ from qdrant_client.models import (
     PointStruct
 )
 
+from src.utils.llm import create_embedding
 
 load_dotenv()
 
-
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+# -----------------------------
+# Environment Variables
+# -----------------------------
 
 QDRANT_URL = os.getenv("QDRANT_URL")
 QDRANT_API_KEY = os.getenv("QDRANT_API_KEY")
@@ -25,14 +27,14 @@ QDRANT_API_KEY = os.getenv("QDRANT_API_KEY")
 
 COLLECTION_NAME = "servicenow_incidents"
 
-EMBEDDING_MODEL = "text-embedding-3-small"
 VECTOR_SIZE = 1536
 
+DEFAULT_CSV_PATH = "customer_support_tickets_1000_poc.csv"
 
-openai_client = OpenAI(
-    api_key=OPENAI_API_KEY
-)
 
+# -----------------------------
+# Clients
+# -----------------------------
 
 qdrant_client = QdrantClient(
     url=QDRANT_URL,
@@ -41,10 +43,31 @@ qdrant_client = QdrantClient(
 )
 
 
+# -----------------------------
+# CSV
+# -----------------------------
+
+def load_incidents_from_csv(csv_path):
+
+    dataframe = pd.read_csv(csv_path)
+
+    # Keep column handling identical to the Snowflake path
+    dataframe.columns = dataframe.columns.str.lower()
+
+    print(f"Loaded {len(dataframe)} incidents from {csv_path}")
+
+    return dataframe
+
+
+# -----------------------------
+# Qdrant
+# -----------------------------
+
 def create_collection():
+
     collections = [
-        collection.name
-        for collection in qdrant_client.get_collections().collections
+        c.name
+        for c in qdrant_client.get_collections().collections
     ]
 
     if COLLECTION_NAME not in collections:
@@ -64,6 +87,7 @@ def create_collection():
 
 
 def clean_value(value):
+
     if pd.isna(value):
         return "Not Available"
 
@@ -71,10 +95,6 @@ def clean_value(value):
 
 
 def create_embedding_text(row):
-    """
-    This text is ONLY used for semantic search.
-    Keep RCA meaningful information here.
-    """
 
     return f"""
 Production Incident Record
@@ -98,16 +118,8 @@ The final recovery action was {clean_value(row["resolution_notes"])}.
 """
 
 
-def create_embedding(text):
-    response = openai_client.embeddings.create(
-        model=EMBEDDING_MODEL,
-        input=text
-    )
-
-    return response.data[0].embedding
-
-
 def create_point(row):
+
     embedding_text = create_embedding_text(row)
 
     embedding = create_embedding(
@@ -120,13 +132,10 @@ def create_point(row):
 
     payload = {
 
-        # Text sent later to RCA Agent
         "content": embedding_text,
 
-        # Source tracking
         "source": "servicenow",
 
-        # Metadata filters
         "ticket_id": ticket_id,
 
         "issue_description": clean_value(
@@ -137,83 +146,44 @@ def create_point(row):
             row["resolution_notes"]
         ),
 
-        "product": clean_value(
-            row["product"]
-        ),
-
-        "category": clean_value(
-            row["category"]
-        ),
-
-        "priority": clean_value(
-            row["priority"]
-        ),
-
-        "status": clean_value(
-            row["status"]
-        ),
-
-        "region": clean_value(
-            row["region"]
-        ),
-
-        "sla_breached": clean_value(
-            row["sla_breached"]
-        ),
-
-        "escalated": clean_value(
-            row["escalated"]
-        ),
-
-        "resolution_time_hours": clean_value(
-            row["resolution_time_hours"]
-        ),
-
-        "issue_complexity_score": clean_value(
-            row["issue_complexity_score"]
-        ),
+        "product": clean_value(row["product"]),
+        "category": clean_value(row["category"]),
+        "priority": clean_value(row["priority"]),
+        "status": clean_value(row["status"]),
+        "region": clean_value(row["region"]),
+        "sla_breached": clean_value(row["sla_breached"]),
+        "escalated": clean_value(row["escalated"]),
+        "resolution_time_hours": clean_value(row["resolution_time_hours"]),
+        "issue_complexity_score": clean_value(row["issue_complexity_score"]),
 
         "source_title": f"ServiceNow Incident {ticket_id}",
 
         "source_location": f"ServiceNow incident {ticket_id}",
 
-        "source_type_label": "ServiceNow Incident"
+        "source_type_label": "ServiceNow Incident",
+
+        "ingestion_source": "csv"
     }
 
-
-    point = PointStruct(
-
-        # deterministic ID prevents duplicates
+    return PointStruct(
         id=str(
             uuid.uuid5(
                 uuid.NAMESPACE_DNS,
                 ticket_id
             )
         ),
-
         vector=embedding,
-
         payload=payload
     )
 
 
-    return point
+def ingest_incidents(csv_path=DEFAULT_CSV_PATH, batch_size=50):
 
-
-def ingest_servicenow(
-    csv_path,
-    batch_size=50
-):
-
-    dataframe = pd.read_csv(
-        csv_path
-    )
-
+    dataframe = load_incidents_from_csv(csv_path)
 
     batch = []
 
     total_uploaded = 0
-
 
     for _, row in tqdm(
         dataframe.iterrows(),
@@ -221,70 +191,39 @@ def ingest_servicenow(
         desc="Creating embeddings"
     ):
 
+        point = create_point(row)
 
-        point = create_point(
-            row
-        )
-
-
-        batch.append(
-            point
-        )
-
+        batch.append(point)
 
         if len(batch) >= batch_size:
 
-
             qdrant_client.upsert(
-
                 collection_name=COLLECTION_NAME,
-
                 points=batch
-
             )
 
+            total_uploaded += len(batch)
 
-            total_uploaded += len(
-                batch
-            )
-
-
-            print(
-                f"Uploaded {total_uploaded} incidents"
-            )
-
+            print(f"Uploaded {total_uploaded} incidents")
 
             batch = []
 
-
-
     if batch:
 
-
         qdrant_client.upsert(
-
             collection_name=COLLECTION_NAME,
-
             points=batch
-
         )
 
+        total_uploaded += len(batch)
 
-        total_uploaded += len(
-            batch
-        )
-
-
-
-    print(
-        f"ServiceNow ingestion completed. Total records: {total_uploaded}"
-    )
+    print(f"CSV ingestion completed. Total records: {total_uploaded}")
 
 
 if __name__ == "__main__":
 
+    path = sys.argv[1] if len(sys.argv) > 1 else DEFAULT_CSV_PATH
+
     create_collection()
 
-    ingest_servicenow(
-        "customer_support_tickets_100_poc.csv"
-    )
+    ingest_incidents(path)
