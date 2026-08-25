@@ -3,7 +3,23 @@ import streamlit as st
 import time
 from html import escape
 
+from src.agents.github_investigator import TRACE_LOG_PATH
+
+from src.graph.progress import (
+    FIRST_STEP,
+    STEP_ACTIVITY,
+    ProgressTracker,
+    TraceTail
+)
+
+from src.graph.runner import (
+    describe_error,
+    stream_workflow
+)
+
 from src.graph.workflow import graph
+
+from src.ui.flow import render_flow
 
 
 def safe_text(value):
@@ -501,20 +517,169 @@ if submit:
 
 
 
-    with st.spinner(
-        "Agents investigating incident..."
-    ):
+    # -------------------------------------
+    # Live workflow progress
+    # -------------------------------------
+
+    flow_slot = st.empty()
 
 
-        start = time.time()
+    tracker = ProgressTracker()
+
+    tracker.start(
+        FIRST_STEP
+    )
 
 
-        result = graph.invoke(
-            input_state
+    trace_tail = TraceTail(
+        TRACE_LOG_PATH
+    )
+
+
+    result = None
+
+    failure = None
+
+
+    start = time.time()
+
+
+    def paint(headline):
+
+        detail = None
+
+        if tracker.active and failure is None:
+
+            detail = STEP_ACTIVITY.get(
+                tracker.active
+            )
+
+            if tracker.active == "github_investigator":
+
+                latest = trace_tail.poll()
+
+                if latest:
+                    detail = f"{detail} \u00b7 {latest}"
+
+        flow_slot.markdown(
+
+            render_flow(
+                tracker.snapshot(),
+                headline,
+                detail,
+                time.time() - start
+            ),
+
+            unsafe_allow_html=True
+
         )
 
 
-        end = time.time()
+    paint(
+        "Starting investigation"
+    )
+
+
+    for event in stream_workflow(
+        graph,
+        input_state
+    ):
+
+        if event["type"] == "node_end":
+
+            tracker.observe(
+                event["node"],
+                event["delta"]
+            )
+
+        elif event["type"] == "state":
+
+            tracker.merge_state(
+                event["state"]
+            )
+
+        elif event["type"] == "final":
+
+            tracker.finish()
+
+            result = event["state"] or tracker.state
+
+        elif event["type"] == "error":
+
+            tracker.fail_active()
+
+            failure = event
+
+        elif event["type"] == "busy":
+
+            flow_slot.empty()
+
+            st.warning(
+                "An investigation started "
+                f"{int(event['elapsed'])} seconds ago is still running. "
+                "Please wait for it to finish before starting another one."
+            )
+
+            st.stop()
+
+
+        if failure:
+
+            paint(
+                "Investigation failed"
+            )
+
+            break
+
+
+        if result is not None:
+
+            paint(
+                "Investigation complete"
+            )
+
+            break
+
+
+        if tracker.active:
+
+            step = tracker.steps[tracker.active]
+
+            headline = (
+                f"Step {step['position']} of {len(tracker.steps)}"
+                f" \u00b7 {step['label']}"
+            )
+
+        else:
+
+            headline = "Handing over to the next agent"
+
+
+        paint(
+            headline
+        )
+
+
+    end = time.time()
+
+
+    if failure:
+
+        failed_step = tracker.active_label or "The workflow"
+
+        st.error(
+            f"{failed_step} failed \u00b7 {describe_error(failure['error'])}"
+        )
+
+        with st.expander(
+            "Error details"
+        ):
+
+            st.code(
+                failure["traceback"]
+            )
+
+        st.stop()
 
 
 

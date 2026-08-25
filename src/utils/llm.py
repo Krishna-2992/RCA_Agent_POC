@@ -22,11 +22,32 @@ def get_required_env(name: str) -> str:
 # LLM Client
 # ----------------------------
 
+# Both clients default to a 600s read timeout, so a stalled request would hang
+# the workflow for ten minutes with no way to tell it apart from slow work.
+# Bounded attempts plus SDK-level retries fail fast and recover on their own.
+
+LLM_TIMEOUT = float(
+    os.getenv("LLM_TIMEOUT", "180")
+)
+
+
+EMBEDDING_TIMEOUT = float(
+    os.getenv("EMBEDDING_TIMEOUT", "60")
+)
+
+
+MODEL_MAX_RETRIES = int(
+    os.getenv("MODEL_MAX_RETRIES", "3")
+)
+
+
 llm = ChatOpenAI(
     model=get_required_env("LLM_MODEL_DEPLOYMENT_NAME"),
     api_key=get_required_env("LLM_MODEL_KEY"),
     base_url=get_required_env("LLM_MODEL_ENDPOINT"),
-    temperature=0
+    temperature=0,
+    timeout=LLM_TIMEOUT,
+    max_retries=MODEL_MAX_RETRIES
 )
 
 # ----------------------------
@@ -35,7 +56,9 @@ llm = ChatOpenAI(
 
 embedding_client = OpenAI(
     api_key=get_required_env("EMBEDDING_MODEL_KEY"),
-    base_url=get_required_env("EMBEDDING_MODEL_ENDPOINT")
+    base_url=get_required_env("EMBEDDING_MODEL_ENDPOINT"),
+    timeout=EMBEDDING_TIMEOUT,
+    max_retries=MODEL_MAX_RETRIES
 )
 
 

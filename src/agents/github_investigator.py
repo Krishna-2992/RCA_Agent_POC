@@ -6,9 +6,11 @@ from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from typing import Any
 
+import httpx
 from dotenv import load_dotenv
 from langchain_core.callbacks.base import BaseCallbackHandler
 from langchain_mcp_adapters.client import MultiServerMCPClient
+from langchain_mcp_adapters.tools import load_mcp_tools
 from langchain_openai import ChatOpenAI
 from langgraph.prebuilt.tool_node import ToolNode
 from langgraph.prebuilt import create_react_agent
@@ -19,6 +21,14 @@ load_dotenv()
 
 TARGET_REPOSITORY = "Krishna-2992/Dummy_RCA_Payment_app"
 MAX_INVESTIGATION_ATTEMPTS = 3
+
+GITHUB_API = "https://api.github.com"
+
+# Repository map pre-fetch: how much to hand the agent before it starts.
+REPO_MAP_COMMITS = 3
+REPO_MAP_MAX_FILES = 400
+REPO_MAP_MAX_FILES_PER_COMMIT = 25
+REPO_MAP_TIMEOUT = 20.0
 
 
 # ---------------------------------
@@ -402,9 +412,9 @@ def normalize_github_report(
     }
 
 
-async def load_github_user(github_token: str):
+def build_mcp_client(github_token: str):
 
-    client = MultiServerMCPClient(
+    return MultiServerMCPClient(
         {
             "github": {
                 "command": "npx",
@@ -420,106 +430,185 @@ async def load_github_user(github_token: str):
         }
     )
 
-    tools = await client.get_tools()
 
-    return client, tools
+def format_repository_map(repo, head_sha, paths, truncated, commits):
 
+    file_lines = [
+        f"  {path}"
+        for path in paths[:REPO_MAP_MAX_FILES]
+    ]
 
-async def run_github_investigation(state):
-
-    github_token = os.getenv(
-        "GITHUB_TOKEN"
-    )
-
-    github_user = os.getenv(
-        "GITHUB_USERNAME",
-        "Krishna-2992"
-    )
-
-    if not github_token:
-        raise ValueError(
-            "GITHUB_TOKEN missing"
+    if truncated or len(paths) > REPO_MAP_MAX_FILES:
+        file_lines.append(
+            f"  ... listing truncated at {REPO_MAP_MAX_FILES} of {len(paths)} "
+            "files; use discovery tools for anything not listed"
         )
 
-    _, tools = await load_github_user(
-        github_token
-    )
+    commit_lines = []
 
-    tool_node = ToolNode(
-        tools,
-        handle_tool_errors=handle_github_tool_error
-    )
+    for commit in commits:
 
-    agent = create_react_agent(
-        model=llm,
-        tools=tool_node,
-        debug=False
-    )
+        commit_lines.append(
+            f"  {commit['sha'][:8]}  {commit['date']}  {commit['message']}"
+        )
 
-    objective = build_objective(
-        state
-    )
+        for changed in commit["files"][:REPO_MAP_MAX_FILES_PER_COMMIT]:
+            commit_lines.append(
+                f"      {changed['status']:9s} +{changed['additions']}/-{changed['deletions']}"
+                f"  {changed['filename']}"
+            )
 
-    investigation_state = InvestigationState(
-        objective=objective,
-        github_user=github_user
-    )
+        if len(commit["files"]) > REPO_MAP_MAX_FILES_PER_COMMIT:
+            remaining = len(commit["files"]) - REPO_MAP_MAX_FILES_PER_COMMIT
+            commit_lines.append(
+                f"      ... and {remaining} more changed files"
+            )
 
-    github_context = f"""
-Authenticated GitHub User:
-{github_user}
+    return f"""
+================ REPOSITORY MAP (pre-fetched from the GitHub API) ================
 
-Only repository that we must be working over is:
-{TARGET_REPOSITORY}
+Repository: {repo}
+HEAD commit: {head_sha}
 
-Do not investigate any other repository.
+Every file in the repository at HEAD:
+{chr(10).join(file_lines)}
 
-You are a GitHub investigation agent supporting
-root cause analysis and engineering investigations.
+Most recent {len(commits)} commits and the files each one changed:
+{chr(10).join(commit_lines) if commit_lines else "  (commit details unavailable)"}
 
-Your objective is to gather evidence from GitHub
-and converge on the most likely explanation.
-
-Prefer direct evidence over assumptions.
-
-Do not guess:
-- file paths
-- branch names
-- pull request numbers
-- commit SHAs
-- issue numbers
-
-If a GitHub lookup returns "not found", treat it as an invalid reference.
-Resolve the identifier first using broader discovery steps and do not repeat
-the same failing lookup.
-
-Do not assume relationships between:
-- commits
-- pull requests
-- branches
-- issues
-- releases
-- deployments
-
-unless evidence exists.
-
-When code-level investigation is needed, open the actual
-relevant files or diffs instead of stopping at commit metadata.
-
-Tool failures represent failed hypotheses,
-not failed investigations.
+==================================================================================
 """
 
-    messages = [
-        ("system", github_context),
-        (
-            "system",
-            build_state_context(
-                investigation_state
+
+async def fetch_repository_map(github_token: str, repo: str = TARGET_REPOSITORY):
+    """Hands the agent the repository layout before it starts.
+
+    Without it the agent discovers paths by listing one directory level per LLM
+    round trip - six sequential rounds before it can open its first file. This
+    is purely additive context: the agent still decides what to read, and an
+    empty result simply restores the old discovery behaviour.
+    """
+
+    headers = {
+        "Authorization": f"Bearer {github_token}",
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28"
+    }
+
+    try:
+
+        async with httpx.AsyncClient(
+            headers=headers,
+            timeout=REPO_MAP_TIMEOUT
+        ) as client:
+
+            commits_response = await client.get(
+                f"{GITHUB_API}/repos/{repo}/commits",
+                params={"per_page": REPO_MAP_COMMITS}
             )
-        ),
-        ("user", objective)
-    ]
+
+            commits_response.raise_for_status()
+
+            commit_list = commits_response.json()
+
+            if not commit_list:
+                return ""
+
+            head_sha = commit_list[0]["sha"]
+
+            tree_response, *detail_responses = await asyncio.gather(
+
+                client.get(
+                    f"{GITHUB_API}/repos/{repo}/git/trees/{head_sha}",
+                    params={"recursive": "1"}
+                ),
+
+                *[
+                    client.get(
+                        f"{GITHUB_API}/repos/{repo}/commits/{commit['sha']}"
+                    )
+                    for commit in commit_list
+                ],
+
+                return_exceptions=True
+            )
+
+            if isinstance(tree_response, BaseException):
+                raise tree_response
+
+            tree_response.raise_for_status()
+
+            tree = tree_response.json()
+
+            paths = sorted(
+                node["path"]
+                for node in tree.get("tree", [])
+                if node.get("type") == "blob"
+            )
+
+            commits = []
+
+            for response in detail_responses:
+
+                if isinstance(response, BaseException):
+                    continue
+
+                if response.status_code != 200:
+                    continue
+
+                detail = response.json()
+
+                commits.append(
+                    {
+                        "sha": detail["sha"],
+                        "date": detail["commit"]["author"]["date"],
+                        "message": detail["commit"]["message"].splitlines()[0][:120],
+                        "files": [
+                            {
+                                "status": item.get("status", "?"),
+                                "additions": item.get("additions", 0),
+                                "deletions": item.get("deletions", 0),
+                                "filename": item.get("filename", "?")
+                            }
+                            for item in detail.get("files", [])
+                        ]
+                    }
+                )
+
+    except Exception as error:
+
+        write_trace(
+            "repository_map_failed",
+            {"error": str(error)[:500]}
+        )
+
+        return ""
+
+    write_trace(
+        "repository_map",
+        {
+            "files": len(paths),
+            "commits": len(commits),
+            "head": head_sha
+        }
+    )
+
+    return format_repository_map(
+        repo,
+        head_sha,
+        paths,
+        tree.get("truncated", False),
+        commits
+    )
+
+
+async def run_agent_attempts(
+    agent,
+    messages,
+    objective,
+    investigation_state
+):
+    """Runs the ReAct agent, replanning after a retryable failure."""
 
     final_answer = None
 
@@ -642,6 +731,140 @@ and continue the investigation.
                     replanning_message
                 )
             )
+
+    return final_answer
+
+
+async def run_github_investigation(state):
+
+    github_token = os.getenv(
+        "GITHUB_TOKEN"
+    )
+
+    github_user = os.getenv(
+        "GITHUB_USERNAME",
+        "Krishna-2992"
+    )
+
+    if not github_token:
+        raise ValueError(
+            "GITHUB_TOKEN missing"
+        )
+
+    client = build_mcp_client(
+        github_token
+    )
+
+    repository_map = await fetch_repository_map(
+        github_token
+    )
+
+    objective = build_objective(
+        state
+    )
+
+    investigation_state = InvestigationState(
+        objective=objective,
+        github_user=github_user
+    )
+
+    github_context = f"""
+Authenticated GitHub User:
+{github_user}
+
+Only repository that we must be working over is:
+{TARGET_REPOSITORY}
+
+Do not investigate any other repository.
+
+You are a GitHub investigation agent supporting
+root cause analysis and engineering investigations.
+
+Your objective is to gather evidence from GitHub
+and converge on the most likely explanation.
+
+Prefer direct evidence over assumptions.
+{repository_map}
+Investigate thoroughly, but in as few rounds of tool calls as possible.
+Being efficient means fewer round trips, not less evidence: read every file
+that could plausibly bear on the incident.
+
+- The repository map above is complete and authoritative. Do not list
+  directories to discover paths, and do not walk the tree one level at a time.
+- Decide which files you need, then request them together in a single batch of
+  tool calls rather than one after another.
+- Never request the same path twice. You already have its content.
+- Use discovery or search tools only for what the map cannot answer, such as
+  pull requests, issues, or a path that fails to load.
+
+Do not guess:
+- file paths
+- branch names
+- pull request numbers
+- commit SHAs
+- issue numbers
+
+Take file paths and commit SHAs from the repository map rather than inferring
+them. If a GitHub lookup returns "not found", treat it as an invalid reference.
+Resolve the identifier first using broader discovery steps and do not repeat
+the same failing lookup.
+
+Do not assume relationships between:
+- commits
+- pull requests
+- branches
+- issues
+- releases
+- deployments
+
+unless evidence exists.
+
+When code-level investigation is needed, open the actual
+relevant files or diffs instead of stopping at commit metadata.
+
+Tool failures represent failed hypotheses,
+not failed investigations.
+"""
+
+    messages = [
+        ("system", github_context),
+        (
+            "system",
+            build_state_context(
+                investigation_state
+            )
+        ),
+        ("user", objective)
+    ]
+
+    # One MCP session for the whole investigation. Tools built by
+    # client.get_tools() carry no session, so langchain-mcp-adapters spawns a
+    # fresh `npx @modelcontextprotocol/server-github` process for EVERY tool
+    # call - measured at 1.62s per call versus 0.43s on a shared session.
+
+    async with client.session("github") as session:
+
+        tools = await load_mcp_tools(
+            session
+        )
+
+        tool_node = ToolNode(
+            tools,
+            handle_tool_errors=handle_github_tool_error
+        )
+
+        agent = create_react_agent(
+            model=llm,
+            tools=tool_node,
+            debug=False
+        )
+
+        final_answer = await run_agent_attempts(
+            agent,
+            messages,
+            objective,
+            investigation_state
+        )
 
     if not final_answer:
         final_answer = (

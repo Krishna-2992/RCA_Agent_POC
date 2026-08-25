@@ -1,5 +1,5 @@
 from src.utils.llm import create_embedding
-from src.utils.qdrant_client import qdrant_client
+from src.utils.qdrant_client import query_with_retry
 
 
 COLLECTION_NAME = "servicenow_incidents"
@@ -31,9 +31,9 @@ def servicenow_retriever_node(state):
         search_query
     )
 
-    response = qdrant_client.query_points(
+    response = query_with_retry(
         collection_name=COLLECTION_NAME,
-        query=vector,
+        vector=vector,
         limit=5,
         with_payload=True
     )
