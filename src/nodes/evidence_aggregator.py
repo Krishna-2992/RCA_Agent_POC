@@ -182,6 +182,17 @@ def evidence_aggregator_node(state):
     evidence = []
     evidence_catalog = {}
 
+    def add(item):
+        """The catalog is keyed by evidence_id but the list was appended to
+        unconditionally, so the same source could reach the RCA agent twice and
+        read as two independent corroborations."""
+
+        if item["evidence_id"] in evidence_catalog:
+            return
+
+        evidence.append(item)
+        evidence_catalog[item["evidence_id"]] = item
+
     matching_ids = state.get(
         "matching_incidents",
         []
@@ -195,33 +206,33 @@ def evidence_aggregator_node(state):
         if incident["ticket_id"] not in matching_ids:
             continue
 
-        item = build_servicenow_evidence(
-            incident
+        add(
+            build_servicenow_evidence(
+                incident
+            )
         )
-        evidence.append(item)
-        evidence_catalog[item["evidence_id"]] = item
 
     for document in state.get(
         "filtered_kb_results",
         []
     ):
 
-        item = build_kb_evidence(
-            document
+        add(
+            build_kb_evidence(
+                document
+            )
         )
-        evidence.append(item)
-        evidence_catalog[item["evidence_id"]] = item
 
     for artifact in state.get(
         "filtered_github_results",
         []
     ):
 
-        item = build_github_evidence(
-            artifact
+        add(
+            build_github_evidence(
+                artifact
+            )
         )
-        evidence.append(item)
-        evidence_catalog[item["evidence_id"]] = item
 
     print(
         f"Prepared {len(evidence)} evidence items"

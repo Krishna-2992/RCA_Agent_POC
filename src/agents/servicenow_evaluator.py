@@ -37,6 +37,48 @@ structured_llm = llm.with_structured_output(
 )
 
 
+def compact_incidents(incidents):
+    """Projects retrieved incidents down to the fields the evaluator reasons over.
+
+    The stored `content` field restates issue_description, resolution_notes,
+    product and category in prose, so passing the raw record made roughly three
+    quarters of this prompt a repeat of the other keys.
+    """
+
+    compacted = []
+
+    for incident in incidents:
+
+        compacted.append(
+            {
+                "ticket_id": incident.get(
+                    "ticket_id"
+                ),
+                "similarity_score": round(
+                    incident.get("score") or 0.0,
+                    4
+                ),
+                "product": incident.get(
+                    "product"
+                ),
+                "category": incident.get(
+                    "category"
+                ),
+                "priority": incident.get(
+                    "priority"
+                ),
+                "issue_description": incident.get(
+                    "issue_description"
+                ) or incident.get("content"),
+                "resolution_notes": incident.get(
+                    "resolution_notes"
+                )
+            }
+        )
+
+    return compacted
+
+
 def servicenow_evaluator_agent(state):
 
     print(
@@ -46,7 +88,9 @@ def servicenow_evaluator_agent(state):
 
     query = state["user_query"]
 
-    incidents = state["servicenow_results"]
+    incidents = compact_incidents(
+        state["servicenow_results"]
+    )
 
 
     prompt = f"""

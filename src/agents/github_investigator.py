@@ -24,6 +24,29 @@ MAX_INVESTIGATION_ATTEMPTS = 3
 
 GITHUB_API = "https://api.github.com"
 
+# The MCP server exposes 26 tools, 13 of which mutate the repository
+# (push_files, merge_pull_request, create_or_update_file, ...) and the
+# investigation token has admin and push rights. An RCA investigation only ever
+# reads, so the agent is given an explicit allowlist: anything not named here -
+# including tools a future server version might add - is withheld.
+
+READ_ONLY_GITHUB_TOOLS = {
+    "get_file_contents",
+    "get_issue",
+    "get_pull_request",
+    "get_pull_request_comments",
+    "get_pull_request_files",
+    "get_pull_request_reviews",
+    "get_pull_request_status",
+    "list_commits",
+    "list_issues",
+    "list_pull_requests",
+    "search_code",
+    "search_issues",
+    "search_repositories",
+    "search_users"
+}
+
 # Repository map pre-fetch: how much to hand the agent before it starts.
 REPO_MAP_COMMITS = 3
 REPO_MAP_MAX_FILES = 400
@@ -233,10 +256,13 @@ def handle_github_tool_error(error: Exception) -> str:
 
     if "not found" in lowered_error or "resource not found" in lowered_error:
         return (
-            "GitHub tool error: the requested resource was not found. "
-            "Do not repeat the same lookup. Resolve the exact repository object "
-            "(file path, branch, PR number, commit SHA, or issue number) using "
-            "listing or search-style tools first, then continue."
+            "GitHub reports that this resource does not exist at the reference "
+            "you requested. That is a factual result, not a tool malfunction: if "
+            "you were checking whether a path existed at a particular commit or "
+            "branch, absence there is itself valid evidence and you should record "
+            "it. Do not repeat this identical lookup. Querying the same path at a "
+            "different commit or branch, or resolving the object with a listing or "
+            "search tool, is a legitimate next step."
         )
 
     return (
@@ -429,6 +455,43 @@ def build_mcp_client(github_token: str):
             }
         }
     )
+
+
+def select_read_only_tools(tools):
+    """Withholds every mutating GitHub tool from the investigation agent."""
+
+    allowed = [
+        tool
+        for tool in tools
+        if tool.name in READ_ONLY_GITHUB_TOOLS
+    ]
+
+    withheld = sorted(
+        tool.name
+        for tool in tools
+        if tool.name not in READ_ONLY_GITHUB_TOOLS
+    )
+
+    if not allowed:
+        raise RuntimeError(
+            "No read-only GitHub tools available; the MCP server exposed: "
+            + ", ".join(sorted(tool.name for tool in tools))
+        )
+
+    write_trace(
+        "tools_filtered",
+        {
+            "allowed": sorted(tool.name for tool in allowed),
+            "withheld": withheld
+        }
+    )
+
+    print(
+        f"GitHub tools: {len(allowed)} read-only enabled, "
+        f"{len(withheld)} mutating tools withheld"
+    )
+
+    return allowed
 
 
 def format_repository_map(repo, head_sha, paths, truncated, commits):
@@ -805,9 +868,11 @@ Do not guess:
 - issue numbers
 
 Take file paths and commit SHAs from the repository map rather than inferring
-them. If a GitHub lookup returns "not found", treat it as an invalid reference.
-Resolve the identifier first using broader discovery steps and do not repeat
-the same failing lookup.
+them. A "not found" for a path you took from the map is a factual answer, not a
+mistake: it means the path did not exist at that commit, which is exactly how
+you establish when something was introduced. Record it as evidence and move on.
+Do not repeat an identical failing lookup, and if you guessed an identifier,
+resolve it with a listing or search tool first.
 
 Do not assume relationships between:
 - commits
@@ -844,8 +909,10 @@ not failed investigations.
 
     async with client.session("github") as session:
 
-        tools = await load_mcp_tools(
-            session
+        tools = select_read_only_tools(
+            await load_mcp_tools(
+                session
+            )
         )
 
         tool_node = ToolNode(

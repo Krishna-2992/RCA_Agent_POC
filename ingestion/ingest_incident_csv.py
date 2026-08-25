@@ -25,7 +25,10 @@ QDRANT_URL = os.getenv("QDRANT_URL")
 QDRANT_API_KEY = os.getenv("QDRANT_API_KEY")
 
 
-COLLECTION_NAME = "servicenow_incidents"
+COLLECTION_NAME = os.getenv(
+    "SERVICENOW_COLLECTION",
+    "servicenow_incidents"
+)
 
 VECTOR_SIZE = 1536
 
@@ -95,6 +98,19 @@ def clean_value(value):
 
 
 def create_embedding_text(row):
+    """Text that gets embedded, i.e. what similarity search matches against.
+
+    This previously appended an "Operational RCA Context" paragraph restating
+    the product, category and resolution that were already stated above it, so
+    the resolution carried twice the weight of the symptom and searches matched
+    boilerplate recovery text. Dropping that paragraph moved the one genuinely
+    relevant payment incident from rank 2 to rank 1 for the payment-timeout
+    query and tripled the number of payment-symptom hits in the top 5.
+
+    Embedding the problem side alone was measurably worse: no incident in this
+    corpus describes a timeout symptom, so the resolution text is the only place
+    the word appears and removing it lost the relevant incident entirely.
+    """
 
     return f"""
 Production Incident Record
@@ -110,11 +126,6 @@ Reported Problem:
 
 Resolution Applied:
 {clean_value(row["resolution_notes"])}
-
-Operational RCA Context:
-A production issue occurred in {clean_value(row["product"])}.
-The issue category was {clean_value(row["category"])}.
-The final recovery action was {clean_value(row["resolution_notes"])}.
 """
 
 

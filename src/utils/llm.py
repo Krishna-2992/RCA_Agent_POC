@@ -62,6 +62,27 @@ embedding_client = OpenAI(
 )
 
 
+def create_embeddings(texts: list[str]) -> list[list[float]]:
+    """Embeds a batch in one request. Used by ingestion; one call per item is
+    needlessly slow when re-indexing a whole collection."""
+
+    embedding_model = get_required_env(
+        "EMBEDDING_MODEL_DEPLOYMENT_NAME"
+    )
+
+    response = embedding_client.embeddings.create(
+        model=embedding_model,
+        input=texts
+    )
+
+    ordered = sorted(
+        response.data,
+        key=lambda item: item.index
+    )
+
+    return [item.embedding for item in ordered]
+
+
 def create_embedding(text: str) -> list[float]:
     """
     Generate embedding vector for input text.
