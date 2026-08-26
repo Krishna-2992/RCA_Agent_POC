@@ -26,12 +26,12 @@ BADGES = {
 FLOW_STYLES = """
 <style>
 .rca-flow-wrap {
-    border: 1px solid rgba(120, 160, 220, 0.18);
+    border: 1px solid var(--rca-border, rgba(28, 62, 112, 0.16));
     border-radius: 20px;
     padding: 1rem 1.1rem 1.15rem 1.1rem;
     margin-bottom: 1rem;
-    background: linear-gradient(180deg, rgba(15, 29, 49, 0.92) 0%, rgba(10, 21, 37, 0.96) 100%);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    background: linear-gradient(180deg, var(--rca-panel-from, #ffffff) 0%, var(--rca-panel-to, #f6f9fe) 100%);
+    box-shadow: inset 0 1px 0 var(--rca-inset, rgba(11, 29, 52, 0.04));
 }
 .rca-flow-head {
     display: flex;
@@ -39,17 +39,17 @@ FLOW_STYLES = """
     align-items: baseline;
     gap: 0.55rem;
     margin-bottom: 0.15rem;
-    color: #edf4ff;
+    color: var(--rca-text, #12243d);
     font-size: 0.95rem;
     font-weight: 700;
 }
 .rca-flow-head .rca-flow-timer {
-    color: #8fc2ff;
+    color: var(--rca-accent-text, #12559c);
     font-weight: 600;
     font-variant-numeric: tabular-nums;
 }
 .rca-flow-sub {
-    color: #b3c4dc;
+    color: var(--rca-text-soft, #41567a);
     font-size: 0.84rem;
     line-height: 1.5;
     margin-bottom: 0.85rem;
@@ -58,7 +58,7 @@ FLOW_STYLES = """
 .rca-flow-bar {
     height: 4px;
     border-radius: 999px;
-    background: rgba(120, 160, 220, 0.16);
+    background: var(--rca-track, rgba(28, 62, 112, 0.12));
     overflow: hidden;
     margin-bottom: 0.9rem;
 }
@@ -66,7 +66,7 @@ FLOW_STYLES = """
     display: block;
     height: 100%;
     border-radius: 999px;
-    background: linear-gradient(90deg, #2077ff 0%, #40c38b 100%);
+    background: linear-gradient(90deg, var(--rca-accent-strong, #1565d8) 0%, var(--rca-success, #1a8f60) 100%);
     transition: width 0.35s ease;
 }
 .rca-flow {
@@ -80,7 +80,7 @@ FLOW_STYLES = """
     height: 6px;
 }
 .rca-flow::-webkit-scrollbar-thumb {
-    background: rgba(120, 160, 220, 0.28);
+    background: var(--rca-border-strong, rgba(28, 62, 112, 0.30));
     border-radius: 999px;
 }
 .rca-node {
@@ -92,8 +92,8 @@ FLOW_STYLES = """
     max-width: 12rem;
     padding: 0.55rem 0.75rem;
     border-radius: 14px;
-    border: 1px solid rgba(120, 160, 220, 0.18);
-    background: rgba(9, 18, 31, 0.75);
+    border: 1px solid var(--rca-border, rgba(28, 62, 112, 0.16));
+    background: var(--rca-panel-solid, rgba(255, 255, 255, 0.9));
 }
 .rca-node-badge {
     display: flex;
@@ -105,8 +105,8 @@ FLOW_STYLES = """
     border-radius: 999px;
     font-size: 0.72rem;
     font-weight: 700;
-    color: #0a1220;
-    background: rgba(120, 160, 220, 0.22);
+    color: var(--rca-text, #12243d);
+    background: var(--rca-track, rgba(28, 62, 112, 0.12));
 }
 .rca-node-body {
     min-width: 0;
@@ -116,13 +116,13 @@ FLOW_STYLES = """
     font-size: 0.8rem;
     font-weight: 600;
     line-height: 1.25;
-    color: #cfdcf0;
+    color: var(--rca-text, #12243d);
 }
 .rca-node-meta {
     display: block;
     margin-top: 0.12rem;
     font-size: 0.7rem;
-    color: #7d90aa;
+    color: var(--rca-text-muted, #6b7f9e);
     font-variant-numeric: tabular-nums;
 }
 .rca-link {
@@ -131,55 +131,55 @@ FLOW_STYLES = """
     width: 1.15rem;
     height: 2px;
     border-radius: 999px;
-    background: rgba(120, 160, 220, 0.22);
+    background: var(--rca-track, rgba(28, 62, 112, 0.12));
 }
 .rca-link.is-passed {
-    background: rgba(64, 195, 139, 0.55);
+    background: var(--rca-success, #1a8f60);
 }
 
 .rca-node.is-pending .rca-node-badge {
-    color: #93a6bf;
-    background: rgba(120, 160, 220, 0.16);
+    color: var(--rca-text-muted, #6b7f9e);
+    background: var(--rca-track, rgba(28, 62, 112, 0.12));
 }
 .rca-node.is-done {
-    border-color: rgba(64, 195, 139, 0.35);
-    background: rgba(16, 42, 35, 0.55);
+    border-color: var(--rca-success, #1a8f60);
+    background: var(--rca-success-bg, rgba(26, 143, 96, 0.10));
 }
 .rca-node.is-done .rca-node-badge {
-    background: #40c38b;
-    color: #04140d;
+    background: var(--rca-success, #1a8f60);
+    color: var(--rca-success-fg, #ffffff);
 }
 .rca-node.is-done .rca-node-label {
-    color: #e6fff4;
+    color: var(--rca-success-label, #0f5b3d);
 }
 .rca-node.is-skipped {
     border-style: dashed;
-    border-color: rgba(120, 160, 220, 0.2);
+    border-color: var(--rca-border, rgba(28, 62, 112, 0.16));
     opacity: 0.5;
 }
 .rca-node.is-failed {
-    border-color: rgba(255, 108, 108, 0.5);
-    background: rgba(56, 16, 22, 0.6);
+    border-color: var(--rca-danger, #c4302b);
+    background: var(--rca-danger-bg, rgba(196, 48, 43, 0.09));
 }
 .rca-node.is-failed .rca-node-badge {
-    background: #ff6c6c;
-    color: #2a0508;
+    background: var(--rca-danger, #c4302b);
+    color: var(--rca-danger-fg, #ffffff);
 }
 .rca-node.is-running {
-    border-color: rgba(78, 161, 255, 0.6);
-    background: rgba(14, 38, 68, 0.85);
-    box-shadow: 0 0 0 1px rgba(78, 161, 255, 0.18), 0 12px 30px rgba(20, 88, 190, 0.22);
+    border-color: var(--rca-accent, #1565d8);
+    background: var(--rca-running-bg, rgba(21, 101, 216, 0.10));
+    box-shadow: 0 0 0 1px var(--rca-accent-soft, rgba(21, 101, 216, 0.12));
 }
 .rca-node.is-running .rca-node-label {
-    color: #ffffff;
+    color: var(--rca-running-label, #0b1d34);
 }
 .rca-node.is-running .rca-node-meta {
-    color: #8fc2ff;
+    color: var(--rca-accent-text, #12559c);
 }
 .rca-node.is-running .rca-node-badge {
     background: transparent;
-    border: 2px solid rgba(143, 194, 255, 0.35);
-    border-top-color: #4ea1ff;
+    border: 2px solid var(--rca-track, rgba(28, 62, 112, 0.12));
+    border-top-color: var(--rca-accent, #1565d8);
     animation: rca-spin 0.9s linear infinite;
 }
 .rca-node.is-running .rca-node-meta::after {
@@ -189,7 +189,7 @@ FLOW_STYLES = """
     width: 0.32rem;
     height: 0.32rem;
     border-radius: 999px;
-    background: #4ea1ff;
+    background: var(--rca-accent, #1565d8);
     vertical-align: middle;
 }
 @keyframes rca-spin {
