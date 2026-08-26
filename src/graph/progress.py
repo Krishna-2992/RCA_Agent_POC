@@ -21,31 +21,173 @@ FAILED = "failed"
 # Branch-only nodes (clarification, kb, github investigator) stay in the list
 # and are marked "skipped" when the router walks past them.
 
+# Labels are what the person watching reads, so they describe the work rather
+# than naming the agent that does it. The technical name is kept alongside for
+# whoever has to map a slow or failed row back to the code.
+
 STEP_SEQUENCE = [
 
-    ("query_analyzer", "Query Analyzer"),
+    ("query_analyzer", "Understanding the incident"),
 
-    ("clarification", "Clarification"),
+    ("clarification", "Requesting more details"),
 
-    ("servicenow", "ServiceNow Retriever"),
+    ("servicenow", "Searching past incidents"),
 
-    ("servicenow_evaluator", "ServiceNow Evaluator"),
+    ("servicenow_evaluator", "Assessing past incidents"),
 
-    ("kb_retriever", "KB Retriever"),
+    ("kb_retriever", "Searching the knowledge base"),
 
-    ("kb_evaluator", "KB Evaluator"),
+    ("kb_evaluator", "Selecting relevant articles"),
 
-    ("github_decision", "GitHub Decision"),
+    ("github_decision", "Deciding on code investigation"),
 
-    ("github_investigator", "GitHub Investigator"),
+    ("github_investigator", "Investigating the code repository"),
 
-    ("evidence", "Evidence Aggregator"),
+    ("evidence", "Assembling the evidence"),
 
-    ("rca", "RCA Agent"),
+    ("rca", "Writing the root cause analysis"),
 
-    ("validation", "Validation Agent")
+    ("validation", "Validating the analysis")
 
 ]
+
+
+STEP_TECHNICAL_NAMES = {
+
+    "query_analyzer": "Query Analyzer",
+
+    "clarification": "Clarification Agent",
+
+    "servicenow": "ServiceNow Retriever",
+
+    "servicenow_evaluator": "ServiceNow Evaluator",
+
+    "kb_retriever": "KB Retriever",
+
+    "kb_evaluator": "KB Evaluator",
+
+    "github_decision": "GitHub Decision",
+
+    "github_investigator": "GitHub Investigator",
+
+    "evidence": "Evidence Aggregator",
+
+    "rca": "RCA Agent",
+
+    "validation": "Validation Agent"
+
+}
+
+
+# What the person watching actually wants to know: which stage is this at.
+# The graph's eleven nodes are implementation detail, so they are rolled up into
+# phases. Each phase still reports the live activity of whichever node inside it
+# is running, so grouping costs no visible detail.
+
+PHASE_SEQUENCE = [
+
+    (
+        "understanding",
+        "Understanding the incident",
+        ["query_analyzer", "clarification"]
+    ),
+
+    (
+        "history",
+        "Reviewing past incidents",
+        ["servicenow", "servicenow_evaluator"]
+    ),
+
+    (
+        "knowledge",
+        "Consulting the knowledge base",
+        ["kb_retriever", "kb_evaluator"]
+    ),
+
+    (
+        "code",
+        "Investigating the code",
+        ["github_decision", "github_investigator"]
+    ),
+
+    (
+        "analysis",
+        "Producing the analysis",
+        ["evidence", "rca", "validation"]
+    )
+
+]
+
+
+def phase_snapshot(steps):
+    """Rolls a step snapshot up into the phases shown in the UI.
+
+    A phase fails if anything in it failed, runs while anything in it is running
+    or has started but not finished, and is skipped only when the router bypassed
+    every node it contains. Its duration is the time spent across its nodes.
+    """
+
+    by_key = {
+        step["key"]: step
+        for step in steps
+    }
+
+    rows = []
+
+    for index, (key, label, members) in enumerate(PHASE_SEQUENCE):
+
+        children = [
+            by_key[member]
+            for member in members
+            if member in by_key
+        ]
+
+        statuses = {
+            child["status"]
+            for child in children
+        }
+
+        if FAILED in statuses:
+            status = FAILED
+
+        elif RUNNING in statuses:
+            status = RUNNING
+
+        elif statuses == {SKIPPED}:
+            status = SKIPPED
+
+        elif statuses <= {PENDING, SKIPPED}:
+            status = PENDING
+
+        elif PENDING in statuses:
+            # part way through, momentarily between two of its own nodes
+            status = RUNNING
+
+        else:
+            status = DONE
+
+        elapsed = 0.0
+
+        for child in children:
+
+            if child["duration"] is not None:
+                elapsed += child["duration"]
+
+            elif child["status"] == RUNNING and child.get("elapsed"):
+                elapsed += child["elapsed"]
+
+        rows.append(
+            {
+                "key": key,
+                "label": label,
+                "position": index + 1,
+                "status": status,
+                "elapsed": elapsed if elapsed else None,
+                "duration": elapsed if status == DONE else None
+            }
+        )
+
+    return rows
 
 
 FIRST_STEP = STEP_SEQUENCE[0][0]
@@ -67,37 +209,37 @@ STEP_ORDER = {
 STEP_ACTIVITY = {
 
     "query_analyzer":
-        "Extracting service, symptom and missing details from the incident",
+        "Pulling out the affected service, the symptom and anything missing",
 
     "clarification":
-        "Preparing follow-up questions",
+        "Working out what still needs to be asked",
 
     "servicenow":
-        "Searching historical ServiceNow incidents",
+        "Searching historical incident records for similar failures",
 
     "servicenow_evaluator":
-        "Judging whether past incidents explain this one",
+        "Judging which past tickets genuinely match this incident",
 
     "kb_retriever":
-        "Searching the SharePoint knowledge base",
+        "Searching runbooks and knowledge base documents",
 
     "kb_evaluator":
-        "Filtering knowledge base articles for relevance",
+        "Keeping only the articles that apply here",
 
     "github_decision":
-        "Deciding whether code evidence is required",
+        "Working out whether code evidence is needed",
 
     "github_investigator":
-        "Investigating the repository through the GitHub MCP server",
+        "Reading the application source and its recent changes",
 
     "evidence":
-        "Merging all evidence into a single catalog",
+        "Merging every source into one cited catalogue",
 
     "rca":
-        "Writing the root cause analysis",
+        "Drafting the root cause, fixes and preventive actions",
 
     "validation":
-        "Validating the RCA against the evidence"
+        "Checking every claim is backed by cited evidence"
 
 }
 
@@ -180,6 +322,7 @@ class ProgressTracker:
             key: {
                 "key": key,
                 "label": label,
+                "technical": STEP_TECHNICAL_NAMES.get(key, key),
                 "position": index + 1,
                 "status": PENDING,
                 "started_at": None,
@@ -337,24 +480,43 @@ class TraceTail:
     previous run's trace never leaks into the current status line.
     """
 
-    LABELS = {
-
-        "attempt_start":
-            lambda payload: f"Investigation attempt {payload.get('attempt')}",
-
-        "tool_start":
-            lambda payload: f"Calling GitHub tool: {payload.get('tool') or 'unknown'}",
-
-        "tool_end":
-            lambda payload: f"Received {payload.get('output_chars', 0)} characters from GitHub",
-
-        "tool_error":
-            lambda payload: "GitHub tool error, recovering",
-
-        "final_answer":
-            lambda payload: "Summarising code evidence"
-
+    TOOL_ACTIVITY = {
+        "get_file_contents": "Reading a source file",
+        "search_code": "Searching the codebase",
+        "list_commits": "Reviewing recent changes",
+        "list_pull_requests": "Checking pull requests",
+        "get_pull_request": "Reviewing a pull request",
+        "get_pull_request_files": "Reviewing what a change touched",
+        "get_pull_request_comments": "Reading review discussion",
+        "list_issues": "Checking reported issues",
+        "get_issue": "Reading a reported issue"
     }
+
+    @classmethod
+    def describe(cls, event, payload):
+        """A short, plain description of what the investigation is doing.
+
+        Returning None leaves the previous description in place, which is what
+        we want for bookkeeping events - a raw byte count tells a reader nothing.
+        """
+
+        if event == "tool_start":
+
+            return cls.TOOL_ACTIVITY.get(
+                payload.get("tool"),
+                "Querying the repository"
+            )
+
+        if event == "attempt_start" and (payload.get("attempt") or 1) > 1:
+            return "Retrying the code investigation"
+
+        if event == "tool_error":
+            return "Recovering from a failed lookup"
+
+        if event == "final_answer":
+            return "Summarising what the code shows"
+
+        return None
 
     def __init__(self, path):
 
@@ -409,19 +571,16 @@ class TraceTail:
             except ValueError:
                 continue
 
-            formatter = self.LABELS.get(
-                record.get("event")
-            )
-
-            if not formatter:
-                continue
-
             try:
-                self.latest_label = formatter(
+                described = self.describe(
+                    record.get("event"),
                     record.get("payload") or {}
                 )
 
             except Exception:
                 continue
+
+            if described:
+                self.latest_label = described
 
         return self.latest_label

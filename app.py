@@ -6,10 +6,15 @@ from html import escape
 from src.agents.github_investigator import TRACE_LOG_PATH
 
 from src.graph.progress import (
+    DONE,
+    FAILED,
     FIRST_STEP,
+    PHASE_SEQUENCE,
+    SKIPPED,
     STEP_ACTIVITY,
     ProgressTracker,
-    TraceTail
+    TraceTail,
+    phase_snapshot
 )
 
 from src.graph.runner import (
@@ -698,13 +703,22 @@ if submit:
                 if latest:
                     detail = f"{detail} \u00b7 {latest}"
 
+        steps = tracker.snapshot()
+
+        settled = sum(
+            1
+            for step in steps
+            if step["status"] in (DONE, SKIPPED, FAILED)
+        )
+
         flow_slot.markdown(
 
             render_flow(
-                tracker.snapshot(),
+                phase_snapshot(steps),
                 headline,
                 detail,
-                time.time() - start
+                time.time() - start,
+                progress=settled / max(len(steps), 1)
             ),
 
             unsafe_allow_html=True
@@ -778,18 +792,25 @@ if submit:
             break
 
 
-        if tracker.active:
+        active_phase = next(
+            (
+                phase
+                for phase in phase_snapshot(tracker.snapshot())
+                if phase["status"] == "running"
+            ),
+            None
+        )
 
-            step = tracker.steps[tracker.active]
+        if active_phase:
 
             headline = (
-                f"Step {step['position']} of {len(tracker.steps)}"
-                f" \u00b7 {step['label']}"
+                "Investigating \u00b7 stage "
+                f"{active_phase['position']} of {len(PHASE_SEQUENCE)}"
             )
 
         else:
 
-            headline = "Handing over to the next agent"
+            headline = "Moving to the next stage"
 
 
         paint(
