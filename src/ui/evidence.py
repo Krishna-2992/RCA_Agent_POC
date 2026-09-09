@@ -80,6 +80,31 @@ def render_source_popover(evidence_map, evidence_ids):
                 f"<div><strong>Ticket:</strong> {safe_text(metadata['ticket_id'])}</div>"
             )
 
+        # Documentation provenance. `evidence_role` is shown because the
+        # distinction carries weight for the reader: a ticket records that
+        # something happened, a document only explains how the software works.
+        if metadata.get("program"):
+            fields.append(
+                f"<div><strong>Program:</strong> {safe_text(metadata['program'])}"
+                + (
+                    f" ({safe_text(metadata['program_id'])})"
+                    if metadata.get("program_id")
+                    else ""
+                )
+                + "</div>"
+            )
+
+        if metadata.get("application"):
+            fields.append(
+                f"<div><strong>Application:</strong> {safe_text(metadata['application'])}</div>"
+            )
+
+        if metadata.get("evidence_role") == "mechanism":
+            fields.append(
+                "<div><strong>Evidence role:</strong> Explains how the system "
+                "behaves - not a record that this incident occurred</div>"
+            )
+
         if metadata.get("page"):
             fields.append(
                 f"<div><strong>Page:</strong> {safe_text(metadata['page'])}</div>"

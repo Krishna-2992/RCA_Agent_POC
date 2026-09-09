@@ -27,6 +27,10 @@ INCIDENT_STEPS = [
 
     ("evaluate", "Assessing past records"),
 
+    ("docs_retrieve", "Searching REMAN documentation"),
+
+    ("docs_evaluate", "Assessing the documentation"),
+
     ("evidence", "Assembling the evidence"),
 
     ("rca", "Writing the root cause analysis"),
@@ -48,6 +52,12 @@ INCIDENT_PHASES = [
         "history",
         "Reviewing past incidents",
         ["retrieve", "evaluate"]
+    ),
+
+    (
+        "documentation",
+        "Consulting REMAN documentation",
+        ["docs_retrieve", "docs_evaluate"]
     ),
 
     (
@@ -73,6 +83,12 @@ INCIDENT_ACTIVITIES = {
     "evaluate":
         "Judging which past records genuinely match this one",
 
+    "docs_retrieve":
+        "Looking up the affected programs, data files and recovery procedures",
+
+    "docs_evaluate":
+        "Judging which documentation explains this failure",
+
     "evidence":
         "Gathering the matching records and counting repeats",
 
@@ -94,6 +110,10 @@ INCIDENT_TECHNICAL_NAMES = {
     "retrieve": "ServiceNow Retriever",
 
     "evaluate": "ServiceNow Evaluator",
+
+    "docs_retrieve": "Documentation Retriever",
+
+    "docs_evaluate": "Documentation Evaluator",
 
     "evidence": "Evidence Aggregator",
 
@@ -118,10 +138,17 @@ def predict_next_incident_step(node, state):
         return "evaluate"
 
     if node == "evaluate":
+        return "docs_retrieve"
+
+    if node == "docs_retrieve":
+        return "docs_evaluate"
+
+    if node == "docs_evaluate":
 
         return (
             "evidence"
             if state.get("matching_records")
+            or state.get("matching_documents")
             else "clarification"
         )
 

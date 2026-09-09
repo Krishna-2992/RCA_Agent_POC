@@ -2,10 +2,13 @@ from typing import Any, Dict, List, TypedDict
 
 
 class IncidentRCAState(TypedDict):
-    """State for the ServiceNow-only workflow.
+    """State for the incident workflow.
 
-    Deliberately smaller than RCAState: there is no knowledge base and no code
-    repository in this pipeline, so every field here is about ServiceNow records.
+    Two evidence sources, consulted in order. ServiceNow history establishes
+    what happened and what fixed it; the REMAN documentation explains the
+    mechanism behind it, and is reached only when history alone falls short.
+    There is no code repository behind this pipeline, so that stage is absent
+    rather than stubbed out.
     """
 
     # user input
@@ -31,6 +34,21 @@ class IncidentRCAState(TypedDict):
     servicenow_analysis: str
 
     enough_information: bool
+
+    # documentation retrieval, reached only when history is not enough
+    docs_identifiers: Dict[str, List[str]]
+
+    docs_applications: List[str]
+
+    docs_results: List[Dict[str, Any]]
+
+    matching_documents: List[str]
+
+    docs_confidence: float
+
+    docs_analysis: str
+
+    docs_enough_information: bool
 
     # evidence
     recurrence: Dict[str, Any]

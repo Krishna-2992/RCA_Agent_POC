@@ -1,8 +1,23 @@
-"""ServiceNow-only RCA workflow.
+"""Incident RCA workflow: ticket history first, REMAN documentation second.
 
-Seven nodes against the payment pipeline's eleven: there is no knowledge base
-and no code repository behind this data, so those stages are absent rather than
-stubbed out.
+Nine nodes against the payment pipeline's eleven. The GitHub stage is absent
+rather than stubbed out - there is no code repository behind this data - but
+the documentation stage does not.
+
+The payment pipeline escalates to its knowledge base only when ServiceNow falls
+short, because there both sources answer the same question. Here they do not:
+history establishes what happened and what fixed it, documentation explains the
+mechanism underneath. Complementary sources have to be consulted together, so
+documentation always runs.
+
+That was not the first design, and the reason for changing it is worth keeping.
+Under escalation, "LMS went down, IN001.MST was corrupted" matched eight past
+incidents, the evaluator returned enough_information at 0.95, and the documents
+were skipped. The RCA then concluded that "IN001.MST/IN0011.MST ... appears to
+refer to the same component" at 0.88 confidence. The documentation says
+otherwise in as many words: IN0001.MST is the Inventory Master, IN0011.MST is
+the Location File. Strong history is exactly when the agent is most confident,
+which makes it exactly when an unchecked assumption does the most damage.
 """
 
 from langgraph.graph import END, StateGraph
@@ -27,7 +42,11 @@ from src.graph.incident_state import IncidentRCAState
 
 from src.nodes.incident_evidence import incident_evidence_node
 
+from src.agents.reman_docs_evaluator import reman_docs_evaluator_agent
+
 from src.nodes.incident_retriever import incident_retriever_node
+
+from src.nodes.reman_docs_retriever import reman_docs_retriever_node
 
 
 # ---------------------------------
@@ -43,18 +62,19 @@ def clarification_router(state):
     return "retrieve"
 
 
-def evaluation_router(state):
-    """Dead-end only when there is genuinely nothing to analyse.
+def documentation_router(state):
+    """The end of the line: there is no third source behind this one.
 
-    Partial evidence still produces a useful analysis - the RCA agent is told to
-    lower its confidence rather than invent a cause - so only a complete absence
-    of matching records sends the user back for more detail.
+    Anything worth citing - a matched record or a matched document - is worth
+    analysing, because the RCA agent is told to lower its confidence rather
+    than invent a cause. Only when both sources come back empty is the honest
+    answer that there is not enough information.
     """
 
-    if not state.get("matching_records"):
-        return "clarification"
+    if state.get("matching_records") or state.get("matching_documents"):
+        return "evidence"
 
-    return "evidence"
+    return "clarification"
 
 
 def validation_router(state):
@@ -93,6 +113,16 @@ workflow.add_node(
 workflow.add_node(
     "evaluate",
     incident_evaluator_agent
+)
+
+workflow.add_node(
+    "docs_retrieve",
+    reman_docs_retriever_node
+)
+
+workflow.add_node(
+    "docs_evaluate",
+    reman_docs_evaluator_agent
 )
 
 workflow.add_node(
@@ -142,11 +172,23 @@ workflow.add_edge(
 )
 
 
+workflow.add_edge(
+    "evaluate",
+    "docs_retrieve"
+)
+
+
+workflow.add_edge(
+    "docs_retrieve",
+    "docs_evaluate"
+)
+
+
 workflow.add_conditional_edges(
 
-    "evaluate",
+    "docs_evaluate",
 
-    evaluation_router,
+    documentation_router,
 
     {
         "clarification": "clarification",
