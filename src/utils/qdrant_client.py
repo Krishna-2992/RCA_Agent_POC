@@ -110,3 +110,62 @@ def query_with_retry(
         f"({QDRANT_TIMEOUT:.0f}s each). Last error: "
         f"{type(last_error).__name__}: {last_error or 'timed out'}"
     ) from last_error
+
+
+def upsert_with_retry(
+    collection_name: str,
+    points: list,
+    max_attempts: int | None = None
+):
+    """Write that survives a transient Qdrant hiccup.
+
+    Writes need this more than reads do: a batch of points carries vectors and
+    payload, so it is far larger than a query and far likelier to exceed the
+    read timeout on a slow link. Ingesting the Reman documents failed on "The
+    write operation timed out" partway through with no retry in place, losing
+    the batch in flight.
+    """
+
+    attempts = max_attempts or QDRANT_MAX_ATTEMPTS
+
+    last_error = None
+
+    for attempt in range(
+        1,
+        attempts + 1
+    ):
+
+        try:
+            return qdrant_client.upsert(
+                collection_name=collection_name,
+                points=points
+            )
+
+        except Exception as error:
+
+            last_error = error
+
+            if not is_transient(error):
+                raise
+
+            if attempt == attempts:
+                break
+
+            backoff = 2 ** (attempt - 1)
+
+            print(
+                f"Qdrant upsert to '{collection_name}' failed "
+                f"(attempt {attempt}/{attempts}): "
+                f"{type(error).__name__}: {error or 'timed out'}. "
+                f"Retrying in {backoff}s"
+            )
+
+            time.sleep(
+                backoff
+            )
+
+    raise RuntimeError(
+        f"Qdrant upsert to '{collection_name}' failed after "
+        f"{attempts} attempts. Last error: "
+        f"{type(last_error).__name__}: {last_error or 'timed out'}"
+    ) from last_error

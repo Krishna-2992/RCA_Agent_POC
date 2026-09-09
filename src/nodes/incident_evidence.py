@@ -1,4 +1,4 @@
-"""Turns matched ServiceNow records into a cited evidence catalogue.
+"""Turns matched ServiceNow records and documentation into a cited catalogue.
 
 Two signals are computed here rather than asked of a model, because both are
 counting exercises and a model would only guess at them:
@@ -98,6 +98,44 @@ def build_record_evidence(record):
         "source_id": record["ticket_id"],
         "confidence": record.get("score") or 0.0,
         "content": "\n\n".join(sections),
+        "metadata": metadata
+    }
+
+
+def build_document_evidence(document):
+    """A documentation extract, marked so the RCA agent cannot mistake it.
+
+    The `doc::` prefix and the explicit source_type keep these separable from
+    ticket evidence downstream. That separation is the point: a document
+    explains how a failure works, and must never be read as a record that one
+    happened.
+    """
+
+    evidence_id = f"doc::{document['chunk_id']}"
+
+    metadata = {
+        "title": document.get("source_title")
+        or f"{document.get('program')} - {document.get('section')}",
+        "location": f"{document.get('program')} / {document.get('section')}",
+        "source_type_label": document.get("source_type_label")
+        or "SharePoint Document",
+        "program": document.get("program"),
+        "program_id": document.get("program_id"),
+        "application": document.get("application"),
+        "document_type": document.get("source_type"),
+        "section": document.get("section"),
+        "data_files": document.get("data_files"),
+        "programs": document.get("programs"),
+        "evidence_role": "mechanism",
+        "excerpt": (document.get("content") or "")[:200]
+    }
+
+    return {
+        "evidence_id": evidence_id,
+        "source_type": "reman_documentation",
+        "source_id": document["chunk_id"],
+        "confidence": document.get("score") or 0.0,
+        "content": document.get("content") or "",
         "metadata": metadata
     }
 
@@ -221,6 +259,25 @@ def incident_evidence_node(state):
         evidence.append(item)
         evidence_catalog[item["evidence_id"]] = item
 
+    matching_documents = set(
+        state.get("matching_documents", [])
+    )
+
+    for document in state.get("docs_results", []):
+
+        if document.get("chunk_id") not in matching_documents:
+            continue
+
+        item = build_document_evidence(
+            document
+        )
+
+        if item["evidence_id"] in evidence_catalog:
+            continue
+
+        evidence.append(item)
+        evidence_catalog[item["evidence_id"]] = item
+
     recurrence = summarise_recurrence(
         matched
     )
@@ -230,8 +287,16 @@ def incident_evidence_node(state):
         records
     )
 
+    document_count = sum(
+        1
+        for item in evidence
+        if item["source_type"] == "reman_documentation"
+    )
+
     print(
-        f"Prepared {len(evidence)} evidence items | "
+        f"Prepared {len(evidence)} evidence items "
+        f"({len(evidence) - document_count} records, "
+        f"{document_count} documents) | "
         f"recurrence={recurrence['repeat_count']} | "
         f"related changes={len(related_changes)}"
     )

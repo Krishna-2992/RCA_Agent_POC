@@ -68,3 +68,9 @@ Thumbs.db
 
 # Project specific
 *.log
+
+# Client documents - Caterpillar REMAN material pulled from Teams/SharePoint.
+# Never committed: the repo is not the right place to distribute them, and the
+# ingester rebuilds the collection from a local copy on any machine that has one.
+sharepoint_docs/
+sharepoint_downloads/
