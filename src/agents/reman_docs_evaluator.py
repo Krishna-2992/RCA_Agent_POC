@@ -87,6 +87,23 @@ def reman_docs_evaluator_agent(state):
         state.get("docs_results", [])
     )
 
+    if not documents:
+
+        reason = (
+            "The documentation search could not be reached."
+            if state.get("docs_unavailable")
+            else "No documentation matched this incident."
+        )
+
+        print(reason)
+
+        return {
+            "matching_documents": [],
+            "docs_confidence": 0.0,
+            "docs_analysis": reason,
+            "docs_enough_information": False
+        }
+
     prompt = f"""
 You are a senior production support engineer for the REMAN applications.
 

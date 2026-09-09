@@ -59,7 +59,7 @@ st.title(
 
 st.caption(
     """
-    Multi-Agent RCA System using LangGraph + ServiceNow incident evidence
+    Multi-Agent RCA System using LangGraph + ServiceNow incidents and REMAN documentation
     """
 )
 
@@ -86,9 +86,11 @@ with st.sidebar:
         2. Clarification Agent  
         3. ServiceNow Retriever  
         4. ServiceNow Evaluator  
-        5. Evidence Aggregator  
-        6. RCA Agent  
-        7. Validation Agent
+        5. Documentation Retriever  
+        6. Documentation Evaluator  
+        7. Evidence Aggregator  
+        8. RCA Agent  
+        9. Validation Agent
 
         """
     )

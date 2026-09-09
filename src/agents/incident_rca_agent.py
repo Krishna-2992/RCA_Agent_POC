@@ -125,6 +125,27 @@ def format_recurrence(recurrence):
     )
 
 
+def format_documentation_status(state):
+    """Distinguishes "the documentation says nothing" from "we could not read it".
+
+    Both arrive as an empty evidence list, and they mean opposite things. An
+    unreachable search is a gap in this run, not a finding about the system.
+    """
+
+    if state.get("docs_unavailable"):
+        return (
+            "The documentation search could not be reached for this "
+            "investigation. Its absence is a limitation of this run, not "
+            "evidence that no documentation exists. Note this in "
+            "missing_information."
+        )
+
+    return (
+        state.get("docs_analysis")
+        or "Documentation was not consulted for this incident."
+    )
+
+
 def incident_rca_agent(state):
 
     print("\n--- RCA Agent ---")
@@ -133,7 +154,15 @@ def incident_rca_agent(state):
         state.get("combined_evidence", [])
     )
 
-    changes = state.get("related_changes", []) or "None found."
+    # "None found" was read as "no change records exist". Three do exist in the
+    # workbook; none touch the programs named in these incidents. The RCA said
+    # the stronger thing, which is a different and misleading claim.
+    changes = (
+        state.get("related_changes")
+        or "No change record touches a program or job named in the matched "
+           "records. This does not mean no changes were made - only that none "
+           "of the retrieved change records are linked to these programs."
+    )
 
     prompt = f"""
 You are a senior production support engineer writing a root cause analysis.
@@ -159,7 +188,7 @@ Assessment of the retrieved records:
 {state.get("servicenow_analysis")}
 
 Assessment of the retrieved documentation:
-{state.get("docs_analysis") or "Documentation was not consulted for this incident."}
+{format_documentation_status(state)}
 
 Write the analysis under these rules:
 
@@ -182,6 +211,11 @@ Write the analysis under these rules:
   same program is a possible link, not a cause - say so in those words.
 - Every evidence statement must cite one or more evidence_id values from the
   catalogue. Never cite an evidence_id that is not listed.
+- The one exception is a statement about something the catalogue does NOT
+  contain - that no change record links to these programs, for instance.
+  Nothing can evidence an absence, so leave evidence_ids empty for those and
+  say plainly that it is an observation about the retrieved evidence rather
+  than a finding. Do not attach an unrelated evidence_id to satisfy the rule.
 - Draw resolution steps from the actions that actually resolved the matched
   records, and say which record each step comes from. A documented recovery
   procedure may be offered as a step only when it is labelled as coming from

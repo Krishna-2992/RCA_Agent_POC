@@ -50,6 +50,8 @@ class IncidentRCAState(TypedDict):
 
     docs_enough_information: bool
 
+    docs_unavailable: bool
+
     # evidence
     recurrence: Dict[str, Any]
 
