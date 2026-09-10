@@ -32,6 +32,10 @@ from src.agents.incident_query_analyzer import (
     incident_query_analyzer_node
 )
 
+from src.agents.incident_query_rewriter import (
+    incident_query_rewriter_node
+)
+
 from src.agents.incident_rca_agent import incident_rca_agent
 
 from src.agents.incident_validation_agent import (
@@ -55,6 +59,27 @@ from src.nodes.reman_docs_retriever import reman_docs_retriever_node
 
 
 def clarification_router(state):
+    """The analyser only stops a report with no content at all.
+
+    Sufficiency is the rewriter's judgement, not this one's: it is the stage
+    holding the digest, so it is the only stage that can tell a report naming a
+    real application from one naming something the estate does not contain.
+    """
+
+    if state.get("needs_clarification"):
+        return "clarification"
+
+    return "rewrite"
+
+
+def rewrite_router(state):
+    """Rewritten reports go to retrieval, vague ones go back to the reporter.
+
+    This is the gate that matters. Retrieval quality is set by the question,
+    not by what is done to the results afterwards: the same corpus returns
+    eleven catalogue one-liners in twelve for the reporter's own words and none
+    at all for the same incident restated in the documents' vocabulary.
+    """
 
     if state.get("needs_clarification"):
         return "clarification"
@@ -98,6 +123,11 @@ workflow = StateGraph(
 workflow.add_node(
     "query_analyzer",
     incident_query_analyzer_node
+)
+
+workflow.add_node(
+    "rewrite",
+    incident_query_rewriter_node
 )
 
 workflow.add_node(
@@ -151,6 +181,20 @@ workflow.add_conditional_edges(
     "query_analyzer",
 
     clarification_router,
+
+    {
+        "clarification": "clarification",
+        "rewrite": "rewrite"
+    }
+
+)
+
+
+workflow.add_conditional_edges(
+
+    "rewrite",
+
+    rewrite_router,
 
     {
         "clarification": "clarification",

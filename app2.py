@@ -129,7 +129,15 @@ submit = st.button(
 )
 
 
-if submit:
+# An override survives the rerun that submitting it causes, which is the only
+# reason this is in session state at all.
+override = st.session_state.pop(
+    "rewrite_override",
+    None
+)
+
+
+if submit or override:
 
     if not query.strip():
 
@@ -168,6 +176,20 @@ if submit:
 
         steps = tracker.snapshot()
 
+        # The rewritten query is shown on the stage that produced it, as soon
+        # as it exists. It decides what the documentation search retrieves, so
+        # a reader who disagrees with it needs to see it next to the work it
+        # governed rather than buried in the agent trace.
+        notes = {}
+
+        rewritten = (tracker.state or {}).get("rewritten_query")
+
+        if rewritten:
+            notes["understanding"] = (
+                "Investigating as",
+                rewritten
+            )
+
         settled = sum(
             1
             for step in steps
@@ -181,7 +203,8 @@ if submit:
                 headline,
                 detail,
                 time.time() - start,
-                progress=settled / max(len(steps), 1)
+                progress=settled / max(len(steps), 1),
+                notes=notes
             ),
 
             unsafe_allow_html=True
@@ -192,9 +215,20 @@ if submit:
         "Starting investigation"
     )
 
+    initial_state = {"user_query": query}
+
+    if override:
+
+        initial_state.update(
+            {
+                "rewritten_query": override,
+                "rewrite_locked": True
+            }
+        )
+
     for event in stream_workflow(
         graph,
-        {"user_query": query}
+        initial_state
     ):
 
         if event["type"] == "node_end":
@@ -470,6 +504,48 @@ if submit:
 
         for item in rca["missing_information"]:
             st.markdown(f"❓ {item}")
+
+    rewritten = result.get("rewritten_query")
+
+    if rewritten:
+
+        with st.expander(
+            "Investigated as - edit if this misreads the incident"
+        ):
+
+            st.caption(
+                "This is what the documentation was searched with. The "
+                "reporter's own wording still drives the ticket-history "
+                "search; only this text is rewritten."
+                + (
+                    "  \n\n**Your wording was used as given.**"
+                    if result.get("rewrite_locked")
+                    else ""
+                )
+            )
+
+            corrected = st.text_area(
+                "Rewritten query",
+                value=rewritten,
+                height=180,
+                key="rewrite_editor",
+                label_visibility="collapsed"
+            )
+
+            if st.button("Re-run with this wording"):
+
+                if corrected.strip():
+
+                    st.session_state["rewrite_override"] = corrected.strip()
+
+                    st.rerun()
+
+                else:
+
+                    st.warning(
+                        "Enter the wording to investigate with, or close this "
+                        "panel to keep the current analysis."
+                    )
 
     with st.expander("View agent trace"):
         st.write(result)

@@ -21,6 +21,18 @@ class IncidentRCAState(TypedDict):
 
     needs_clarification: bool
 
+    # the incident restated in the documentation's vocabulary, and what the
+    # digest resolved while doing it
+    rewritten_query: str
+
+    rewrite_applications: List[str]
+
+    rewrite_data_files: List[str]
+
+    # set when the reporter overrode the rewrite by hand, which stops the
+    # rewriter replacing their wording on the next pass
+    rewrite_locked: bool
+
     # retrieval
     search_identifiers: Dict[str, List[str]]
 
