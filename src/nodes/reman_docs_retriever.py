@@ -21,6 +21,12 @@ from qdrant_client import models
 
 from ingestion.reman_docs import DATA_FILE_RE, find_data_files
 
+from src.nodes.reman_docs_rerank import (
+    CANDIDATE_MULTIPLIER,
+    diversity_report,
+    select_diverse
+)
+
 from src.utils.incident_search import search_with_retry
 from src.utils.llm import create_embedding
 from src.utils.qdrant_client import qdrant_client
@@ -309,6 +315,27 @@ def build_search_query(state):
     return "\n\n".join(parts)
 
 
+def documentation_query(state):
+    """The rewritten incident where one exists, the assembled one otherwise.
+
+    The rewrite is preferred outright rather than blended. Measured on the same
+    corpus, the assembled query returns eleven estate-catalogue one-liners in
+    its top twelve and nothing about the recovery screen; the rewrite returns no
+    catalogue entries at all and puts the recovery section first. Mixing them
+    would reintroduce the vague half of the difference.
+
+    The fallback matters anyway: the rewriter is skipped when the analyser stops
+    a contentless report, and a resumed or replayed state may not carry one.
+    """
+
+    rewritten = state.get("rewritten_query")
+
+    if rewritten:
+        return rewritten
+
+    return build_search_query(state)
+
+
 def identifier_filter(identifiers):
 
     conditions = []
@@ -367,6 +394,11 @@ def to_document(point):
 
     document["score"] = point.score
 
+    # Carried only as far as re-ranking, which needs it to measure how much a
+    # candidate repeats the ones already chosen. Stripped before the document
+    # reaches the evaluator, which has no use for 1,536 floats.
+    document["vector"] = point.vector
+
     return document
 
 
@@ -385,15 +417,30 @@ def reman_docs_retriever_node(state):
         entities.get("symptom")
     )
 
+    # The rewriter resolved these against the digest - real file names, real
+    # application names - so its answers are added rather than re-derived. They
+    # are merged with what the raw text yields instead of replacing it: the
+    # rewrite can only name files the digest knows, and a ticket occasionally
+    # names one the documentation never described.
+    for name in state.get("rewrite_data_files") or []:
+
+        if name not in identifiers["data_files"]:
+            identifiers["data_files"].append(name)
+
     applications = infer_applications(
         state["user_query"],
         entities.get("service"),
         entities.get("symptom")
     )
 
+    for name in state.get("rewrite_applications") or []:
+
+        if name not in applications:
+            applications.append(name)
+
     try:
         vector = create_embedding(
-            build_search_query(state)
+            documentation_query(state)
         )
 
     except Exception as error:
@@ -427,7 +474,8 @@ def reman_docs_retriever_node(state):
             return search_with_retry(
                 collection_name=COLLECTION_NAME,
                 vector=vector,
-                limit=RESULT_LIMIT,
+                limit=RESULT_LIMIT * CANDIDATE_MULTIPLIER,
+                with_vectors=True,
                 **kwargs
             ).points
 
@@ -461,16 +509,33 @@ def reman_docs_retriever_node(state):
 
             taken += 1
 
+    # The per-strategy caps now bound a candidate pool rather than the result
+    # set, so they are multiplied by the same factor as the searches. The final
+    # cut is MMR's, and it needs more than RESULT_LIMIT candidates to have any
+    # choice to make.
+    candidate_cap = PER_STRATEGY_LIMIT * CANDIDATE_MULTIPLIER
+
     # Exact identifier matches first - a named program or file is a fact.
     payload_filter = identifier_filter(
         identifiers
     )
 
+    pinned = 0
+
     if payload_filter is not None:
 
         collect(
             attempt("identifier", query_filter=payload_filter),
-            cap=PER_STRATEGY_LIMIT
+            cap=candidate_cap
+        )
+
+        # Only the strongest few are pinned. All of them would be the old
+        # crowding fault under a new name: the identifier pass returns
+        # background documents that merely mention the file alongside the one
+        # that explains it.
+        pinned = min(
+            len(documents),
+            PER_STRATEGY_LIMIT
         )
 
         print(
@@ -486,7 +551,7 @@ def reman_docs_retriever_node(state):
 
         collect(
             attempt("application", query_filter=scoped_filter),
-            cap=PER_STRATEGY_LIMIT
+            cap=candidate_cap
         )
 
         print(
@@ -497,7 +562,25 @@ def reman_docs_retriever_node(state):
         attempt("semantic")
     )
 
-    documents = documents[:RESULT_LIMIT]
+    # Identifier matches are pinned ahead of diversification: a chunk carrying
+    # a file or program the report actually named earned its slot on a fact,
+    # not on resembling the query, and MMR has no way to know that.
+    documents = select_diverse(
+        documents,
+        RESULT_LIMIT,
+        pinned=min(pinned, RESULT_LIMIT)
+    )
+
+    spread = diversity_report(documents)
+
+    print(
+        f"  selection: {spread['duplicate_pairs']} duplicate pairs, "
+        f"worst section share {spread['worst_section_share']}, "
+        f"mean similarity {spread['mean_similarity']:.3f}"
+    )
+
+    for document in documents:
+        document.pop("vector", None)
 
     print(
         f"Retrieved {len(documents)} documentation chunks"

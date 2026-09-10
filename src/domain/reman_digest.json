@@ -1,0 +1,464 @@
+{
+  "data_files": {
+    "BM0001.ACT": {
+      "used_by": [
+        "BOM"
+      ],
+      "what": "Transaction File: - Organization: LINE SEQUENTIAL - Written via 6400-WRITE-TRANS for all BOM updates - Transact"
+    },
+    "BM0001.MST": {
+      "used_by": [
+        "BOM"
+      ],
+      "what": "Bill of Material Index File: - Organization: INDEXED with DYNAMIC access - Primary Key: BOM-KEY (Assembly Numbe"
+    },
+    "IN0001.MST": {
+      "used_by": [
+        "BOM",
+        "Inventory",
+        "Inventory Detail",
+        "LMS",
+        "Reporting"
+      ],
+      "what": "Indexed inventory master file containing part numbers, descriptions, on-hand quantities (NEW, USED, DIRTY, CORE"
+    },
+    "IN0002.XXX": {
+      "used_by": [
+        "Inventory"
+      ],
+      "what": "Opened EXTEND WITH LOCK for large format transactions, writes LARGE-ACT-RECORD from REACT-REC-0169 via 7000-WRI"
+    },
+    "IN0003.ODR": {
+      "used_by": [
+        "Reporting"
+      ],
+      "what": "Indexed file containing stock orders with part numbers, quantities, adjustment indicators, modification indicat"
+    },
+    "IN0004.MST": {
+      "used_by": [
+        "Reporting"
+      ],
+      "what": "Rolled part relationships read by ROLO-KEY - RESERVE-FILE (IN0001"
+    },
+    "IN0005.MST": {
+      "used_by": [
+        "Inventory",
+        "Inventory Detail",
+        "LMS",
+        "Reporting"
+      ],
+      "what": "Type: Indexed, Dynamic access - Key: STOP-KEY (12 bytes: PART 10, SUFFIX 2) - Significance: Parts with stopped"
+    },
+    "IN0011.MST": {
+      "used_by": [
+        "Inventory",
+        "LMS",
+        "Reporting"
+      ],
+      "what": "Type: Indexed, Dynamic access - Primary Key: KEY-L-P-S (26 bytes: L 14, P 10, S 2) - Alt Keys: KEY-P-I-D (21 by"
+    },
+    "IN0012.MST": {
+      "used_by": [
+        "Reporting"
+      ],
+      "what": "Sequential read for location database queries - Data extracted: location quantities, part status indicators, la"
+    },
+    "IN0013.LOC": {
+      "used_by": [
+        "LMS",
+        "Reporting"
+      ],
+      "what": "Indexed location database file containing location definitions, location types, descriptions, and permanent par"
+    },
+    "IN0015.MOV": {
+      "used_by": [
+        "Inventory",
+        "Reporting"
+      ],
+      "what": "The program deletes control ticket records after marking them as processed (PROCESS-INV-0090='Y') during used r"
+    },
+    "IN0018.MOV": {
+      "used_by": [
+        "Reporting"
+      ],
+      "what": "Indexed file containing current issue tickets with control numbers, part numbers, quantities, cells, line check"
+    },
+    "IN0019.MST": {
+      "used_by": [
+        "Inventory",
+        "Inventory Detail",
+        "Reporting"
+      ],
+      "what": "Type: Indexed, Dynamic access - Key: ROLO-KEY (24 bytes: ROLO-NUMBER 10, ROLO-SUFFIX 2, ORIG-NUMBER 10, ORIG-SU"
+    },
+    "IN0020.MST": {
+      "used_by": [
+        "Reporting"
+      ],
+      "what": "Indexed file tracking reserved quantities by part and type (new, used, core, dirty) with last update user and p"
+    },
+    "IN0022.CSO": {
+      "used_by": [
+        "Reporting"
+      ],
+      "what": "Indexed file containing Customer Special Order data with dealer, PSO, case number, sequence, dates, order numbe"
+    },
+    "IN0027.NDX": {
+      "used_by": [
+        "Reporting"
+      ],
+      "what": "Indexed file containing line checker entries with cell, part, location, quantity, comment, type, and time"
+    },
+    "IN0032.CTL": {
+      "used_by": [
+        "LMS"
+      ],
+      "what": "Sequential control number file: - Purpose: Maintains sequential control numbers for R&I transactions - Downstre"
+    },
+    "IN0032.MOV": {
+      "used_by": [
+        "LMS",
+        "Reporting"
+      ],
+      "what": "Indexed R&I control file storing move ticket information including control numbers, transaction codes, part num"
+    },
+    "IN0048.CTL": {
+      "used_by": [
+        "LMS"
+      ],
+      "what": "Sequential scan control number file: - Purpose: Maintains sequential skid control numbers - Downstream usage: G"
+    },
+    "IN0054.NDX": {
+      "used_by": [
+        "LMS"
+      ],
+      "what": "Indexed file for scan control: - Key: SIR-KEY (10 bytes: SCN-NO-6, SCN-SEQ-4) - Significance: Tracks skid contr"
+    },
+    "IN0056.MST": {
+      "used_by": [
+        "Inventory",
+        "LMS",
+        "Reporting"
+      ],
+      "what": "The program deletes old hot part records and writes new records with updated part numbers during rollover opera"
+    },
+    "IN0061.NDX": {
+      "used_by": [
+        "Inventory",
+        "LMS",
+        "Reporting"
+      ],
+      "what": "Type: Indexed, Dynamic access - Key: UOF-NDX-KEY (12 bytes: PART 10, SUFX 2) - Significance: Used-parts-only in"
+    },
+    "IN0072.MOV": {
+      "used_by": [
+        "Reporting"
+      ],
+      "what": "Indexed file containing kit replenishment tickets with control numbers, part numbers, quantities, locations, an"
+    },
+    "LM0001.CRS": {
+      "used_by": [
+        "LMS"
+      ],
+      "what": "Indexed file for cross-reference: - Key: PART-KEY (12 bytes: PART-10, SUFFIX-2) - Significance: Maps cylinder h"
+    },
+    "LM0004.MST": {
+      "used_by": [
+        "LMS"
+      ],
+      "what": "Indexed file for bar code transactions: - Key: BMR-KEY (18 bytes: PART-10, SUFX-2, USER-ID-3, TRAN-CODE-3) - Si"
+    },
+    "LM0005.ACT": {
+      "used_by": [
+        "Reporting"
+      ],
+      "what": "Line sequential file tracking deleted and changed LC tickets with control numbers, parts, quantities, delete/ch"
+    },
+    "LM0063.MOV": {
+      "used_by": [
+        "Reporting"
+      ],
+      "what": "Indexed file tracking inventory transfers with control numbers, part numbers, quantities, types, transfer user,"
+    },
+    "LM0064.TMP": {
+      "used_by": [
+        "LMS"
+      ],
+      "what": "Line sequential transfer log file containing transfer transaction records with control numbers, transaction cod"
+    }
+  },
+  "programs": {
+    "01RMNIDX": {
+      "application": "Reman Index",
+      "data_files": {},
+      "function_keys": {
+        "F10": [
+          "Display help and loop",
+          "Perform help and loop"
+        ],
+        "F3": [
+          "Browse records"
+        ],
+        "F6": [
+          "Exit field entry",
+          "Refresh screen"
+        ]
+      },
+      "menu_options": {},
+      "program": "01RMNIDX",
+      "program_id": "F8RH0071",
+      "recovery": [
+        "File Recovery and Maintenance: RECOVER1.EXE integration for corrupted index file recovery, employee master file unload capability, and reserved ID validation to prevent system ID conflicts.",
+        "System commands: Executes CMD commands to create user temp directories (MD \\TEMP\\{UID}), delete user temp directories (RD /S /Q \\TEMP\\{UID}), recover corrupted files (RECOVER1.EXE), copy log files, and launch external programs like NOTEPAD for file editing.",
+        "- 6200-FILE-RECOVERY SECTION: Executes RECOVER1.EXE to recover corrupted files.",
+        "4 FILE RECOVERY (6200-FILE-RECOVERY): - Accepts filename to recover - Calls F8RH0273 to check file exists - Strings command: 'CMD /C RECOVER1.EXE filename filename."
+      ]
+    },
+    "02RMNINVTR": {
+      "application": "Inventory",
+      "data_files": {
+        "IN0001.MST": "Indexed inventory master file containing part numbers, descriptions, on-hand quantities (NEW, USED, DIRTY, CORE",
+        "IN0002.XXX": "Opened EXTEND WITH LOCK for large format transactions, writes LARGE-ACT-RECORD from REACT-REC-0169 via 7000-WRI",
+        "IN0005.MST": "Type: Indexed, Dynamic access - Key: STOP-KEY (12 bytes: PART 10, SUFFIX 2) - Significance: Parts with stopped",
+        "IN0011.MST": "Type: Indexed, Dynamic access - Primary Key: KEY-L-P-S (26 bytes: L 14, P 10, S 2) - Alt Keys: KEY-P-I-D (21 by",
+        "IN0015.MOV": "The program deletes control ticket records after marking them as processed (PROCESS-INV-0090='Y') during used r",
+        "IN0019.MST": "Type: Indexed, Dynamic access - Key: ROLO-KEY (24 bytes: ROLO-NUMBER 10, ROLO-SUFFIX 2, ORIG-NUMBER 10, ORIG-SU",
+        "IN0056.MST": "The program deletes old hot part records and writes new records with updated part numbers during rollover opera",
+        "IN0061.NDX": "Type: Indexed, Dynamic access - Key: UOF-NDX-KEY (12 bytes: PART 10, SUFX 2) - Significance: Used-parts-only in"
+      },
+      "function_keys": {
+        "F1": [
+          "CREATE ROLL OVER",
+          "CREATE STOCK ORDERS",
+          "DELETE PROCESS",
+          "Download audit file",
+          "ENTER LC DATA",
+          "ENTER TICKETS"
+        ],
+        "F10": [
+          "CORE LC AUTO",
+          "HELP",
+          "RECOVER"
+        ],
+        "F11": [
+          "CHANGE BATCH LC PRINTER",
+          "Fix on-hand"
+        ],
+        "F2": [
+          "Batch audit",
+          "CHANGE DATA",
+          "COMPRESS PROCESS",
+          "PRINT EDIT REPORT",
+          "PRINT SHORT SHEET",
+          "UN-ROLL PARTS",
+          "UPDATE STOCK ORDERS"
+        ],
+        "F3": [
+          "CREATE MOVE TICKET FILE",
+          "DELETE PARTS",
+          "PRINT MISSING TICKETS",
+          "PROCESS STOCK ORDERS",
+          "REPORT"
+        ],
+        "F4": [
+          "CREATE OTHER ORDERS",
+          "PRINT ADJUSTMENT RPT",
+          "REPRINT TICKETS",
+          "Reset TABLE-LINE to 1",
+          "STOP PROCESSING"
+        ],
+        "F5": [
+          "PRINT STOCK ORDERS",
+          "REPRINT COMPLETE LC REPORT"
+        ],
+        "F6": [
+          "PURGE PROCESS",
+          "REPRINT SHORT SHEET",
+          "REPRINT STOCK ORDERS"
+        ],
+        "F7": [
+          "REPRINT FORCED NEW",
+          "USED ONLY RECEIPTS"
+        ],
+        "F8": [
+          "MODIFY LOCATION",
+          "RESORT TICKET FILE"
+        ],
+        "F9": [
+          "CORE LINE CHECKER",
+          "MODIFY EXCESS IND"
+        ]
+      },
+      "menu_options": {
+        "1200-OPTION-TWO": "NEW PARTS",
+        "1300-OPTION-THREE": "USED PARTS",
+        "1400-OPTION-FOUR": "PART MAINT",
+        "1500-OPTION-FIVE": "ROLL OVERS",
+        "1600-OPTION-SIX": "INTERPLANT",
+        "1950-OPTION-TEN": "STOCK ORDER MENU",
+        "1970-OPTION-TWELVE": "CONTROL TICKET MENU",
+        "8100-OPTION-KEYS": "BUILD OPTION KEYS",
+        "8400-OPTION-OVERLAY": "LOAD MENU OVERLAY",
+        "9999-OPTION-ESC": "PROGRAM EXIT"
+      },
+      "program": "02RMNINVTR",
+      "program_id": "F8RH0030",
+      "recovery": [
+        "- Section 1407-RECOVER: Paragraph that performs file recovery operations on KSDS files using RECOVER1.EXE.",
+        "Recovery Mechanisms: For file corruption, the program provides a recovery utility (1407-RECOVER section) that validates file names and calls RECOVER1.EXE to rebuild indexed files."
+      ]
+    },
+    "03RMNLMS": {
+      "application": "LMS",
+      "data_files": {
+        "IN0001.MST": "Indexed inventory master file containing part numbers, descriptions, ROLO indicators, BEC codes, permanent loca",
+        "IN0005.MST": "Indexed file for stop processing: - Key: STOP-KEY (12 bytes: PART-10, SUFFIX-2) - Significance: Flags parts tha",
+        "IN0011.MST": "Indexed location management file with multiple keys (KEY-L-P-S for location-part-status, KEY-P-I-D for part-inv",
+        "IN0013.LOC": "Indexed location database file containing location definitions, location types, descriptions, and permanent par",
+        "IN0032.CTL": "Sequential control number file: - Purpose: Maintains sequential control numbers for R&I transactions - Downstre",
+        "IN0032.MOV": "Indexed R&I control file storing move ticket information including control numbers, transaction codes, part num",
+        "IN0048.CTL": "Sequential scan control number file: - Purpose: Maintains sequential skid control numbers - Downstream usage: G",
+        "IN0054.NDX": "Indexed file for scan control: - Key: SIR-KEY (10 bytes: SCN-NO-6, SCN-SEQ-4) - Significance: Tracks skid contr",
+        "IN0056.MST": "Indexed file for hot parts: - Key: HOT-KEY (34 bytes: PART-10, SUFFIX-2, CELL-5, TYPE-1, DATE-8, TIME-8) - Sign",
+        "IN0061.NDX": "Indexed file for used-only parts: - Key: UOF-NDX-KEY (12 bytes: PART-10, SUFX-2) - Significance: Identifies par",
+        "LM0001.CRS": "Indexed file for cross-reference: - Key: PART-KEY (12 bytes: PART-10, SUFFIX-2) - Significance: Maps cylinder h",
+        "LM0004.MST": "Indexed file for bar code transactions: - Key: BMR-KEY (18 bytes: PART-10, SUFX-2, USER-ID-3, TRAN-CODE-3) - Si",
+        "LM0064.TMP": "Line sequential transfer log file containing transfer transaction records with control numbers, transaction cod"
+      },
+      "function_keys": {
+        "F1": [
+          "Hot parts processing",
+          "Print bar code tickets"
+        ],
+        "F10": [
+          "PF MESO processing",
+          "Redisplay last report"
+        ],
+        "F11": [
+          "Lafayette packing list"
+        ],
+        "F2": [
+          "Receive and print tickets",
+          "Stop processing",
+          "Update from bar code"
+        ],
+        "F3": [
+          "Locator master print",
+          "Reprint damaged tickets",
+          "Surplus/obsolete processing"
+        ],
+        "F4": [
+          "Cross reference maintenance",
+          "Reprint damaged tickets"
+        ],
+        "F5": [
+          "Container options",
+          "Modify inventory detail",
+          "Suggested audit numbers"
+        ],
+        "F6": [
+          "Misc issue ticket print"
+        ],
+        "F7": [
+          "Control file maintenance",
+          "Hot parts listing",
+          "Misc receipt ticket print"
+        ],
+        "F8": [
+          "Misc inventory reports"
+        ],
+        "F9": [
+          "Host/LAN inventory audit",
+          "Packing list processing"
+        ]
+      },
+      "menu_options": {},
+      "program": "03RMNLMS",
+      "program_id": "F8RH0093",
+      "recovery": []
+    },
+    "04RH0442": {
+      "application": "Reporting",
+      "data_files": {
+        "IN0001.MST": "Primary inventory file read dynamically by part number/suffix key (MST-PART-LOC + MST-INV-TYPE + MST-PART-NUMBE",
+        "IN0003.ODR": "Indexed file containing stock orders with part numbers, quantities, adjustment indicators, modification indicat",
+        "IN0004.MST": "Rolled part relationships read by ROLO-KEY - RESERVE-FILE (IN0001",
+        "IN0005.MST": "Indexed file tracking parts flagged for stop processing with business unit, model, relation, stop date, action,",
+        "IN0011.MST": "Indexed location management file tracking parts stored in specific warehouse locations with quantities, last re",
+        "IN0012.MST": "Sequential read for location database queries - Data extracted: location quantities, part status indicators, la",
+        "IN0013.LOC": "Indexed database of all defined warehouse locations used to identify open and occupied locations for reports RP",
+        "IN0015.MOV": "Indexed file containing current receipt tickets with control numbers, part numbers, quantities, types, inspecto",
+        "IN0018.MOV": "Indexed file containing current issue tickets with control numbers, part numbers, quantities, cells, line check",
+        "IN0019.MST": "Indexed file tracking part number roll-over relationships showing which parts have been superseded by other par",
+        "IN0020.MST": "Indexed file tracking reserved quantities by part and type (new, used, core, dirty) with last update user and p",
+        "IN0022.CSO": "Indexed file containing Customer Special Order data with dealer, PSO, case number, sequence, dates, order numbe",
+        "IN0027.NDX": "Indexed file containing line checker entries with cell, part, location, quantity, comment, type, and time",
+        "IN0032.MOV": "Indexed file containing R&I (Remove and Install) tickets with control numbers, part numbers, quantities, types,",
+        "IN0056.MST": "Indexed file tracking hot parts requiring urgent processing with part numbers, cells, quantities, user IDs, for",
+        "IN0061.NDX": "Indexed file listing parts designated as used-only receipts",
+        "IN0072.MOV": "Indexed file containing kit replenishment tickets with control numbers, part numbers, quantities, locations, an",
+        "LM0005.ACT": "Line sequential file tracking deleted and changed LC tickets with control numbers, parts, quantities, delete/ch",
+        "LM0063.MOV": "Indexed file tracking inventory transfers with control numbers, part numbers, quantities, types, transfer user,"
+      },
+      "function_keys": {},
+      "menu_options": {},
+      "program": "04RH0442",
+      "program_id": "F8RH0442",
+      "recovery": []
+    },
+    "05RHE247": {
+      "application": "Inventory Detail",
+      "data_files": {
+        "IN0001.MST": "Main indexed inventory master file containing part location, inventory type, part number, part suffix, and roll",
+        "IN0005.MST": "Type: Indexed file for special processing indicators - Significance: Contains stop processing flags, excess inv",
+        "IN0019.MST": "Builds key from MST-ROLO-NUMBER and MST-ROLO-SUFFIX - Reads up to 6 roll-from parts and 5 roll-to parts - Store"
+      },
+      "function_keys": {
+        "F1": [
+          "Help system access"
+        ],
+        "F5": [
+          "Where Used inquiry"
+        ],
+        "F6": [
+          "Order File inquiry",
+          "Print error information"
+        ],
+        "F7": [
+          "Toggle marquee option"
+        ]
+      },
+      "menu_options": {},
+      "program": "05RHE247",
+      "program_id": "F8RHE247",
+      "recovery": []
+    },
+    "06RH0101": {
+      "application": "BOM",
+      "data_files": {
+        "BM0001.ACT": "Transaction File: - Organization: LINE SEQUENTIAL - Written via 6400-WRITE-TRANS for all BOM updates - Transact",
+        "BM0001.MST": "Bill of Material Index File: - Organization: INDEXED with DYNAMIC access - Primary Key: BOM-KEY (Assembly Numbe",
+        "IN0001.MST": "When components are added that do not exist in inventory, the program creates new inventory master records with"
+      },
+      "function_keys": {},
+      "menu_options": {
+        "1100-OPTION-ONE": "Change Indicators",
+        "1200-OPTION-TWO": "Change Buy Indicator in ALL",
+        "1300-OPTION-THREE": "Add Component",
+        "1400-OPTION-FOUR": "Replace Component",
+        "1500-OPTION-FIVE": "Replace Component in ALL",
+        "1600-OPTION-SIX": "Replace Quantity",
+        "1700-OPTION-SEVEN": "Replace Quantity in ALL",
+        "1800-OPTION-EIGHT": "Delete Component",
+        "1900-OPTION-NINE": "Delete Component from ALL",
+        "2000-OPTION-TEN": "Change Assembly",
+        "2100-OPTION-ELEVEN": "Delete Assembly",
+        "2200-OPTION-TWELVE": "Change Not-Costed Indicator",
+        "2400-OPTION-FOURTEEN": "Change PPC Code"
+      },
+      "program": "06RH0101",
+      "program_id": "F8RH0101",
+      "recovery": []
+    }
+  }
+}

@@ -135,6 +135,26 @@ FLOW_STYLES = """
     color: var(--rca-text-soft, #41567a);
     overflow-wrap: anywhere;
 }
+.rca-node-note {
+    display: block;
+    margin-top: 0.45rem;
+    padding: 0.55rem 0.7rem;
+    border-left: 2px solid var(--rca-accent, #4c8dff);
+    border-radius: 0 6px 6px 0;
+    background: var(--rca-note-bg, rgba(76, 141, 255, 0.08));
+    font-size: 0.78rem;
+    line-height: 1.5;
+    color: var(--rca-text-soft, #41567a);
+    overflow-wrap: anywhere;
+}
+.rca-node-note b {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--rca-text-muted, #6b7f9e);
+}
 .rca-node-meta {
     padding-top: 0.2rem;
     font-size: 0.76rem;
@@ -228,7 +248,7 @@ def format_duration(seconds):
     return f"{minutes}m {remainder:02d}s"
 
 
-def _node_html(step, detail=None):
+def _node_html(step, detail=None, note=None):
 
     status = step["status"]
 
@@ -282,19 +302,36 @@ def _node_html(step, detail=None):
         else ""
     )
 
+    # Shown on any settled status, unlike `detail`. A note is a fact the stage
+    # produced - the rewritten query, say - and it has to stay readable after
+    # the stage finishes, which is exactly when the user wants to check it.
+    note_html = (
+        f"<span class='rca-node-note'><b>{escape(note[0])}</b>{escape(note[1])}</span>"
+        if note
+        else ""
+    )
+
     return (
         f"<li class='rca-node is-{status}'>"
         f"<span class='rca-rail'><span class='rca-node-badge'{badge_style}>{badge}</span></span>"
         "<span class='rca-node-body'>"
         f"<span class='rca-node-label'>{escape(step['label'])}</span>"
         f"{detail_html}"
+        f"{note_html}"
         "</span>"
         f"<span class='rca-node-meta'>{escape(meta)}</span>"
         "</li>"
     )
 
 
-def render_flow(phases, headline, detail=None, total_elapsed=None, progress=None):
+def render_flow(
+    phases,
+    headline,
+    detail=None,
+    total_elapsed=None,
+    progress=None,
+    notes=None
+):
     """Builds the vertical progress timeline.
 
     `phases` are the rolled-up rows shown to the user; `progress` is an optional
@@ -316,10 +353,13 @@ def render_flow(phases, headline, detail=None, total_elapsed=None, progress=None
         round(100 * progress)
     )
 
+    notes = notes or {}
+
     rows = [
         _node_html(
             phase,
-            detail
+            detail,
+            notes.get(phase["key"])
         )
         for phase in phases
     ]

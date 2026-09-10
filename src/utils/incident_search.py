@@ -51,7 +51,8 @@ def search_with_retry(
     vector: list[float],
     limit: int = 8,
     query_filter=None,
-    with_payload: bool = True
+    with_payload: bool = True,
+    with_vectors: bool = False
 ):
     """Vector search, optionally restricted by a payload condition.
 
@@ -76,6 +77,7 @@ def search_with_retry(
                 query=vector,
                 limit=limit,
                 with_payload=with_payload,
+                with_vectors=with_vectors,
                 query_filter=query_filter
             )
 
@@ -88,13 +90,13 @@ def search_with_retry(
 
             dns_failure = is_name_resolution_failure(error)
 
-            limit = (
+            max_attempts = (
                 DNS_MAX_ATTEMPTS
                 if dns_failure
                 else QDRANT_MAX_ATTEMPTS
             )
 
-            if attempt >= limit:
+            if attempt >= max_attempts:
                 break
 
             backoff = (

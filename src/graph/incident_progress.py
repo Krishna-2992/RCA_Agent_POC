@@ -21,6 +21,8 @@ INCIDENT_STEPS = [
 
     ("query_analyzer", "Understanding the incident"),
 
+    ("rewrite", "Matching it to the REMAN estate"),
+
     ("clarification", "Requesting more details"),
 
     ("retrieve", "Searching past records"),
@@ -45,7 +47,7 @@ INCIDENT_PHASES = [
     (
         "understanding",
         "Understanding the incident",
-        ["query_analyzer", "clarification"]
+        ["query_analyzer", "rewrite", "clarification"]
     ),
 
     (
@@ -73,6 +75,9 @@ INCIDENT_ACTIVITIES = {
 
     "query_analyzer":
         "Pulling out the affected system, the symptom and any error code named",
+
+    "rewrite":
+        "Restating the incident in the documentation's own terms",
 
     "clarification":
         "Working out what still needs to be asked",
@@ -105,6 +110,8 @@ INCIDENT_TECHNICAL_NAMES = {
 
     "query_analyzer": "Query Analyzer",
 
+    "rewrite": "Query Rewriter",
+
     "clarification": "Clarification Agent",
 
     "retrieve": "ServiceNow Retriever",
@@ -127,6 +134,14 @@ INCIDENT_TECHNICAL_NAMES = {
 def predict_next_incident_step(node, state):
 
     if node == "query_analyzer":
+
+        return (
+            "clarification"
+            if state.get("needs_clarification")
+            else "rewrite"
+        )
+
+    if node == "rewrite":
 
         return (
             "clarification"
