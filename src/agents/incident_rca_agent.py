@@ -7,6 +7,16 @@ design - it is evidence of mechanism, never of an event. The prompt draws that
 line explicitly, because the failure mode it guards against is a confident root
 cause synthesised from a design document with no incident behind it.
 
+That line is about what documentation may prove, not about what it may
+contribute, and conflating the two cost this agent its most useful output. The
+resolution steps were drawn from "what previously worked", the tickets record
+their fixes as "recovered the file" and nothing more, and so the steps came out
+as "recover the file using the approved procedure" while the procedure itself -
+the menu option, the function key, the access level, the utility - sat unused in
+the evidence block. Documentation extracts are now marked mechanism or
+procedure, and a procedure extract is required in the steps rather than merely
+permitted there.
+
 There is still no code repository behind this pipeline, so deployments and code
 changes remain off-limits unless a change record says otherwise.
 """
@@ -40,7 +50,13 @@ class IncidentRCAResult(BaseModel):
     )
 
     resolution_steps: List[str] = Field(
-        description="Ordered steps to resolve, drawn from what previously worked"
+        description=(
+            "Ordered steps to resolve. Take the sequence from what previously "
+            "worked, and take the operator detail - menu option, function key, "
+            "access level, utility name, what the step leaves behind - from "
+            "documentation marked as procedure. Say which source each step "
+            "came from."
+        )
     )
 
     preventive_actions: List[str] = Field(
@@ -86,12 +102,20 @@ def format_evidence_for_prompt(evidence_items):
 
         if item.get("source_type") == "reman_documentation":
 
+            role = metadata.get("evidence_role") or "mechanism"
+
             block.update(
                 {
                     "program": metadata.get("program"),
                     "application": metadata.get("application"),
                     "document_type": metadata.get("document_type"),
-                    "describes": "how the software works, not what happened"
+                    "evidence_role": role,
+                    "describes": (
+                        "what an operator does to carry this out - use it for "
+                        "the detail of the resolution steps"
+                        if role == "procedure"
+                        else "how the software works, not what happened"
+                    )
                 }
             )
 
@@ -196,10 +220,13 @@ Write the analysis under these rules:
   incident.
 - The two kinds of evidence do different jobs, and the difference matters more
   than any other rule here. A `servicenow_record` can establish what happened
-  and what caused it. A `documentation` item can only explain a mechanism: what
-  a file holds, which programs read it, how a failure of that kind is handled
-  or repaired. Never state or imply that a documentation item shows this
-  incident occurred, or that it establishes the cause.
+  and what caused it. A `documentation` item can never show that this incident
+  occurred or establish its cause, whatever it is marked.
+- Documentation items carry an `evidence_role`. A `mechanism` item explains what
+  a file holds, which programs read it, and how a failure of that kind arises. A
+  `procedure` item specifies what an operator does: the menu option, the
+  function key, the access level required, the utility invoked, what it leaves
+  behind. Neither may evidence an event; only the second belongs in the steps.
 - Where documentation is the only evidence for the cause, say plainly that the
   cause is not established by the record, give the mechanism as the likely
   explanation, and keep the confidence below 0.4.
@@ -216,10 +243,18 @@ Write the analysis under these rules:
   Nothing can evidence an absence, so leave evidence_ids empty for those and
   say plainly that it is an observation about the retrieved evidence rather
   than a finding. Do not attach an unrelated evidence_id to satisfy the rule.
-- Draw resolution steps from the actions that actually resolved the matched
-  records, and say which record each step comes from. A documented recovery
-  procedure may be offered as a step only when it is labelled as coming from
+- Take the ORDER of the resolution steps from the actions that actually
+  resolved the matched records, and say which record each step comes from.
+- Where a `procedure` documentation item describes how a step is carried out,
+  you MUST put that detail into the step: name the menu option, the function
+  key, the access level, the utility, and anything the step leaves behind,
+  exactly as the documentation gives them. Label that detail as coming from
   documentation rather than from a past fix.
+- A step that says to recover, repair or reset something without saying how it
+  is done is not a resolution step. The reader is a support engineer at a
+  terminal who has to perform it. If the documentation does not say how, say
+  that the procedure is not documented in the retrieved evidence - do not
+  disguise the gap with a phrase like "using the approved procedure".
 - When the matched records show a repeating cause, say so plainly and treat the
   recurrence itself as a finding: a fault seen many times needs a permanent fix,
   not another restart.

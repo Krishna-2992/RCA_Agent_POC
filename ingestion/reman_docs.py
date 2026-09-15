@@ -68,6 +68,20 @@ DOCX_NS = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
 MAX_CHUNK_CHARS = 3500
 
 
+# Business rules get a smaller budget than prose, because they are not prose.
+# Ten consecutive Given/When/Then statements are ten unrelated topics, and one
+# embedding over all of them is an average of ten things rather than a
+# description of any. Measured on the rules that specify file recovery: the
+# three of them score 0.729 against a recovery question on their own and 0.577
+# packed into a chunk with seven unrelated neighbours. That 0.152 is the
+# difference between rank two and rank twenty, and it is why a procedure split
+# across consecutive rules never reached the answer.
+#
+# Paragraph sources keep the larger budget: their pieces continue one another,
+# so packing them loses nothing.
+BUSINESS_RULE_CHUNK_CHARS = 1200
+
+
 # The legacy identifier is what incidents actually cite - a ticket says
 # "F8RH0093", never "03RMNLMS".
 LEGACY_ID = {
@@ -185,12 +199,18 @@ def clean(text):
     return text.strip()
 
 
-def pack(pieces, meta, section):
+def pack(pieces, meta, section, max_chars=None):
     """Groups already-atomic pieces into chunks without splitting one in half.
 
     A piece is a paragraph or a single business rule. Packing on those
     boundaries is why no overlap is configured: a chunk never ends mid-thought.
+
+    `max_chars` overrides the default budget for sources whose pieces do not
+    belong together - see BUSINESS_RULE_CHUNK_CHARS.
     """
+
+    if max_chars is None:
+        max_chars = MAX_CHUNK_CHARS
 
     chunks = []
     buffer = []
@@ -217,7 +237,7 @@ def pack(pieces, meta, section):
         if not piece:
             continue
 
-        if size + len(piece) > MAX_CHUNK_CHARS and buffer:
+        if size + len(piece) > max_chars and buffer:
             flush()
             buffer = []
             size = 0
@@ -438,7 +458,8 @@ def chunk_business_rules(program):
     return pack(
         lines,
         program_meta(program, "business_rule"),
-        "business_rules"
+        "business_rules",
+        max_chars=BUSINESS_RULE_CHUNK_CHARS
     )
 
 

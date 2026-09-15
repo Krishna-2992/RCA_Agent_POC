@@ -21,6 +21,8 @@ from qdrant_client import models
 
 from ingestion.reman_docs import DATA_FILE_RE, find_data_files
 
+from src.nodes.incident_evidence import document_role
+
 from src.nodes.reman_docs_rerank import (
     CANDIDATE_MULTIPLIER,
     diversity_report,
@@ -51,6 +53,45 @@ PER_STRATEGY_LIMIT = max(
     2,
     RESULT_LIMIT // 2
 )
+
+
+# Slots reserved for procedural documentation on a remedy question. Two, not
+# more: the procedure is worth a third of the window and no more than that,
+# because a step still has to be justified by what the records show happened.
+PROCEDURE_SLOTS = int(
+    os.getenv("REMAN_DOCS_PROCEDURE_SLOTS", "2")
+)
+
+
+# Words that make a report a request for a remedy rather than an explanation.
+# Deliberately a word list and not a model call: it runs on every incident, the
+# vocabulary is small and stable, and a wrong answer only costs two slots.
+REMEDY_MARKERS = (
+    "recover", "recovery", "repair", "fix", "restore", "rebuild",
+    "what do i do", "what should i do", "what i need to do", "how do i",
+    "how to", "steps", "resolve", "unlock", "clear the lock"
+)
+
+
+def wants_remedy(state):
+    """Whether the reporter is asking how to put this right."""
+
+    entities = state.get("extracted_entities") or {}
+
+    haystack = " ".join(
+        str(value)
+        for value in (
+            state.get("user_query"),
+            state.get("rewritten_query"),
+            entities.get("symptom")
+        )
+        if value
+    ).lower()
+
+    return any(
+        marker in haystack
+        for marker in REMEDY_MARKERS
+    )
 
 
 PROGRAM_RE = re.compile(
@@ -565,10 +606,23 @@ def reman_docs_retriever_node(state):
     # Identifier matches are pinned ahead of diversification: a chunk carrying
     # a file or program the report actually named earned its slot on a fact,
     # not on resembling the query, and MMR has no way to know that.
+    # Slots held for procedural extracts when the reporter is asking how to put
+    # something right. Relevance alone does not reserve them: descriptions of
+    # what a program does outrank and outnumber descriptions of what an operator
+    # presses, so the window filled with the former and the resolution steps
+    # came out as "recover the file using the approved procedure".
+    reserve = (
+        PROCEDURE_SLOTS
+        if wants_remedy(state)
+        else 0
+    )
+
     documents = select_diverse(
         documents,
         RESULT_LIMIT,
-        pinned=min(pinned, RESULT_LIMIT)
+        pinned=min(pinned, RESULT_LIMIT),
+        reserve_for=lambda document: document_role(document) == "procedure",
+        reserve_count=reserve
     )
 
     spread = diversity_report(documents)

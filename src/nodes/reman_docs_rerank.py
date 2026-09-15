@@ -87,7 +87,15 @@ def cosine(left, right):
     return dot / (left_norm * right_norm)
 
 
-def select_diverse(candidates, limit, cap=None, threshold=None, pinned=0):
+def select_diverse(
+    candidates,
+    limit,
+    cap=None,
+    threshold=None,
+    pinned=0,
+    reserve_for=None,
+    reserve_count=0
+):
     """Takes candidates in relevance order, skipping what repeats.
 
     Relevance order is preserved throughout - nothing is promoted for being
@@ -103,6 +111,16 @@ def select_diverse(candidates, limit, cap=None, threshold=None, pinned=0):
     A candidate carrying no vector is kept and only section-capped. Missing
     vectors mean the search was made without them, and treating that as
     "duplicate of everything" would empty the result set.
+
+    `reserve_for` is a predicate and `reserve_count` a number of slots held for
+    candidates satisfying it, filled before the general pass. Relevance ranking
+    alone does not produce a usable answer for a reporter asking how to fix
+    something: the passages describing what the program does outnumber and
+    outrank the ones describing what the operator presses, so a window chosen
+    purely on relevance came back five-sixths mechanism and one-sixth procedure,
+    and the chunk naming the supervisor override never appeared at all. The
+    reservation is a floor, not a quota - if fewer qualify, the slots go back to
+    the general pass.
     """
 
     if cap is None:
@@ -121,7 +139,32 @@ def select_diverse(candidates, limit, cap=None, threshold=None, pinned=0):
         for document in selected
     )
 
-    for candidate in candidates[pinned:]:
+    rest = list(candidates[pinned:])
+
+    if reserve_for and reserve_count > 0:
+
+        reserved = _take(
+            [
+                candidate
+                for candidate in rest
+                if reserve_for(candidate)
+            ],
+            min(reserve_count, limit - len(selected)),
+            selected,
+            taken,
+            cap,
+            threshold
+        )
+
+        chosen = {id(document) for document in reserved}
+
+        rest = [
+            candidate
+            for candidate in rest
+            if id(candidate) not in chosen
+        ]
+
+    for candidate in rest:
 
         if len(selected) >= limit:
             break
@@ -146,6 +189,7 @@ def select_diverse(candidates, limit, cap=None, threshold=None, pinned=0):
     # A filter this strict can come up short on a thin candidate pool, and a
     # half-empty window is worse than a slightly repetitive one. Backfill in
     # relevance order with whatever was skipped.
+
     if len(selected) < limit:
 
         chosen = {
@@ -162,6 +206,42 @@ def select_diverse(candidates, limit, cap=None, threshold=None, pinned=0):
                 selected.append(candidate)
 
     return selected[:limit]
+
+
+def _take(candidates, limit, selected, taken, cap, threshold):
+    """Appends up to `limit` candidates under the same cap and threshold rules.
+
+    Shared by the reserved pass and the general one so a reserved slot cannot
+    smuggle in a duplicate the general pass would have rejected.
+    """
+
+    added = []
+
+    for candidate in candidates:
+
+        if len(added) >= limit:
+            break
+
+        key = section_key(candidate)
+
+        if taken[key] >= cap:
+            continue
+
+        vector = candidate.get("vector")
+
+        if vector and any(
+            cosine(vector, chosen.get("vector")) > threshold
+            for chosen in selected
+        ):
+            continue
+
+        taken[key] += 1
+
+        selected.append(candidate)
+
+        added.append(candidate)
+
+    return added
 
 
 def section_key(document):

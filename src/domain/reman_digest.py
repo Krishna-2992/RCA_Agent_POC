@@ -97,6 +97,12 @@ ERROR_FAMILIES = {
         "usual_fix": "Close every open instance, then run file recovery",
         "source": "ticket history (10 incidents)"
     },
+    "9302": {
+        "seen_as": ("9302",),
+        "means": "File lock, reported on control files rather than masters",
+        "usual_fix": "Close the lock; the file is usually not corrupt",
+        "source": "ticket history (3 incidents, all IN0014.CTL)"
+    },
     "4600": {
         "seen_as": ("4600",),
         "means": "No file position, reported alongside a corrupt index",
@@ -108,6 +114,20 @@ ERROR_FAMILIES = {
         "means": "File not found on open",
         "usual_fix": "Confirm the file exists and the drive is mapped",
         "source": "02RMNINVTR technical documentation"
+    }
+}
+
+
+# Files the tickets name that the technical documentation never describes, so
+# the generated digest cannot know them. IN0014.CTL appears in three incidents
+# as "file lock in light decon" and in no document at all - the estate is larger
+# than the six programs AWS Transform wrote up, and a file being undocumented is
+# not a reason to leave the support team without its name.
+UNDOCUMENTED_FILES = {
+    "IN0014.CTL": {
+        "what": "Light decon control file",
+        "used_by": ["Inventory"],
+        "source": "ticket history (INC10148317, INC10109021, INC10055662)"
     }
 }
 
@@ -258,6 +278,20 @@ def digest_for_prompt(applications=None):
                 )
 
                 lines.append(f"    {name}: {what}{also}")
+
+            # Undocumented files are listed with the documented ones, marked so
+            # nothing downstream quotes them as documentation. A support
+            # engineer needs the name whether or not AWS Transform wrote it up.
+            for name, entry_data in sorted(UNDOCUMENTED_FILES.items()):
+
+                if application not in entry_data["used_by"]:
+                    continue
+
+                lines.append(
+                    f"    {name}: {entry_data['what']} "
+                    f"[not in the documentation; known from "
+                    f"{entry_data['source']}]"
+                )
 
         options = entry.get("menu_options") or {}
 

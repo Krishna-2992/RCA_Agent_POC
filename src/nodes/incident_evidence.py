@@ -102,6 +102,64 @@ def build_record_evidence(record):
     }
 
 
+# Sections whose subject is what an operator does, rather than how the program
+# behaves. The distinction is the point: both are documentation and neither may
+# evidence an event, but only one of them belongs in resolution steps.
+PROCEDURAL_SECTION_MARKERS = (
+    "controlflow",
+    "programstructure",
+    "flowchart",
+    "decisionpoints",
+    "usernotifications",
+    "business_rules"
+)
+
+
+PROCEDURAL_CONTENT_MARKERS = (
+    "recover1.exe",
+    "-recover",
+    "file recovery",
+    "menu option",
+    "function key",
+    "security level",
+    "option-four",
+    "check-security"
+)
+
+
+def document_role(document):
+    """Whether an extract explains a mechanism or specifies a procedure.
+
+    Every documentation extract used to be stamped "mechanism", which was right
+    about what a document may prove and wrong about what it may contribute. A
+    document cannot establish that an incident happened - that guard stays - but
+    a section naming the menu option, the function key and the access level for
+    a repair is an instruction, not background, and calling it mechanism kept it
+    out of the resolution steps where it belonged.
+
+    Judged on section and content rather than asked of a model: the markers are
+    the vocabulary the AWS Transform output actually uses, and a counting rule
+    here is cheaper and steadier than a classification call per chunk.
+    """
+
+    section = (document.get("section") or "").lower().replace(" ", "")
+
+    content = (document.get("content") or "").lower()
+
+    if any(
+        marker in section
+        for marker in PROCEDURAL_SECTION_MARKERS
+    ):
+
+        if any(
+            marker in content
+            for marker in PROCEDURAL_CONTENT_MARKERS
+        ):
+            return "procedure"
+
+    return "mechanism"
+
+
 def build_document_evidence(document):
     """A documentation extract, marked so the RCA agent cannot mistake it.
 
@@ -109,6 +167,9 @@ def build_document_evidence(document):
     ticket evidence downstream. That separation is the point: a document
     explains how a failure works, and must never be read as a record that one
     happened.
+
+    `evidence_role` then says which of the two jobs this particular extract can
+    do - see document_role.
     """
 
     evidence_id = f"doc::{document['chunk_id']}"
@@ -126,7 +187,7 @@ def build_document_evidence(document):
         "section": document.get("section"),
         "data_files": document.get("data_files"),
         "programs": document.get("programs"),
-        "evidence_role": "mechanism",
+        "evidence_role": document_role(document),
         "excerpt": (document.get("content") or "")[:200]
     }
 
