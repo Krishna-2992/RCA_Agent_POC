@@ -20,6 +20,8 @@ import uuid
 
 from dotenv import load_dotenv
 
+from qdrant_client import models
+
 from qdrant_client.models import (
     Distance,
     PayloadSchemaType,
@@ -84,27 +86,68 @@ INDEXED_FIELDS = [
 ]
 
 
+def with_retry(description, call):
+    """Runs one Qdrant setup call, surviving a DNS burst.
+
+    The writes in this module retry and the searches retry, but the three calls
+    that set the collection up did not, and on a machine whose resolver answers
+    eight times in ten they are where a run dies - before a single point is
+    stored, so a resumed run makes no progress and the log shows only a
+    traceback. Measured here: ten resolutions of the cluster host, two failures,
+    arriving in bursts rather than evenly.
+    """
+
+    attempts = int(
+        os.getenv("QDRANT_MAX_ATTEMPTS", "3")
+    )
+
+    for attempt in range(1, attempts + 1):
+
+        try:
+            return call()
+
+        except Exception as error:
+
+            if attempt == attempts:
+                raise
+
+            delay = min(2 * attempt, 20)
+
+            print(
+                f"  {description} failed "
+                f"(attempt {attempt}/{attempts}): "
+                f"{type(error).__name__}. Retrying in {delay}s"
+            )
+
+            time.sleep(delay)
+
+
 def create_collection(recreate=False):
 
-    exists = qdrant_client.collection_exists(
-        COLLECTION_NAME
+    exists = with_retry(
+        "collection_exists",
+        lambda: qdrant_client.collection_exists(COLLECTION_NAME)
     )
 
     if exists and recreate:
 
-        qdrant_client.delete_collection(
-            COLLECTION_NAME
+        with_retry(
+            "delete_collection",
+            lambda: qdrant_client.delete_collection(COLLECTION_NAME)
         )
 
         exists = False
 
     if not exists:
 
-        qdrant_client.create_collection(
-            collection_name=COLLECTION_NAME,
-            vectors_config=VectorParams(
-                size=VECTOR_SIZE,
-                distance=Distance.COSINE
+        with_retry(
+            "create_collection",
+            lambda: qdrant_client.create_collection(
+                collection_name=COLLECTION_NAME,
+                vectors_config=VectorParams(
+                    size=VECTOR_SIZE,
+                    distance=Distance.COSINE
+                )
             )
         )
 
@@ -125,6 +168,31 @@ def create_collection(recreate=False):
         except Exception:
             # Already indexed; Qdrant has no create-if-missing for this.
             pass
+
+    # A full-text index over the chunk text, for identifiers that were never
+    # given a payload field of their own. Report names are the case that forced
+    # it: 04RH0442 produces seventy-five numbered reports, a ticket names one of
+    # them, and similarity cannot tell MISCRPT068 from MISCRPT058. Adding a
+    # `reports` field instead would mean re-embedding the whole corpus; this
+    # costs about two seconds and is rebuilt with the collection, so a fresh
+    # ingest does not silently lose the ability to match them.
+    try:
+        qdrant_client.create_payload_index(
+            collection_name=COLLECTION_NAME,
+            field_name="content",
+            field_schema=models.TextIndexParams(
+                type="text",
+                tokenizer=models.TokenizerType.WORD,
+                min_token_len=2,
+                max_token_len=25,
+                lowercase=True
+            )
+        )
+
+        print("Created full-text index on content")
+
+    except Exception:
+        pass
 
 
 EMBED_MAX_ATTEMPTS = int(
@@ -196,11 +264,16 @@ def already_ingested(chunks):
 
         batch = chunks[start:start + BATCH_SIZE]
 
-        found = qdrant_client.retrieve(
-            collection_name=COLLECTION_NAME,
-            ids=[point_id(chunk) for chunk in batch],
-            with_payload=False,
-            with_vectors=False
+        ids = [point_id(chunk) for chunk in batch]
+
+        found = with_retry(
+            "retrieve",
+            lambda: qdrant_client.retrieve(
+                collection_name=COLLECTION_NAME,
+                ids=ids,
+                with_payload=False,
+                with_vectors=False
+            )
         )
 
         existing.update(

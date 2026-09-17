@@ -5,6 +5,7 @@ path is untouched. It reuses that module's client and retry policy rather than
 opening a second connection or inventing a second set of timeouts.
 """
 
+import os
 import time
 
 from src.utils.qdrant_client import (
@@ -19,8 +20,17 @@ from src.utils.qdrant_client import (
 # exponential backoff burns all three attempts in about three seconds - far too
 # fast to ride out a resolver that recovers on its own within a minute. Name
 # resolution failures therefore get more attempts and a longer, linear wait.
-
-DNS_MAX_ATTEMPTS = 5
+#
+# Eight rather than five, which is about seventy seconds rather than thirty.
+# Measured on this machine the resolver returns EAI_NONAME for the Qdrant host
+# in bursts while a fresh process resolves it thirty times out of thirty a
+# moment later, and thirty seconds was landing inside those bursts often enough
+# to fail roughly one investigation in three. The cost of the wider budget is
+# paid only when DNS is actually failing; a genuine outage takes longer to
+# report, which is the right trade for a run that takes a minute anyway.
+DNS_MAX_ATTEMPTS = int(
+    os.getenv("QDRANT_DNS_MAX_ATTEMPTS", "8")
+)
 
 NAME_RESOLUTION_MARKERS = (
     "nodename nor servname",
@@ -99,10 +109,14 @@ def search_with_retry(
             if attempt >= max_attempts:
                 break
 
+            # Linear, and capped so the last attempts do not each cost half a
+            # minute: 2,4,6,8,10,10,10 is seventy seconds spread over enough
+            # separate lookups to catch the resolver between bursts, which is
+            # what matters more than the total wait.
             backoff = (
-                3 * attempt
+                min(2 * attempt, 10)
                 if dns_failure
-                else 2 ** (attempt - 1)
+                else min(2 ** (attempt - 1), 30)
             )
 
             reason = (

@@ -13,10 +13,19 @@ how they investigate:
     05RHE247 rules unfiltered              MRR 0.919
     every rule from every program          MRR 0.906   recall 94%
 
-So: keep the rules (dropping them costs 0.10 MRR), drop 04RH0442 outright (it
-is a standalone batch reporter with no call relationship to any supported
-application, and removing it changed nothing), and thin 05RHE247's rules to the
-four decision-shaped types.
+So: keep the rules (dropping them costs 0.10 MRR) and thin 05RHE247's rules to
+the four decision-shaped types.
+
+04RH0442 was dropped outright on the strength of those numbers and has since
+been restored. The measurement was sound and the conclusion did not follow from
+it: none of the sixteen harness queries concerned the reporting program, so
+"removing it changed nothing" only ever meant "changed nothing we asked about".
+A held-out incident then reported garbage data in MISCRPT068 and MISCRPT069 -
+both produced by this program - and the analysis cited one piece of evidence,
+the estate-catalogue one-liner, and offered no resolution at all, because the
+corpus held nothing else. The source carries 1,341 references to those report
+files and describes RPT068 and RPT069 by name. A benchmark can only defend what
+it thought to ask.
 
 The support team supports three applications - Reman Index, Inventory and LMS.
 06RH0101 is kept because all three call it, and 05RHE247 because it sits inside
@@ -68,12 +77,27 @@ DOCX_NS = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
 MAX_CHUNK_CHARS = 3500
 
 
+# Business rules get a smaller budget than prose, because they are not prose.
+# Ten consecutive Given/When/Then statements are ten unrelated topics, and one
+# embedding over all of them is an average of ten things rather than a
+# description of any. Measured on the rules that specify file recovery: the
+# three of them score 0.729 against a recovery question on their own and 0.577
+# packed into a chunk with seven unrelated neighbours. That 0.152 is the
+# difference between rank two and rank twenty, and it is why a procedure split
+# across consecutive rules never reached the answer.
+#
+# Paragraph sources keep the larger budget: their pieces continue one another,
+# so packing them loses nothing.
+BUSINESS_RULE_CHUNK_CHARS = 1200
+
+
 # The legacy identifier is what incidents actually cite - a ticket says
 # "F8RH0093", never "03RMNLMS".
 LEGACY_ID = {
     "01RMNIDX": "F8RH0071",
     "02RMNINVTR": "F8RH0030",
     "03RMNLMS": "F8RH0093",
+    "04RH0442": "F8RH0442",
     "05RHE247": "F8RHE247",
     "06RH0101": "F8RH0101"
 }
@@ -83,6 +107,7 @@ APPLICATION = {
     "01RMNIDX": "Reman Index",
     "02RMNINVTR": "Inventory",
     "03RMNLMS": "LMS",
+    "04RH0442": "Reporting",
     "05RHE247": "Inventory Detail",
     "06RH0101": "BOM"
 }
@@ -95,6 +120,10 @@ RULE_STRATEGY = {
     "01RMNIDX": "all",
     "02RMNINVTR": "all",
     "03RMNLMS": "all",
+    # 16,042 rules, twice 05RHE247's, so the same thinning applies. The filter
+    # keeps 87 of the 377 rules naming reports 068 and 069; the rest of that
+    # content is in the technical XML, which is chunked whole.
+    "04RH0442": "filter",
     "05RHE247": "filter",
     "06RH0101": "all"
 }
@@ -185,12 +214,18 @@ def clean(text):
     return text.strip()
 
 
-def pack(pieces, meta, section):
+def pack(pieces, meta, section, max_chars=None):
     """Groups already-atomic pieces into chunks without splitting one in half.
 
     A piece is a paragraph or a single business rule. Packing on those
     boundaries is why no overlap is configured: a chunk never ends mid-thought.
+
+    `max_chars` overrides the default budget for sources whose pieces do not
+    belong together - see BUSINESS_RULE_CHUNK_CHARS.
     """
+
+    if max_chars is None:
+        max_chars = MAX_CHUNK_CHARS
 
     chunks = []
     buffer = []
@@ -217,7 +252,7 @@ def pack(pieces, meta, section):
         if not piece:
             continue
 
-        if size + len(piece) > MAX_CHUNK_CHARS and buffer:
+        if size + len(piece) > max_chars and buffer:
             flush()
             buffer = []
             size = 0
@@ -438,7 +473,8 @@ def chunk_business_rules(program):
     return pack(
         lines,
         program_meta(program, "business_rule"),
-        "business_rules"
+        "business_rules",
+        max_chars=BUSINESS_RULE_CHUNK_CHARS
     )
 
 

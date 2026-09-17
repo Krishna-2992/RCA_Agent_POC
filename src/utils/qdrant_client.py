@@ -24,6 +24,13 @@ QDRANT_TIMEOUT = float(
 )
 
 
+# The longest a retry will ever wait. Past about half a minute an extra delay
+# buys nothing a further attempt would not buy sooner.
+BACKOFF_CEILING = int(
+    os.getenv("QDRANT_BACKOFF_CEILING", "30")
+)
+
+
 QDRANT_MAX_ATTEMPTS = int(
     os.getenv("QDRANT_MAX_ATTEMPTS", "3")
 )
@@ -91,7 +98,14 @@ def query_with_retry(
             if attempt == QDRANT_MAX_ATTEMPTS:
                 break
 
-            backoff = 2 ** (attempt - 1)
+            # Capped. Doubling without a ceiling is safe only while the
+            # attempt budget is small: at six attempts the longest wait is 32
+            # seconds, but raising the budget to 25 to ride out a flaky
+            # resolver makes attempt 15 sleep four and a half hours and
+            # attempt 20 sleep six days. A run left overnight moved 6,300 of
+            # 7,547 chunks and then sat still, not because the network never
+            # came back but because it was not due to look again.
+            backoff = min(2 ** (attempt - 1), BACKOFF_CEILING)
 
             print(
                 f"Qdrant search on '{collection_name}' failed "
@@ -151,7 +165,7 @@ def upsert_with_retry(
             if attempt == attempts:
                 break
 
-            backoff = 2 ** (attempt - 1)
+            backoff = min(2 ** (attempt - 1), BACKOFF_CEILING)
 
             print(
                 f"Qdrant upsert to '{collection_name}' failed "

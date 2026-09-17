@@ -97,6 +97,12 @@ ERROR_FAMILIES = {
         "usual_fix": "Close every open instance, then run file recovery",
         "source": "ticket history (10 incidents)"
     },
+    "9302": {
+        "seen_as": ("9302",),
+        "means": "File lock, reported on control files rather than masters",
+        "usual_fix": "Close the lock; the file is usually not corrupt",
+        "source": "ticket history (3 incidents, all IN0014.CTL)"
+    },
     "4600": {
         "seen_as": ("4600",),
         "means": "No file position, reported alongside a corrupt index",
@@ -108,6 +114,20 @@ ERROR_FAMILIES = {
         "means": "File not found on open",
         "usual_fix": "Confirm the file exists and the drive is mapped",
         "source": "02RMNINVTR technical documentation"
+    }
+}
+
+
+# Files the tickets name that the technical documentation never describes, so
+# the generated digest cannot know them. IN0014.CTL appears in three incidents
+# as "file lock in light decon" and in no document at all - the estate is larger
+# than the six programs AWS Transform wrote up, and a file being undocumented is
+# not a reason to leave the support team without its name.
+UNDOCUMENTED_FILES = {
+    "IN0014.CTL": {
+        "what": "Light decon control file",
+        "used_by": ["Inventory"],
+        "source": "ticket history (INC10148317, INC10109021, INC10055662)"
     }
 }
 
@@ -259,6 +279,20 @@ def digest_for_prompt(applications=None):
 
                 lines.append(f"    {name}: {what}{also}")
 
+            # Undocumented files are listed with the documented ones, marked so
+            # nothing downstream quotes them as documentation. A support
+            # engineer needs the name whether or not AWS Transform wrote it up.
+            for name, entry_data in sorted(UNDOCUMENTED_FILES.items()):
+
+                if application not in entry_data["used_by"]:
+                    continue
+
+                lines.append(
+                    f"    {name}: {entry_data['what']} "
+                    f"[not in the documentation; known from "
+                    f"{entry_data['source']}]"
+                )
+
         options = entry.get("menu_options") or {}
 
         if options:
@@ -297,5 +331,253 @@ def digest_for_prompt(applications=None):
             f"  {', '.join(family['seen_as'])} - {family['means']}. "
             f"{family['usual_fix']}."
         )
+
+    return "\n".join(lines)
+
+
+# Symptoms whose remedy is a recovery procedure rather than an explanation.
+# A corrupt or locked file is not a question about what a program does; it is a
+# request for the screen that repairs it, and that screen usually lives in a
+# different program from the one the reporter names.
+RECOVERY_SYMPTOMS = (
+    "corrupt", "corrupted", "corruption", "invalid file structure",
+    "bad file", "damaged", "rebuild", "recover", "recovery",
+    "file lock", "locked", "lock error", "duplicate open", "will not open",
+    "cannot open", "can not open", "unopened"
+)
+
+
+def recovery_applications():
+    """Applications whose documentation actually describes a recovery procedure.
+
+    Derived from the digest rather than named here, so this stays correct when
+    the corpus changes. Today it resolves to Reman Index (RECOVER1.EXE via
+    Option 34, 6200-FILE-RECOVERY) and Inventory (section 1407-RECOVER); the
+    remaining four programs document no recovery at all.
+
+    The distinction this exists to serve: the file that breaks and the screen
+    that repairs it belong to different programs. IN0018.MOV is an Inventory
+    file, but the operator recovers it from the Reman Index menu, so scoping a
+    corruption report to the reporter's own application hides the answer. The
+    Option 34 chunk sits at rank two of the whole corpus for such a report and
+    was being excluded before ranking began.
+    """
+
+    return [
+        entry["application"]
+        for entry in PROGRAMS.values()
+        if entry.get("recovery")
+    ]
+
+
+def needs_recovery_context(text):
+    """Whether a report is the kind whose answer is a recovery procedure."""
+
+    if not text:
+        return False
+
+    lowered = text.lower()
+
+    return any(
+        symptom in lowered
+        for symptom in RECOVERY_SYMPTOMS
+    )
+
+
+# What the support team does, in their words, for the failures they see often.
+#
+# These are not in the documentation and not in the ticket history in any usable
+# form. The tickets record outcomes - "Recovered the file", "Locks were closed"
+# - and the documentation records mechanism - 6200-FILE-RECOVERY calls
+# RECOVER1.EXE. Neither records the sequence an engineer actually performs, and
+# an RCA that cannot supply it sends someone to a terminal with "recover the
+# file using the approved procedure", which is not an instruction.
+#
+# Every entry carries its provenance so nothing here is ever quoted back as if
+# a document said it. `when` is matched against the report; `steps` are offered
+# to the analysis as a candidate procedure, not asserted as the answer.
+PLAYBOOKS = {
+    "file_recovery": {
+        "when": (
+            "corrupt", "corrupted", "invalid file structure", "bad file",
+            "983", "984", "9802", "98", "4600", "damaged file"
+        ),
+        "what": "Indexed file is corrupt, locked, or both",
+        "steps": [
+            "Confirm every user is out of the affected file.",
+            "From the DOS prompt, close the lock on the file.",
+            "From Reman Index, take Option 34 (File Recovery). This needs "
+            "security level 4 or above (HOLD-UPDATE >= '4').",
+            "Option 34 runs 6200-FILE-RECOVERY, which calls RECOVER1.EXE to "
+            "rebuild the indexed file.",
+            "Have the user reopen the application and confirm the error is "
+            "gone."
+        ],
+        "source": (
+            "Reman support team, confirmed against INC9581851 "
+            "(\"From DOS prompt close the lock and then from Reman Index "
+            "Option 34 recover the file\"); the Option 34 and RECOVER1.EXE "
+            "detail is corroborated by 01RMNIDX documentation"
+        )
+    },
+    "control_file_lock": {
+        "when": ("9302", "file lock", "light decon"),
+        "what": "File lock on a control file rather than a master file",
+        "steps": [
+            "Identify the locked control file from the error text - these are "
+            "usually .CTL files such as IN0014.CTL, not the masters.",
+            "Close the lock. The file is usually not corrupt, so recovery is "
+            "not normally needed.",
+            "If the error returns immediately, treat it as the file-recovery "
+            "case instead."
+        ],
+        "source": "ticket history (3 incidents, all IN0014.CTL)"
+    },
+    "batch_transient": {
+        # Absence, not wrongness. Every trigger here describes something that
+        # did not happen, because that is the failure a retry can fix.
+        #
+        # The first version also matched "batch", "tidal", "scheduled job" and
+        # "auto", which name a schedule rather than a fault. INC9435163 reports
+        # garbage data in two reports and mentions a Tidal job only to say how
+        # often the program runs; the playbook fired on that word and the
+        # analysis recommended closing a defect ED had to fix in code as "not
+        # reproducible". Naming the scheduler says nothing about what went
+        # wrong, so it no longer triggers anything.
+        "when": (
+            "did not print", "didn't print", "did not printed", "not printed",
+            "did not run", "didn't run", "never ran", "did not generate",
+            "not showing", "not visible", "missing from", "zeroed out"
+        ),
+        # A retry reruns the same logic over the same data. If the output
+        # arrived and is wrong, the retry produces the same wrong output, so
+        # advising one wastes the reporter's time and buries a real defect.
+        "unless": (
+            "garbage", "incorrect data", "wrong data", "wrong value",
+            "incorrect value", "corrupt data", "bad data", "invalid data",
+            "wrong number", "mismatch", "not calculating", "miscalculat",
+            "displaying incorrectly", "not displaying correctly",
+            "showing wrong", "duplicate rows", "wrong total"
+        ),
+        "what": (
+            "Batch- or schedule-raised incident with no specific fault found"
+        ),
+        "steps": [
+            "Retry the operation before investigating further - reprint the "
+            "ticket, reopen the screen, or let the next scheduled run go.",
+            "Confirm with the user whether it recurred. A large share of "
+            "these do not.",
+            "Only if it recurs, look for a locked or corrupt file behind it.",
+            "If it cannot be reproduced, say so and close it as not "
+            "reproducible rather than inventing a cause."
+        ],
+        "source": (
+            "Reman support team: batch-created incidents are often resolved "
+            "by a restart or reopen, and INC9791495 was closed after 24 hours "
+            "as not reproducible with no logic fault found"
+        )
+    }
+}
+
+
+def resolve_playbooks(text):
+    """Playbooks whose trigger words appear in the report.
+
+    Longest trigger first so "9802" is not claimed by a match on "98".
+    """
+
+    if not text:
+        return []
+
+    lowered = text.lower()
+
+    matched = []
+
+    for name, playbook in PLAYBOOKS.items():
+
+        if not any(trigger in lowered for trigger in playbook["when"]):
+            continue
+
+        # A blocker beats a trigger. A report that both failed to print and
+        # printed nonsense is not a retry case: the nonsense is the fault.
+        if any(
+            blocker in lowered
+            for blocker in playbook.get("unless", ())
+        ):
+            continue
+
+        matched.append((name, playbook))
+
+    return matched
+
+
+def playbooks_for_prompt(text):
+    """Matched playbooks as prompt text, or an empty string if none match."""
+
+    matched = resolve_playbooks(text)
+
+    if not matched:
+        return ""
+
+    lines = [
+        "Known support procedures for failures of this shape. These come from "
+        "the Reman support team, not from the documentation. Use them for the "
+        "operator detail of the resolution steps where the report fits, and "
+        "say where the detail came from. Do not use them as evidence that this "
+        "incident occurred or what caused it."
+    ]
+
+    for name, playbook in matched:
+
+        lines.append("")
+        lines.append(f"{name}: {playbook['what']}")
+
+        for step in playbook["steps"]:
+            lines.append(f"  - {step}")
+
+        lines.append(f"  [source: {playbook['source']}]")
+
+    return "\n".join(lines)
+
+
+def equivalent_symptoms_for_prompt():
+    """The error families, stated as what counts as the same fault.
+
+    The symptom-match rule exists to stop a record being cited as the cause
+    because it shares a file name. Applied to the words alone it over-fires: a
+    reporter who writes "invalid file structure", one who writes "file lock"
+    and one who writes "error 984" are describing one fault, and the estate
+    already says so - the 98 family is defined as "indexed file corrupt,
+    locked, or both". Comparing the wording rejected the best analysis in the
+    held-out set for citing three tickets that were about exactly this failure.
+
+    So the rule is given the families and told to compare faults rather than
+    phrasing. This narrows nothing: a duplicate-open error and a FIFO flag read
+    from the same file still belong to no common family, which is the case the
+    rule was written for.
+    """
+
+    lines = [
+        "Symptoms that count as THE SAME fault for the purpose of matching a "
+        "record. These groupings come from the Reman ticket history, not from "
+        "the documentation:"
+    ]
+
+    for family in ERROR_FAMILIES.values():
+
+        lines.append(
+            f"  - {family['means']}. Reported as any of: "
+            f"{', '.join(family['seen_as'])}, and in words as the symptoms "
+            f"that condition produces - a file that will not open, an invalid "
+            f"or bad file structure, a file lock, a corrupt file, a program "
+            f"that will not load. [{family['source']}]"
+        )
+
+    lines.append(
+        "Two reports in the same group above are a symptom match even when "
+        "their wording differs. Two reports that share only a file name, a "
+        "program name or an application are NOT a match, whatever else they "
+        "have in common."
+    )
 
     return "\n".join(lines)
