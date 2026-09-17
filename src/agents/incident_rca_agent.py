@@ -25,6 +25,8 @@ from typing import List
 
 from pydantic import BaseModel, Field
 
+from src.domain.reman_digest import playbooks_for_prompt
+
 from src.utils.llm import llm
 
 
@@ -61,6 +63,17 @@ class IncidentRCAResult(BaseModel):
 
     preventive_actions: List[str] = Field(
         description="Actions that would stop this recurring"
+    )
+
+    escalation: str = Field(
+        description=(
+            "Who should take this next: 'none' when the resolution steps can "
+            "be carried out by a support engineer at a terminal; "
+            "'code_change' when the fault is in program logic and no operator "
+            "action can fix it; 'not_reproducible' when nothing in the "
+            "evidence distinguishes this from a transient condition; "
+            "'unknown' when the evidence does not support naming a cause."
+        )
     )
 
     confidence_score: float = Field(
@@ -188,6 +201,12 @@ def incident_rca_agent(state):
            "of the retrieved change records are linked to these programs."
     )
 
+    # Matched against the reporter's own words, not the rewrite: the playbooks
+    # are keyed on how failures are described on the floor.
+    playbooks = playbooks_for_prompt(
+        state.get("user_query")
+    )
+
     prompt = f"""
 You are a senior production support engineer writing a root cause analysis.
 
@@ -214,8 +233,28 @@ Assessment of the retrieved records:
 Assessment of the retrieved documentation:
 {format_documentation_status(state)}
 
+{playbooks}
+
 Write the analysis under these rules:
 
+- A past ticket explains this incident only when its SYMPTOM matches. Sharing a
+  file name, a program name or an application is not a symptom match. Before
+  citing a record as the cause, state what the reporter observed and what the
+  record's reporter observed; if those two differ, the record is background and
+  must not become the root cause. A duplicate-open error on a file and a flag
+  read incorrectly from the same file are two different faults that happen to
+  name one file.
+- When no retrieved record matches the symptom, say plainly that no comparable
+  incident exists in the history, and set the root cause to what the evidence
+  actually supports - which may be nothing more than the class of fault. That
+  is a better answer than a confident cause built from a record about something
+  else, and it is the answer a support engineer can act on.
+- Set `escalation` honestly. If the fault is in what the program computes or
+  writes - a report with wrong content, a calculation that is off - no operator
+  procedure will fix it: say so, set escalation to 'code_change', and do not
+  offer terminal steps that cannot help. If the evidence cannot separate this
+  from a transient lock or a one-off, set 'not_reproducible' and say that
+  retrying is the first step.
 - Use ONLY the evidence above. There is no code repository available for this
   incident.
 - The two kinds of evidence do different jobs, and the difference matters more

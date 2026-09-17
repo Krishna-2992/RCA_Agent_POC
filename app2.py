@@ -394,6 +394,36 @@ if submit or override:
 
     st.write(rca["root_cause"])
 
+    # An RCA that cannot be acted on at a terminal should say so before the
+    # reader starts working through the steps, not after.
+    ESCALATION_NOTICE = {
+        "code_change": (
+            "warning",
+            "This is a program logic fault. No operator procedure will fix "
+            "it - it needs a developer and a code change."
+        ),
+        "not_reproducible": (
+            "info",
+            "The evidence cannot separate this from a transient condition. "
+            "Retry or reopen first; only investigate further if it recurs."
+        ),
+        "unknown": (
+            "warning",
+            "The evidence does not support naming a cause. Treat the analysis "
+            "below as background, not as a conclusion."
+        )
+    }
+
+    notice = ESCALATION_NOTICE.get(
+        str(rca.get("escalation") or "none").strip().lower()
+    )
+
+    if notice:
+
+        kind, message = notice
+
+        getattr(st, kind)(message)
+
     def as_percentage(score):
         """Confidence as a percentage. The schema asks for 0-1, but a model that
         answers 88 instead of 0.88 should not render as 8800%."""

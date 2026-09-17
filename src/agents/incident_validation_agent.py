@@ -75,6 +75,13 @@ Check that:
 - resolution steps reflect actions that actually resolved the cited records
 - confidence is proportionate; thin evidence stated confidently is a defect
 - a service request has not been used to establish a root cause
+- a record cited as the CAUSE matches this incident's symptom, not merely its
+  file name, program or application. A record about a different fault that
+  happens to name the same file is background, and using it as the cause is a
+  defect however well the identifiers line up.
+- `escalation` matches the analysis. A fault in what a program computes or
+  writes cannot be resolved by operator steps and should be 'code_change'; an
+  analysis that names no supported cause should not be 'none'.
 
 Judge claims against the whole evidence record shown above, including its
 dates, record types and resolution times - not only the narrative text.

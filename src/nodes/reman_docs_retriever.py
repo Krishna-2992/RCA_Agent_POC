@@ -21,6 +21,11 @@ from qdrant_client import models
 
 from ingestion.reman_docs import DATA_FILE_RE, find_data_files
 
+from src.domain.reman_digest import (
+    needs_recovery_context,
+    recovery_applications
+)
+
 from src.nodes.incident_evidence import document_role
 
 from src.nodes.reman_docs_rerank import (
@@ -324,6 +329,53 @@ def infer_applications(*texts):
     return found
 
 
+def widen_for_recovery(state, applications):
+    """Adds the programs that own a recovery procedure to a recovery report.
+
+    The file that breaks and the screen that repairs it are not in the same
+    program. IN0018.MOV belongs to Inventory, but an operator recovers it from
+    the Reman Index menu - Option 34, 6200-FILE-RECOVERY, security level 4,
+    RECOVER1.EXE. Scoping such a report to the application the ticket names
+    therefore filters the answer out before ranking begins.
+
+    Measured on the two file-corruption incidents in the held-out set: with the
+    reporter's application alone, the chunk naming Option 34 does not appear in
+    the window at all and the analysis falls back to "the precise recovery
+    method is not present in the retrieved evidence". With the recovery owners
+    admitted, the same chunk is selected at rank two - the procedure reservation
+    that already exists promotes it once it is allowed to compete.
+
+    Deliberately narrow. It widens only on a corruption, lock or duplicate-open
+    symptom, and only to programs whose digest entry actually documents a
+    recovery. A report about a report printing wrong widens to nothing.
+    """
+
+    entities = state.get("extracted_entities") or {}
+
+    haystack = " ".join(
+        str(value)
+        for value in (
+            state.get("user_query"),
+            state.get("rewritten_query"),
+            entities.get("symptom"),
+            entities.get("error_code")
+        )
+        if value
+    )
+
+    if not needs_recovery_context(haystack):
+        return applications
+
+    widened = list(applications)
+
+    for name in recovery_applications():
+
+        if name not in widened:
+            widened.append(name)
+
+    return widened
+
+
 def build_search_query(state):
     """What the documentation is asked, which is not what history is asked.
 
@@ -478,6 +530,18 @@ def reman_docs_retriever_node(state):
 
         if name not in applications:
             applications.append(name)
+
+    # A corruption or lock report is answered by the program that owns the
+    # recovery screen, which is usually not the program the ticket names.
+    before = list(applications)
+
+    applications = widen_for_recovery(state, applications)
+
+    if applications != before:
+
+        print(
+            f"  widened for recovery: {before} -> {applications}"
+        )
 
     try:
         vector = create_embedding(

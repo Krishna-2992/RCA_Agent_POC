@@ -116,7 +116,7 @@ def search_with_retry(
             backoff = (
                 min(2 * attempt, 10)
                 if dns_failure
-                else 2 ** (attempt - 1)
+                else min(2 ** (attempt - 1), 30)
             )
 
             reason = (

@@ -13,10 +13,19 @@ how they investigate:
     05RHE247 rules unfiltered              MRR 0.919
     every rule from every program          MRR 0.906   recall 94%
 
-So: keep the rules (dropping them costs 0.10 MRR), drop 04RH0442 outright (it
-is a standalone batch reporter with no call relationship to any supported
-application, and removing it changed nothing), and thin 05RHE247's rules to the
-four decision-shaped types.
+So: keep the rules (dropping them costs 0.10 MRR) and thin 05RHE247's rules to
+the four decision-shaped types.
+
+04RH0442 was dropped outright on the strength of those numbers and has since
+been restored. The measurement was sound and the conclusion did not follow from
+it: none of the sixteen harness queries concerned the reporting program, so
+"removing it changed nothing" only ever meant "changed nothing we asked about".
+A held-out incident then reported garbage data in MISCRPT068 and MISCRPT069 -
+both produced by this program - and the analysis cited one piece of evidence,
+the estate-catalogue one-liner, and offered no resolution at all, because the
+corpus held nothing else. The source carries 1,341 references to those report
+files and describes RPT068 and RPT069 by name. A benchmark can only defend what
+it thought to ask.
 
 The support team supports three applications - Reman Index, Inventory and LMS.
 06RH0101 is kept because all three call it, and 05RHE247 because it sits inside
@@ -88,6 +97,7 @@ LEGACY_ID = {
     "01RMNIDX": "F8RH0071",
     "02RMNINVTR": "F8RH0030",
     "03RMNLMS": "F8RH0093",
+    "04RH0442": "F8RH0442",
     "05RHE247": "F8RHE247",
     "06RH0101": "F8RH0101"
 }
@@ -97,6 +107,7 @@ APPLICATION = {
     "01RMNIDX": "Reman Index",
     "02RMNINVTR": "Inventory",
     "03RMNLMS": "LMS",
+    "04RH0442": "Reporting",
     "05RHE247": "Inventory Detail",
     "06RH0101": "BOM"
 }
@@ -109,6 +120,10 @@ RULE_STRATEGY = {
     "01RMNIDX": "all",
     "02RMNINVTR": "all",
     "03RMNLMS": "all",
+    # 16,042 rules, twice 05RHE247's, so the same thinning applies. The filter
+    # keeps 87 of the 377 rules naming reports 068 and 069; the rest of that
+    # content is in the technical XML, which is chunked whole.
+    "04RH0442": "filter",
     "05RHE247": "filter",
     "06RH0101": "all"
 }
