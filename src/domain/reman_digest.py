@@ -434,10 +434,30 @@ PLAYBOOKS = {
         "source": "ticket history (3 incidents, all IN0014.CTL)"
     },
     "batch_transient": {
+        # Absence, not wrongness. Every trigger here describes something that
+        # did not happen, because that is the failure a retry can fix.
+        #
+        # The first version also matched "batch", "tidal", "scheduled job" and
+        # "auto", which name a schedule rather than a fault. INC9435163 reports
+        # garbage data in two reports and mentions a Tidal job only to say how
+        # often the program runs; the playbook fired on that word and the
+        # analysis recommended closing a defect ED had to fix in code as "not
+        # reproducible". Naming the scheduler says nothing about what went
+        # wrong, so it no longer triggers anything.
         "when": (
-            "did not print", "didn't print", "not printed", "did not run",
-            "batch", "tidal", "scheduled job", "overnight", "auto",
-            "not showing", "zeroed out"
+            "did not print", "didn't print", "did not printed", "not printed",
+            "did not run", "didn't run", "never ran", "did not generate",
+            "not showing", "not visible", "missing from", "zeroed out"
+        ),
+        # A retry reruns the same logic over the same data. If the output
+        # arrived and is wrong, the retry produces the same wrong output, so
+        # advising one wastes the reporter's time and buries a real defect.
+        "unless": (
+            "garbage", "incorrect data", "wrong data", "wrong value",
+            "incorrect value", "corrupt data", "bad data", "invalid data",
+            "wrong number", "mismatch", "not calculating", "miscalculat",
+            "displaying incorrectly", "not displaying correctly",
+            "showing wrong", "duplicate rows", "wrong total"
         ),
         "what": (
             "Batch- or schedule-raised incident with no specific fault found"
@@ -475,8 +495,18 @@ def resolve_playbooks(text):
 
     for name, playbook in PLAYBOOKS.items():
 
-        if any(trigger in lowered for trigger in playbook["when"]):
-            matched.append((name, playbook))
+        if not any(trigger in lowered for trigger in playbook["when"]):
+            continue
+
+        # A blocker beats a trigger. A report that both failed to print and
+        # printed nonsense is not a retry case: the nonsense is the fault.
+        if any(
+            blocker in lowered
+            for blocker in playbook.get("unless", ())
+        ):
+            continue
+
+        matched.append((name, playbook))
 
     return matched
 
@@ -506,5 +536,48 @@ def playbooks_for_prompt(text):
             lines.append(f"  - {step}")
 
         lines.append(f"  [source: {playbook['source']}]")
+
+    return "\n".join(lines)
+
+
+def equivalent_symptoms_for_prompt():
+    """The error families, stated as what counts as the same fault.
+
+    The symptom-match rule exists to stop a record being cited as the cause
+    because it shares a file name. Applied to the words alone it over-fires: a
+    reporter who writes "invalid file structure", one who writes "file lock"
+    and one who writes "error 984" are describing one fault, and the estate
+    already says so - the 98 family is defined as "indexed file corrupt,
+    locked, or both". Comparing the wording rejected the best analysis in the
+    held-out set for citing three tickets that were about exactly this failure.
+
+    So the rule is given the families and told to compare faults rather than
+    phrasing. This narrows nothing: a duplicate-open error and a FIFO flag read
+    from the same file still belong to no common family, which is the case the
+    rule was written for.
+    """
+
+    lines = [
+        "Symptoms that count as THE SAME fault for the purpose of matching a "
+        "record. These groupings come from the Reman ticket history, not from "
+        "the documentation:"
+    ]
+
+    for family in ERROR_FAMILIES.values():
+
+        lines.append(
+            f"  - {family['means']}. Reported as any of: "
+            f"{', '.join(family['seen_as'])}, and in words as the symptoms "
+            f"that condition produces - a file that will not open, an invalid "
+            f"or bad file structure, a file lock, a corrupt file, a program "
+            f"that will not load. [{family['source']}]"
+        )
+
+    lines.append(
+        "Two reports in the same group above are a symptom match even when "
+        "their wording differs. Two reports that share only a file name, a "
+        "program name or an application are NOT a match, whatever else they "
+        "have in common."
+    )
 
     return "\n".join(lines)

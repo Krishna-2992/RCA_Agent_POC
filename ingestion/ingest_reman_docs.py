@@ -20,6 +20,8 @@ import uuid
 
 from dotenv import load_dotenv
 
+from qdrant_client import models
+
 from qdrant_client.models import (
     Distance,
     PayloadSchemaType,
@@ -166,6 +168,31 @@ def create_collection(recreate=False):
         except Exception:
             # Already indexed; Qdrant has no create-if-missing for this.
             pass
+
+    # A full-text index over the chunk text, for identifiers that were never
+    # given a payload field of their own. Report names are the case that forced
+    # it: 04RH0442 produces seventy-five numbered reports, a ticket names one of
+    # them, and similarity cannot tell MISCRPT068 from MISCRPT058. Adding a
+    # `reports` field instead would mean re-embedding the whole corpus; this
+    # costs about two seconds and is rebuilt with the collection, so a fresh
+    # ingest does not silently lose the ability to match them.
+    try:
+        qdrant_client.create_payload_index(
+            collection_name=COLLECTION_NAME,
+            field_name="content",
+            field_schema=models.TextIndexParams(
+                type="text",
+                tokenizer=models.TokenizerType.WORD,
+                min_token_len=2,
+                max_token_len=25,
+                lowercase=True
+            )
+        )
+
+        print("Created full-text index on content")
+
+    except Exception:
+        pass
 
 
 EMBED_MAX_ATTEMPTS = int(

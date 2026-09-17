@@ -25,7 +25,10 @@ from typing import List
 
 from pydantic import BaseModel, Field
 
-from src.domain.reman_digest import playbooks_for_prompt
+from src.domain.reman_digest import (
+    equivalent_symptoms_for_prompt,
+    playbooks_for_prompt
+)
 
 from src.utils.llm import llm
 
@@ -207,6 +210,8 @@ def incident_rca_agent(state):
         state.get("user_query")
     )
 
+    equivalences = equivalent_symptoms_for_prompt()
+
     prompt = f"""
 You are a senior production support engineer writing a root cause analysis.
 
@@ -237,7 +242,12 @@ Assessment of the retrieved documentation:
 
 Write the analysis under these rules:
 
-- A past ticket explains this incident only when its SYMPTOM matches. Sharing a
+{equivalences}
+
+- A past ticket explains this incident only when its SYMPTOM matches. Use the
+  groupings above to decide that: two reports in the same group are a match
+  even when worded differently, so a "file lock" ticket does explain an
+  "invalid file structure" report. Sharing a
   file name, a program name or an application is not a symptom match. Before
   citing a record as the cause, state what the reporter observed and what the
   record's reporter observed; if those two differ, the record is background and
@@ -289,6 +299,23 @@ Write the analysis under these rules:
   key, the access level, the utility, and anything the step leaves behind,
   exactly as the documentation gives them. Label that detail as coming from
   documentation rather than from a past fix.
+- Every resolution step must come from one of exactly three places: an action
+  that actually resolved one of the matched records, a documentation item
+  marked `procedure`, or one of the support-team procedures given above. Say
+  which. If you cannot source a step to one of those three, do not write it.
+  An engineer reading this will carry it out on a production system, and a
+  plausible-sounding instruction that no record, document or team procedure
+  supports is the most expensive thing this analysis can produce. Where the
+  evidence runs out, stop and say what is not known instead of continuing the
+  list - "the retrieved evidence does not document how to clear this condition"
+  is a useful sentence and a guess dressed as a step is not.
+- Do not invent diagnostic or escalation steps to pad the sequence. Telling
+  someone to inspect OS-level file handles, consult a runbook, or raise it with
+  another team is only a step when a record, a document or a team procedure
+  says so.
+- Cite evidence_id values EXACTLY as they appear in the catalogue, character
+  for character including any trailing part number. A near-miss is treated as a
+  citation of something that does not exist.
 - A step that says to recover, repair or reset something without saying how it
   is done is not a resolution step. The reader is a support engineer at a
   terminal who has to perform it. If the documentation does not say how, say

@@ -36,6 +36,12 @@ structured_llm = llm.with_structured_output(
 )
 
 
+from src.domain.reman_digest import (
+    equivalent_symptoms_for_prompt,
+    playbooks_for_prompt
+)
+
+
 def incident_validation_agent(state):
 
     print("\n--- Validation Agent ---")
@@ -50,6 +56,18 @@ def incident_validation_agent(state):
     evidence = format_evidence_for_prompt(
         state.get("combined_evidence", [])
     )
+
+    # The RCA agent is given these, so the reviewer must be given them too.
+    # Without them it saw steps attributed to "Reman support team procedure",
+    # could not find that procedure in the catalogue, and rejected the two best
+    # analyses in the set for citing a source it had been denied. A reviewer
+    # judging against a smaller evidence base than the author is not a stricter
+    # reviewer, it is a miscalibrated one.
+    playbooks = playbooks_for_prompt(
+        state.get("user_query")
+    )
+
+    equivalences = equivalent_symptoms_for_prompt()
 
     prompt = f"""
 You are reviewing a root cause analysis before it is shown to an engineer.
@@ -67,6 +85,15 @@ RCA agent:
 Valid evidence IDs:
 {list(catalog.keys())}
 
+Support-team procedures the RCA agent was also given. These are a legitimate
+source for the OPERATOR DETAIL of a resolution step - the menu option, the
+function key, the security level, the utility - and a step drawn from one is
+supported, provided the analysis says the detail came from the support team
+rather than from the documentation. They are NOT evidence that this incident
+occurred or what caused it.
+
+{playbooks or "None matched this incident."}
+
 Check that:
 - every cited evidence_id exists in the catalogue
 - every claim in the root cause is supported by the evidence cited for it
@@ -78,7 +105,12 @@ Check that:
 - a record cited as the CAUSE matches this incident's symptom, not merely its
   file name, program or application. A record about a different fault that
   happens to name the same file is background, and using it as the cause is a
-  defect however well the identifiers line up.
+  defect however well the identifiers line up. Judge that against the groupings
+  below, NOT against the wording: a ticket saying "file lock" and one saying
+  "invalid file structure" are the same fault, and rejecting an analysis for
+  citing one to explain the other is a miscalibration, not a catch.
+
+{equivalences}
 - `escalation` matches the analysis. A fault in what a program computes or
   writes cannot be resolved by operator steps and should be 'code_change'; an
   analysis that names no supported cause should not be 'none'.

@@ -105,6 +105,19 @@ PROGRAM_RE = re.compile(
 )
 
 
+# Report names are identifiers, and similarity is as blind to them as it is to
+# file names. 04RH0442 produces seventy-five numbered reports and its
+# documentation runs to 3,167 chunks; the twenty-nine that name reports 068 and
+# 069 lose on cosine distance to three thousand siblings written in the same
+# vocabulary, so an incident reporting garbage data in MISCRPT068 retrieved a
+# window with nothing about MISCRPT068 in it. The same conclusion the corpus
+# already reached for IN0011.MST applies here: filter, do not embed.
+REPORT_RE = re.compile(
+    r"\b(?:MISCRPT|RPT)[\s-]?(\d{2,3})\b",
+    re.I
+)
+
+
 # The support team supports three applications. A ticket usually names one of
 # them in plain words even when it names no program at all, which is the common
 # case: 43% of incidents mention a program, but almost all mention a system.
@@ -306,9 +319,22 @@ def extract_identifiers(*texts):
         }
     )
 
+    # Both spellings are kept: the ticket says MISCRPT068 and the documentation
+    # says RPT068 for the same report, and a full-text match needs the token as
+    # it is written.
+    reports = []
+
+    for number in REPORT_RE.findall(blob):
+
+        for form in (f"MISCRPT{number}", f"RPT{number}"):
+
+            if form not in reports:
+                reports.append(form)
+
     return {
         "programs": programs,
-        "data_files": expand_file_candidates(raw) or find_data_files(blob)
+        "data_files": expand_file_candidates(raw) or find_data_files(blob),
+        "reports": reports
     }
 
 
@@ -450,6 +476,20 @@ def identifier_filter(identifiers):
             models.FieldCondition(
                 key="data_files",
                 match=models.MatchAny(any=identifiers["data_files"])
+            )
+        )
+
+    # Matched against the chunk text rather than a payload field, because the
+    # corpus was not indexed with a report list and re-embedding 8,247 chunks to
+    # add one would cost hours for a field a full-text index supplies in
+    # seconds. Needs the text index on `content`; without it Qdrant rejects the
+    # condition, which is why the caller treats a failed strategy as recoverable.
+    for report in identifiers.get("reports") or []:
+
+        conditions.append(
+            models.FieldCondition(
+                key="content",
+                match=models.MatchText(text=report)
             )
         )
 
